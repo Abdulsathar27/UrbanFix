@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/themes/dark_theme.dart';
+import 'package:frontend/core/themes/light_theme.dart';
 
-import 'light_theme.dart';
-import 'dark_theme.dart';
 
 class ThemeController extends ChangeNotifier {
   ThemeMode _themeMode = ThemeMode.system;

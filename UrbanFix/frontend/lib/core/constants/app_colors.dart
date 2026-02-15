@@ -30,4 +30,8 @@ class AppColors {
 
   // ===== Transparent Helpers =====
   static const Color transparent = Colors.transparent;
+
+  /// Private constructor to prevent instantiation
+  static const Color white70 = Colors.white70;
+  static const Color white = Colors.white;
 }
