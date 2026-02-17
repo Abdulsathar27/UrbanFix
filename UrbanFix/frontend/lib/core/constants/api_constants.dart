@@ -18,10 +18,13 @@ class ApiConstants {
   static const String register = "/auth/register";
   static const String logout = "/auth/logout";
   static const String refreshToken = "/auth/refresh";
+  static const String verifyEmail = "/auth/verify-email";
+  static const String resendEmailOtp = "/auth/resend-email-otp";
+
 
   // ====== User ======
-  static const String userProfile = "/users/profile";
-  static const String updateProfile = "/users/update";
+  static const String userProfile = "/profile/me";
+  static const String updateProfile = "/profile/save";
 
   // ====== Appointment ======
   static const String appointments = "/appointments";

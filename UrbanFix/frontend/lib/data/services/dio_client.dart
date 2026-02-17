@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import '../../core/constants/api_constants.dart';
+import '../../core/utils/token_store.dart';
 
 class DioClient {
   late final Dio _dio;
@@ -26,12 +27,10 @@ class DioClient {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) {
-          // TODO: Attach token here later
-          // Example:
-          // final token = TokenStorage.getToken();
-          // if (token != null) {
-          //   options.headers["Authorization"] = "Bearer $token";
-          // }
+          final token = TokenStore.token;
+          if (token != null && token.isNotEmpty) {
+            options.headers["Authorization"] = "Bearer $token";
+          }
 
           return handler.next(options);
         },

@@ -1,7 +1,7 @@
 class AppStrings {
   // ===== App General =====
   static const String appName = "UrbanFix";
-  static const String loading = "Loading...";
+  static const String loading = "Loading..."; 
   static const String retry = "Retry";
   static const String cancel = "Cancel";
   static const String confirm = "Confirm";
@@ -9,7 +9,7 @@ class AppStrings {
   // ===== Splash =====
   static const String splashTagline =
       "Fixing Your City, One Tap Away";
-  static const String initializing = "Initializing components...";
+  static const String initializing = "Initializing components..."; 
 
   // ===== Authentication =====
   static const String login = "Login";
@@ -20,7 +20,9 @@ class AppStrings {
   static const String forgotPassword = "Forgot Password?";
   static const String dontHaveAccount = "Don't have an account?";
   static const String alreadyHaveAccount = "Already have an account?";
-
+  static const String emailOrPhoneNumber = "Email or Phone Number";
+  static const String enterPassword = "Enter your password";
+  static const String createAccount = "Create Account";
   // ===== Validation Messages =====
   static const String emailRequired = "Email is required";
   static const String passwordRequired = "Password is required";
@@ -43,6 +45,7 @@ class AppStrings {
   static const String jobs = "Jobs";
   static const String jobDetails = "Job Details";
   static const String noJobsFound = "No jobs available";
+  static const String noJobs = "No jobs";
 
   // ===== Chat =====
   static const String chats = "Chats";

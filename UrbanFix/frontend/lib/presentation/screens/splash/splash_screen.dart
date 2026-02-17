@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:frontend/controller/user_controller.dart';
+import 'package:frontend/routes/app_routes.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/app_colors.dart';
-
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -29,13 +29,15 @@ class _SplashScreenState extends State<SplashScreen>
       duration: AppConstants.longAnimation,
     );
 
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
 
-    _scaleAnimation = Tween<double>(begin: 0.8, end: 1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 0.8,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
 
     _controller.forward();
 
@@ -47,15 +49,12 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (!mounted) return;
 
-    final userController =
-        context.read<UserController>();
+    final userController = context.read<UserController>();
 
     if (userController.isLoggedIn) {
-      Navigator.pushReplacementNamed(
-          context, AppRoutes.home);
+      Navigator.pushReplacementNamed(context, AppRoutes.home);
     } else {
-      Navigator.pushReplacementNamed(
-          context, AppRoutes.login);
+      Navigator.pushReplacementNamed(context, AppRoutes.login);
     }
   }
 
@@ -73,18 +72,14 @@ class _SplashScreenState extends State<SplashScreen>
         height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              AppColors.primary,
-              AppColors.secondary,
-            ],
+            colors: [AppColors.primary, AppColors.secondary],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
         child: SafeArea(
           child: Column(
-            mainAxisAlignment:
-                MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(),
 
@@ -93,18 +88,15 @@ class _SplashScreenState extends State<SplashScreen>
                 child: ScaleTransition(
                   scale: _scaleAnimation,
                   child: Container(
-                    padding:
-                        const EdgeInsets.all(28),
+                    padding: const EdgeInsets.all(28),
                     decoration: BoxDecoration(
-                      color: AppColors.white
-                          .withOpacity(0.1),
-                      borderRadius:
-                          BorderRadius.circular(
-                              AppConstants
-                                  .cardBorderRadius),
+                      color: AppColors.white.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(
+                        AppConstants.cardBorderRadius,
+                      ),
                     ),
                     child: const Icon(
-                      Icons.location_on_rounded,
+                      Icons.build_circle_outlined,
                       size: 70,
                       color: AppColors.white,
                     ),
@@ -120,8 +112,7 @@ class _SplashScreenState extends State<SplashScreen>
                   AppStrings.appName,
                   style: const TextStyle(
                     fontSize: 38,
-                    fontWeight:
-                        FontWeight.bold,
+                    fontWeight: FontWeight.bold,
                     color: AppColors.white,
                   ),
                 ),
@@ -145,12 +136,8 @@ class _SplashScreenState extends State<SplashScreen>
               FadeTransition(
                 opacity: _fadeAnimation,
                 child: const Padding(
-                  padding:
-                      EdgeInsets.only(bottom: 40),
-                  child:
-                      CircularProgressIndicator(
-                    color: AppColors.white,
-                  ),
+                  padding: EdgeInsets.only(bottom: 40),
+                  child: CircularProgressIndicator(color: AppColors.white),
                 ),
               ),
             ],

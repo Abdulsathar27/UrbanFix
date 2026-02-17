@@ -4,6 +4,10 @@ class AppColors {
   // ===== Brand Colors =====
   static const Color primary = Color(0xFF2D5BE3);
   static const Color secondary = Color(0xFF6A1B9A);
+  
+static const Color cardBackground = Colors.white;
+static const Color inputFill = Color(0xFFF3F4F6);
+
 
   // ===== Light Mode Colors =====
   static const Color lightBackground = Color(0xFFF5F6FA);
