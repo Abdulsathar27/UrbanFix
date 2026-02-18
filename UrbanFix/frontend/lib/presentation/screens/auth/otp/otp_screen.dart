@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/controller/user_controller.dart';
+import 'package:frontend/data/controller/user_controller.dart';
 import 'package:provider/provider.dart';
 import '../../../../routes/app_routes.dart';
 import 'otp_input_field.dart';
@@ -61,7 +61,7 @@ class _OtpScreenState extends State<OtpScreen> {
                       focusNode: controller.otpFocusNodes[index],
                       isFocused: controller.otpFocusNodes[index].hasFocus,
                       onChanged: (value) =>
-                          controller.onOtpChanged(index, value),
+                          controller.otpControllers[index].text = value,
                     ),
                   ),
                 ),

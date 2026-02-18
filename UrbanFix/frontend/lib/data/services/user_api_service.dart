@@ -1,6 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
-
 import '../../core/constants/api_constants.dart';
 import '../models/user_model.dart';
 import 'dio_client.dart';
@@ -11,63 +9,95 @@ class UserApiService {
   UserApiService(DioClient dioClient) : _dio = dioClient.dio;
 
   // ==========================
-  // Login
-  // ==========================
-  Future<Map<String, dynamic>> login({
-    required String email,
-    required String password,
-  }) async {
-    final response = await _dio.post(
-      ApiConstants.login,
-      data: {
-        "email": email,
-        "password": password,
-      },
-    );
-
-    return response.data;
-  }
-
-  // ==========================
   // Register
   // ==========================
-  Future<Map<String, dynamic>> register({
+  Future<void> register({
     required String name,
     required String email,
     required String phone,
     required String password,
   }) async {
-    final response = await _dio.post(
-      ApiConstants.register,
-      data: {
-        "name": name,
-        "email": email,
-        "phone": phone,
-        "password": password,
-      },
-    );
+    try {
+      final response = await _dio.post(
+        ApiConstants.register,
+        data: {
+          "name": name,
+          "email": email,
+          "phone": phone,
+          "password": password,
+        },
+      );
 
-    return response.data;
+      if (response.statusCode != 200 &&
+          response.statusCode != 201) {
+        throw Exception("Registration failed");
+      }
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data["message"] ?? "Registration failed",
+      );
+    }
+  }
+
+  // ==========================
+  // Login
+  // ==========================
+  Future<UserModel> login({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final response = await _dio.post(
+        ApiConstants.login,
+        data: {
+          "email": email,
+          "password": password,
+        },
+      );
+
+      final data = response.data;
+
+      if (data is Map && data['user'] is Map) {
+        return UserModel.fromJson(
+          Map<String, dynamic>.from(data['user']),
+        );
+      }
+
+      return UserModel.fromJson(
+        Map<String, dynamic>.from(data),
+      );
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data["message"] ?? "Login failed",
+      );
+    }
   }
 
   // ==========================
   // Get Profile
   // ==========================
   Future<UserModel> getProfile() async {
-    final response = await _dio.get(
-      ApiConstants.userProfile,
-    );
+    try {
+      final response =
+          await _dio.get(ApiConstants.userProfile);
 
-    final data = response.data;
-    if (data is Map && data['user'] is Map) {
+      final data = response.data;
+
+      if (data is Map && data['user'] is Map) {
+        return UserModel.fromJson(
+          Map<String, dynamic>.from(data['user']),
+        );
+      }
+
       return UserModel.fromJson(
-        Map<String, dynamic>.from(data['user'] as Map),
+        Map<String, dynamic>.from(data),
+      );
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data["message"] ??
+            "Failed to fetch profile",
       );
     }
-
-    return UserModel.fromJson(
-      Map<String, dynamic>.from(data as Map),
-    );
   }
 
   // ==========================
@@ -77,79 +107,91 @@ class UserApiService {
     required String name,
     required String phone,
   }) async {
-    final response = await _dio.put(
-      ApiConstants.updateProfile,
-      data: {
-        "name": name,
-        "phone": phone,
-      },
-    );
+    try {
+      final response = await _dio.put(
+        ApiConstants.updateProfile,
+        data: {
+          "name": name,
+          "phone": phone,
+        },
+      );
 
-    final data = response.data;
-    if (data is Map && data['user'] is Map) {
+      final data = response.data;
+
+      if (data is Map && data['user'] is Map) {
+        return UserModel.fromJson(
+          Map<String, dynamic>.from(data['user']),
+        );
+      }
+
       return UserModel.fromJson(
-        Map<String, dynamic>.from(data['user'] as Map),
+        Map<String, dynamic>.from(data),
+      );
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data["message"] ??
+            "Profile update failed",
       );
     }
-
-    return UserModel.fromJson(
-      Map<String, dynamic>.from(data as Map),
-    );
   }
 
   // ==========================
   // Logout
   // ==========================
   Future<void> logout() async {
-    await _dio.post(ApiConstants.logout);
+    try {
+      await _dio.post(ApiConstants.logout);
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data["message"] ??
+            "Logout failed",
+      );
+    }
   }
-  // ==========================
-  // Verify OTP 
- // ==========================  
 
-  Future<Response<dynamic>> verifyOtp({
+  // ==========================
+  // Verify OTP
+  // ==========================
+  Future<void> verifyOtp({
     required String email,
     required String otp,
   }) async {
     try {
-      return await _dio.post(
+      final response = await _dio.post(
         ApiConstants.verifyEmail,
         data: {
           "email": email,
           "otp": otp,
         },
       );
-    } on DioException catch (e) {
-      final fallbackPath = ApiConstants.verifyEmail == "/auth/verify-email"
-          ? "/auth/verify-email-otp"
-          : "/auth/verify-email";
 
-      if (e.response?.statusCode == 404) {
-        debugPrint(
-          "[UserApiService.verifyOtp] ${ApiConstants.verifyEmail} not found. Retrying with $fallbackPath",
-        );
-        return await _dio.post(
-          fallbackPath,
-          data: {
-            "email": email,
-            "otp": otp,
-          },
-        );
+      if (response.statusCode != 200) {
+        throw Exception("OTP verification failed");
       }
-
-      rethrow;
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data["message"] ??
+            "OTP verification failed",
+      );
     }
   }
 
+  // ==========================
+  // Resend OTP
+  // ==========================
   Future<void> resendEmailOtp({
     required String email,
   }) async {
-    await _dio.post(
-      ApiConstants.resendEmailOtp,
-      data: {
-        "email": email,
-      },
-    );
+    try {
+      await _dio.post(
+        ApiConstants.resendEmailOtp,
+        data: {"email": email},
+      );
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data["message"] ??
+            "Failed to resend OTP",
+      );
+    }
   }
-
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/controller/appointment_controller.dart';
-import 'package:frontend/controller/job_controller.dart';
-import 'package:frontend/controller/notification_controller.dart';
-import 'package:frontend/controller/user_controller.dart';
+import 'package:frontend/data/controller/appointment_controller.dart';
+import 'package:frontend/data/controller/job_controller.dart';
+import 'package:frontend/data/controller/notification_controller.dart';
+import 'package:frontend/data/controller/user_controller.dart';
 import 'package:frontend/routes/app_routes.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_strings.dart';

@@ -10,35 +10,44 @@ class JobApiService {
   JobApiService(DioClient dioClient)
       : _dio = dioClient.dio;
 
-  // ==========================
+  // ==========================================================
   // Get All Jobs
-  // ==========================
+  // ==========================================================
   Future<List<JobModel>> getJobs() async {
-    final response = await _dio.get(
-      ApiConstants.jobs,
-    );
+    try {
+      final response = await _dio.get(ApiConstants.jobs);
 
-    final List data = response.data;
+      final List<dynamic> data =
+          response.data as List<dynamic>;
 
-    return data
-        .map((json) => JobModel.fromJson(json))
-        .toList();
+      return data
+          .map((json) =>
+              JobModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } on DioException catch (e) {
+      throw Exception("Failed to fetch jobs: ${e.message}");
+    }
   }
 
-  // ==========================
+  // ==========================================================
   // Get Job By ID
-  // ==========================
+  // ==========================================================
   Future<JobModel> getJobById(String jobId) async {
-    final response = await _dio.get(
-      "${ApiConstants.jobs}/$jobId",
-    );
+    try {
+      final response = await _dio.get(
+        "${ApiConstants.jobs}/$jobId",
+      );
 
-    return JobModel.fromJson(response.data);
+      return JobModel.fromJson(
+          response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw Exception("Failed to fetch job: ${e.message}");
+    }
   }
 
-  // ==========================
+  // ==========================================================
   // Create Job
-  // ==========================
+  // ==========================================================
   Future<JobModel> createJob({
     required String title,
     required String description,
@@ -46,23 +55,28 @@ class JobApiService {
     required String location,
     double? budget,
   }) async {
-    final response = await _dio.post(
-      ApiConstants.jobs,
-      data: {
-        "title": title,
-        "description": description,
-        "category": category,
-        "location": location,
-        "budget": budget,
-      },
-    );
+    try {
+      final response = await _dio.post(
+        ApiConstants.jobs,
+        data: {
+          "title": title,
+          "description": description,
+          "category": category,
+          "location": location,
+          if (budget != null) "budget": budget,
+        },
+      );
 
-    return JobModel.fromJson(response.data);
+      return JobModel.fromJson(
+          response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw Exception("Failed to create job: ${e.message}");
+    }
   }
 
-  // ==========================
+  // ==========================================================
   // Update Job
-  // ==========================
+  // ==========================================================
   Future<JobModel> updateJob({
     required String jobId,
     String? title,
@@ -71,43 +85,57 @@ class JobApiService {
     String? location,
     double? budget,
   }) async {
-    final response = await _dio.put(
-      "${ApiConstants.jobs}/$jobId",
-      data: {
-        "title": title,
-        "description": description,
-        "category": category,
-        "location": location,
-        "budget": budget,
-      },
-    );
+    try {
+      final Map<String, dynamic> updateData = {
+        if (title != null) "title": title,
+        if (description != null) "description": description,
+        if (category != null) "category": category,
+        if (location != null) "location": location,
+        if (budget != null) "budget": budget,
+      };
 
-    return JobModel.fromJson(response.data);
+      final response = await _dio.put(
+        "${ApiConstants.jobs}/$jobId",
+        data: updateData,
+      );
+
+      return JobModel.fromJson(
+          response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw Exception("Failed to update job: ${e.message}");
+    }
   }
 
-  // ==========================
+  // ==========================================================
   // Update Job Status
-  // ==========================
+  // ==========================================================
   Future<JobModel> updateJobStatus({
     required String jobId,
     required String status,
   }) async {
-    final response = await _dio.put(
-      "${ApiConstants.jobs}/$jobId/status",
-      data: {
-        "status": status,
-      },
-    );
+    try {
+      final response = await _dio.put(
+        "${ApiConstants.jobs}/$jobId/status",
+        data: {"status": status},
+      );
 
-    return JobModel.fromJson(response.data);
+      return JobModel.fromJson(
+          response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw Exception("Failed to update job status: ${e.message}");
+    }
   }
 
-  // ==========================
+  // ==========================================================
   // Delete Job
-  // ==========================
+  // ==========================================================
   Future<void> deleteJob(String jobId) async {
-    await _dio.delete(
-      "${ApiConstants.jobs}/$jobId",
-    );
+    try {
+      await _dio.delete(
+        "${ApiConstants.jobs}/$jobId",
+      );
+    } on DioException catch (e) {
+      throw Exception("Failed to delete job: ${e.message}");
+    }
   }
 }

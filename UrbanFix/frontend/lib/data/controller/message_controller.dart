@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../data/models/message_model.dart';
-import '../../data/repositories/message_repository.dart';
+import '../../../../data/models/message_model.dart';
+import '../../../../data/services/message_api_service.dart';
 
 class MessageController extends ChangeNotifier {
-  final MessageRepository _repository = MessageRepository();
+  final MessageApiService _apiService;
+
+  MessageController(this._apiService);
 
   List<MessageModel> _messages = [];
   bool _isLoading = false;
@@ -43,7 +45,8 @@ class MessageController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final data = await _repository.getMessages(chatId);
+      final data =
+          await _apiService.getMessages(chatId);
 
       // Sort messages by time (oldest first)
       data.sort((a, b) =>
@@ -68,7 +71,8 @@ class MessageController extends ChangeNotifier {
     String type = "text",
   }) async {
     try {
-      final newMessage = await _repository.sendMessage(
+      final newMessage =
+          await _apiService.sendMessage(
         chatId: chatId,
         receiverId: receiverId,
         message: message,
@@ -88,14 +92,16 @@ class MessageController extends ChangeNotifier {
   Future<void> markMessageAsSeen(
       String messageId) async {
     try {
-      await _repository.markMessageAsSeen(messageId);
+      await _apiService.markMessageAsSeen(
+          messageId);
 
       final index = _messages.indexWhere(
           (message) => message.id == messageId);
 
       if (index != -1) {
         _messages[index] =
-            _messages[index].copyWith(isSeen: true);
+            _messages[index]
+                .copyWith(isSeen: true);
         notifyListeners();
       }
     } catch (e) {
@@ -109,7 +115,8 @@ class MessageController extends ChangeNotifier {
   Future<void> deleteMessage(
       String messageId) async {
     try {
-      await _repository.deleteMessage(messageId);
+      await _apiService.deleteMessage(
+          messageId);
 
       _messages.removeWhere(
           (message) => message.id == messageId);
@@ -121,7 +128,7 @@ class MessageController extends ChangeNotifier {
   }
 
   // ==========================
-  // Clear Messages (Optional)
+  // Clear Messages
   // ==========================
   void clearMessages() {
     _messages = [];

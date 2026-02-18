@@ -37,7 +37,7 @@ class RegisterBody extends StatelessWidget {
                     top: Radius.circular(30),
                   ),
                 ),
-                child: const RegisterForm(),
+                child: RegisterForm(),
               ),
             ),
           ],

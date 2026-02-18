@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/controller/appointment_controller.dart';
-import 'package:frontend/controller/chat_controller.dart';
-import 'package:frontend/controller/job_controller.dart';
-import 'package:frontend/controller/message_controller.dart';
-import 'package:frontend/controller/notification_controller.dart';
-import 'package:frontend/controller/report_controller.dart';
-import 'package:frontend/controller/theme_controller.dart';
-import 'package:frontend/controller/user_controller.dart';
+import 'package:frontend/data/controller/appointment_controller.dart';
+import 'package:frontend/data/controller/chat_controller.dart';
+import 'package:frontend/data/controller/job_controller.dart';
+import 'package:frontend/data/controller/message_controller.dart';
+import 'package:frontend/data/controller/notification_controller.dart';
+import 'package:frontend/data/controller/report_controller.dart';
+import 'package:frontend/data/controller/theme_controller.dart';
+import 'package:frontend/data/controller/user_controller.dart';
+import 'package:frontend/data/services/appointment_api_service.dart';
+import 'package:frontend/data/services/chat_api_service.dart';
+import 'package:frontend/data/services/job_api_service.dart';
+import 'package:frontend/data/services/message_api_service.dart';
+import 'package:frontend/data/services/notification_api_service.dart';
+import 'package:frontend/data/services/report_api_service.dart';
+import 'package:frontend/data/services/user_api_service.dart';
 import 'package:provider/provider.dart';
 import 'routes/app_routes.dart';
 
@@ -26,25 +33,25 @@ class MyApp extends StatelessWidget {
           create: (_) => ThemeController(),
         ),
         ChangeNotifierProvider(
-          create: (_) => UserController(),
+          create: (_) => UserController(context.read<UserApiService>()),
         ),
         ChangeNotifierProvider(
-          create: (_) => AppointmentController(),
+          create: (_) => AppointmentController(context.read<AppointmentApiService>()),
         ),
         ChangeNotifierProvider(
-          create: (_) => JobController(),
+          create: (_) => JobController(context.read<JobApiService>()),
         ),
         ChangeNotifierProvider(
-          create: (_) => ChatController(),
+          create: (_) => ChatController(context.read<ChatApiService>()),
         ),
         ChangeNotifierProvider(
-          create: (_) => MessageController(),
+          create: (_) => MessageController(context.read<MessageApiService>()),
         ),
         ChangeNotifierProvider(
-          create: (_) => NotificationController(),
+          create: (_) => NotificationController(context.read<NotificationApiService>()),
         ),
         ChangeNotifierProvider(
-          create: (_) => ReportController(),
+          create: (_) => ReportController(context.read<ReportApiService>()),
         ),
       ],
       child: Consumer<ThemeController>(

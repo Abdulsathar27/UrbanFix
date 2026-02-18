@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
-import '../../data/models/report_model.dart';
-import '../../data/repositories/report_repository.dart';
+import '../../../../data/models/report_model.dart';
+import '../../../../data/services/report_api_service.dart';
 
 class ReportController extends ChangeNotifier {
-  final ReportRepository _repository = ReportRepository();
+  final ReportApiService _reportApiService;
 
+  ReportController(this._reportApiService);
+
+  // ==========================
+  // State
+  // ==========================
   List<ReportModel> _reports = [];
+  ReportModel? _selectedReport;
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -14,6 +21,7 @@ class ReportController extends ChangeNotifier {
   // Getters
   // ==========================
   List<ReportModel> get reports => _reports;
+  ReportModel? get selectedReport => _selectedReport;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
@@ -30,29 +38,53 @@ class ReportController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void clearError() {
-    _errorMessage = null;
-    notifyListeners();
+  String _extractErrorMessage(Object error) {
+    if (error is DioException) {
+      final responseData = error.response?.data;
+      if (responseData is Map && responseData['message'] != null) {
+        return responseData['message'].toString();
+      }
+      return error.message ?? "Request failed";
+    }
+
+    final text = error.toString();
+    if (text.startsWith("Exception: ")) {
+      return text.substring("Exception: ".length);
+    }
+    return text;
   }
 
   // ==========================
-  // Fetch Reports
+  // Fetch All Reports
   // ==========================
   Future<void> fetchReports() async {
     try {
       _setLoading(true);
       _setError(null);
 
-      final data = await _repository.getReports();
-
-      // Sort newest first
-      data.sort((a, b) =>
-          (b.createdAt ?? DateTime.now())
-              .compareTo(a.createdAt ?? DateTime.now()));
-
+      final data = await _reportApiService.getReports();
       _reports = data;
     } catch (e) {
-      _setError(e.toString());
+      _setError(_extractErrorMessage(e));
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // ==========================
+  // Fetch Report By ID
+  // ==========================
+  Future<void> fetchReportById(String reportId) async {
+    try {
+      _setLoading(true);
+      _setError(null);
+
+      final report =
+          await _reportApiService.getReportById(reportId);
+
+      _selectedReport = report;
+    } catch (e) {
+      _setError(_extractErrorMessage(e));
     } finally {
       _setLoading(false);
     }
@@ -61,7 +93,7 @@ class ReportController extends ChangeNotifier {
   // ==========================
   // Create Report
   // ==========================
-  Future<void> createReport({
+  Future<bool> createReport({
     required String reason,
     String? description,
     String? reportedUserId,
@@ -73,7 +105,7 @@ class ReportController extends ChangeNotifier {
       _setError(null);
 
       final newReport =
-          await _repository.createReport(
+          await _reportApiService.createReport(
         reason: reason,
         description: description,
         reportedUserId: reportedUserId,
@@ -82,8 +114,10 @@ class ReportController extends ChangeNotifier {
       );
 
       _reports.insert(0, newReport);
+      return true;
     } catch (e) {
-      _setError(e.toString());
+      _setError(_extractErrorMessage(e));
+      return false;
     } finally {
       _setLoading(false);
     }
@@ -92,7 +126,7 @@ class ReportController extends ChangeNotifier {
   // ==========================
   // Update Report Status
   // ==========================
-  Future<void> updateReportStatus({
+  Future<bool> updateReportStatus({
     required String reportId,
     required String status,
   }) async {
@@ -101,19 +135,23 @@ class ReportController extends ChangeNotifier {
       _setError(null);
 
       final updatedReport =
-          await _repository.updateReportStatus(
+          await _reportApiService.updateReportStatus(
         reportId: reportId,
         status: status,
       );
 
-      final index =
-          _reports.indexWhere((r) => r.id == reportId);
+      final index = _reports.indexWhere(
+        (r) => r.id == reportId,
+      );
 
       if (index != -1) {
         _reports[index] = updatedReport;
       }
+
+      return true;
     } catch (e) {
-      _setError(e.toString());
+      _setError(_extractErrorMessage(e));
+      return false;
     } finally {
       _setLoading(false);
     }
@@ -122,27 +160,29 @@ class ReportController extends ChangeNotifier {
   // ==========================
   // Delete Report
   // ==========================
-  Future<void> deleteReport(String reportId) async {
+  Future<bool> deleteReport(String reportId) async {
     try {
       _setLoading(true);
       _setError(null);
 
-      await _repository.deleteReport(reportId);
+      await _reportApiService.deleteReport(reportId);
 
-      _reports.removeWhere(
-          (r) => r.id == reportId);
+      _reports.removeWhere((r) => r.id == reportId);
+
+      return true;
     } catch (e) {
-      _setError(e.toString());
+      _setError(_extractErrorMessage(e));
+      return false;
     } finally {
       _setLoading(false);
     }
   }
 
   // ==========================
-  // Clear Reports (Optional)
+  // Clear Error
   // ==========================
-  void clearReports() {
-    _reports = [];
+  void clearError() {
+    _errorMessage = null;
     notifyListeners();
   }
 }

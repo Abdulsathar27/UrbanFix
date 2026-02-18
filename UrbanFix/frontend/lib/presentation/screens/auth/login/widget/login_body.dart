@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:frontend/controller/user_controller.dart';
+import 'package:frontend/data/controller/user_controller.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_constants.dart';
 import 'login_header.dart';

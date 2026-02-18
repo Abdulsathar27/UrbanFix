@@ -10,36 +10,44 @@ class AppointmentApiService {
   AppointmentApiService(DioClient dioClient)
       : _dio = dioClient.dio;
 
-  // ==========================
+  // ==========================================================
   // Get All Appointments
-  // ==========================
+  // ==========================================================
   Future<List<AppointmentModel>> getAppointments() async {
-    final response = await _dio.get(
-      ApiConstants.appointments,
-    );
+    try {
+      final response = await _dio.get(ApiConstants.appointments);
 
-    final List data = response.data;
+      final List<dynamic> data = response.data as List<dynamic>;
 
-    return data
-        .map((json) => AppointmentModel.fromJson(json))
-        .toList();
+      return data
+          .map((json) =>
+              AppointmentModel.fromJson(json as Map<String, dynamic>))
+          .toList();
+    } on DioException catch (e) {
+      throw Exception("Failed to fetch appointments: ${e.message}");
+    }
   }
 
-  // ==========================
+  // ==========================================================
   // Get Single Appointment
-  // ==========================
+  // ==========================================================
   Future<AppointmentModel> getAppointmentById(
       String appointmentId) async {
-    final response = await _dio.get(
-      "${ApiConstants.appointments}/$appointmentId",
-    );
+    try {
+      final response = await _dio.get(
+        "${ApiConstants.appointments}/$appointmentId",
+      );
 
-    return AppointmentModel.fromJson(response.data);
+      return AppointmentModel.fromJson(
+          response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw Exception("Failed to fetch appointment: ${e.message}");
+    }
   }
 
-  // ==========================
+  // ==========================================================
   // Create Appointment
-  // ==========================
+  // ==========================================================
   Future<AppointmentModel> createAppointment({
     required String jobId,
     required String serviceProviderId,
@@ -47,45 +55,57 @@ class AppointmentApiService {
     required String timeSlot,
     String? notes,
   }) async {
-    final response = await _dio.post(
-      ApiConstants.createAppointment,
-      data: {
-        "jobId": jobId,
-        "serviceProviderId": serviceProviderId,
-        "appointmentDate":
-            appointmentDate.toIso8601String(),
-        "timeSlot": timeSlot,
-        "notes": notes,
-      },
-    );
+    try {
+      final response = await _dio.post(
+        ApiConstants.createAppointment,
+        data: {
+          "jobId": jobId,
+          "serviceProviderId": serviceProviderId,
+          "appointmentDate":
+              appointmentDate.toIso8601String(),
+          "timeSlot": timeSlot,
+          if (notes != null) "notes": notes,
+        },
+      );
 
-    return AppointmentModel.fromJson(response.data);
+      return AppointmentModel.fromJson(
+          response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw Exception("Failed to create appointment: ${e.message}");
+    }
   }
 
-  // ==========================
+  // ==========================================================
   // Update Appointment Status
-  // ==========================
+  // ==========================================================
   Future<AppointmentModel> updateStatus({
     required String appointmentId,
     required String status,
   }) async {
-    final response = await _dio.put(
-      "${ApiConstants.appointments}/$appointmentId",
-      data: {
-        "status": status,
-      },
-    );
+    try {
+      final response = await _dio.put(
+        "${ApiConstants.appointments}/$appointmentId",
+        data: {"status": status},
+      );
 
-    return AppointmentModel.fromJson(response.data);
+      return AppointmentModel.fromJson(
+          response.data as Map<String, dynamic>);
+    } on DioException catch (e) {
+      throw Exception("Failed to update status: ${e.message}");
+    }
   }
 
-  // ==========================
+  // ==========================================================
   // Delete Appointment
-  // ==========================
+  // ==========================================================
   Future<void> deleteAppointment(
       String appointmentId) async {
-    await _dio.delete(
-      "${ApiConstants.appointments}/$appointmentId",
-    );
+    try {
+      await _dio.delete(
+        "${ApiConstants.appointments}/$appointmentId",
+      );
+    } on DioException catch (e) {
+      throw Exception("Failed to delete appointment: ${e.message}");
+    }
   }
 }

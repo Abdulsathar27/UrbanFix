@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/controller/appointment_controller.dart';
+import 'package:frontend/data/controller/appointment_controller.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/utils/helpers.dart';

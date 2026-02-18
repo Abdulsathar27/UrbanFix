@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../data/models/job_model.dart';
-import '../../data/repositories/job_repository.dart';
+import '../../../../data/models/job_model.dart';
+import '../../../../data/services/job_api_service.dart';
 
 class JobController extends ChangeNotifier {
-  final JobRepository _repository = JobRepository();
+  final JobApiService _apiService;
+
+  JobController(this._apiService);
 
   List<JobModel> _jobs = [];
   JobModel? _selectedJob;
@@ -45,8 +47,7 @@ class JobController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final data = await _repository.getJobs();
-      _jobs = data;
+      _jobs = await _apiService.getJobs();
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -62,8 +63,8 @@ class JobController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final job = await _repository.getJobById(jobId);
-      _selectedJob = job;
+      _selectedJob =
+          await _apiService.getJobById(jobId);
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -85,7 +86,7 @@ class JobController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final newJob = await _repository.createJob(
+      final newJob = await _apiService.createJob(
         title: title,
         description: description,
         category: category,
@@ -116,7 +117,7 @@ class JobController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final updatedJob = await _repository.updateJob(
+      final updatedJob = await _apiService.updateJob(
         jobId: jobId,
         title: title,
         description: description,
@@ -154,7 +155,7 @@ class JobController extends ChangeNotifier {
       _setError(null);
 
       final updatedJob =
-          await _repository.updateJobStatus(
+          await _apiService.updateJobStatus(
         jobId: jobId,
         status: status,
       );
@@ -184,7 +185,7 @@ class JobController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      await _repository.deleteJob(jobId);
+      await _apiService.deleteJob(jobId);
 
       _jobs.removeWhere((job) => job.id == jobId);
 

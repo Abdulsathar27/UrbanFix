@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/controller/chat_controller.dart';
-import 'package:frontend/controller/message_controller.dart';
+import 'package:frontend/data/controller/chat_controller.dart';
+import 'package:frontend/data/controller/message_controller.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_constants.dart';
 

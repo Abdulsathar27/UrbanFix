@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/controller/user_controller.dart';
+import 'package:frontend/data/controller/user_controller.dart';
 import 'package:frontend/routes/app_routes.dart';
 import 'package:provider/provider.dart';
 

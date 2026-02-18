@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../data/models/appointment_model.dart';
-import '../../data/repositories/appointment_repository.dart';
+import '../../../../data/models/appointment_model.dart';
+import '../../../../data/services/appointment_api_service.dart';
 
 class AppointmentController extends ChangeNotifier {
-  final AppointmentRepository _repository =
-      AppointmentRepository();
+  final AppointmentApiService _apiService;
+
+  AppointmentController(this._apiService);
 
   List<AppointmentModel> _appointments = [];
   bool _isLoading = false;
@@ -14,8 +15,7 @@ class AppointmentController extends ChangeNotifier {
   // ==========================
   // Getters
   // ==========================
-  List<AppointmentModel> get appointments =>
-      _appointments;
+  List<AppointmentModel> get appointments => _appointments;
 
   bool get isLoading => _isLoading;
 
@@ -47,8 +47,7 @@ class AppointmentController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final data = await _repository.getAppointments();
-      _appointments = data;
+      _appointments = await _apiService.getAppointments();
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -71,7 +70,7 @@ class AppointmentController extends ChangeNotifier {
       _setError(null);
 
       final newAppointment =
-          await _repository.createAppointment(
+          await _apiService.createAppointment(
         jobId: jobId,
         serviceProviderId: serviceProviderId,
         appointmentDate: appointmentDate,
@@ -99,13 +98,13 @@ class AppointmentController extends ChangeNotifier {
       _setError(null);
 
       final updatedAppointment =
-          await _repository.updateStatus(
+          await _apiService.updateStatus(
         appointmentId: appointmentId,
         status: status,
       );
 
-      final index = _appointments.indexWhere(
-          (a) => a.id == appointmentId);
+      final index = _appointments
+          .indexWhere((a) => a.id == appointmentId);
 
       if (index != -1) {
         _appointments[index] = updatedAppointment;
@@ -126,11 +125,11 @@ class AppointmentController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      await _repository.deleteAppointment(
+      await _apiService.deleteAppointment(
           appointmentId);
 
-      _appointments.removeWhere(
-          (a) => a.id == appointmentId);
+      _appointments
+          .removeWhere((a) => a.id == appointmentId);
     } catch (e) {
       _setError(e.toString());
     } finally {

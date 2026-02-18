@@ -1,44 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:frontend/controller/user_controller.dart';
-import 'package:frontend/core/utils/helpers.dart';
 import 'package:frontend/presentation/screens/auth/register/widget/register_confirm_password_field.dart';
 import 'package:frontend/presentation/screens/auth/register/widget/register_email_field.dart';
 import 'package:frontend/presentation/screens/auth/register/widget/register_name_field.dart';
 import 'package:frontend/presentation/screens/auth/register/widget/register_password_field.dart';
 import 'package:frontend/presentation/screens/auth/register/widget/register_phone_field.dart';
 import 'package:frontend/presentation/screens/auth/register/widget/register_terms_checkbox.dart';
+import 'package:provider/provider.dart';
+import 'package:frontend/data/controller/user_controller.dart';
+import 'package:frontend/core/utils/helpers.dart';
 import 'package:frontend/routes/app_routes.dart';
 import 'register_button.dart';
 import 'register_redirect_text.dart';
 
-class RegisterForm extends StatefulWidget {
-  const RegisterForm({super.key});
+class RegisterForm extends StatelessWidget {
+  RegisterForm({super.key});
 
-  @override
-  State<RegisterForm> createState() => _RegisterFormState();
-}
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-class _RegisterFormState extends State<RegisterForm> {
-  final _formKey = GlobalKey<FormState>();
-
-  final _nameController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _phoneController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _submit() async {
+  Future<void> _submit(BuildContext context) async {
     final controller = context.read<UserController>();
 
     if (!_formKey.currentState!.validate()) return;
@@ -48,106 +27,104 @@ class _RegisterFormState extends State<RegisterForm> {
       return;
     }
 
-    if (_passwordController.text != _confirmPasswordController.text) {
+    if (controller.passwordController.text !=
+        controller.confirmPasswordController.text) {
       Helpers.showError(context, "Passwords do not match");
       return;
     }
 
-    await controller.register(
-      name: _nameController.text.trim(),
-      email: _emailController.text.trim(),
-      phone: _phoneController.text.trim(),
-      password: _passwordController.text.trim(),
+    final success = await controller.register(
+      name: controller.nameController.text.trim(),
+      email: controller.emailController.text.trim(),
+      phone: controller.phoneController.text.trim(),
+      password: controller.passwordController.text.trim(),
     );
 
-    if (controller.errorMessage != null && mounted) {
-      Helpers.showError(context, controller.errorMessage!);
+    if (!success) {
+      Helpers.showError(
+        context,
+        controller.errorMessage ?? "Registration failed",
+      );
       return;
     }
 
-    if (!mounted) return;
     Navigator.pushReplacementNamed(
       context,
-      AppRoutes.otp,
-      arguments: _emailController.text.trim(),
+      AppRoutes.login,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Form(
-        key: _formKey,
-        child: Column(
-          children: [
+    return Consumer<UserController>(
+      builder: (context, controller, _) {
+        return SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
 
-            /// Static Fields (No Consumer Needed)
-            RegisterNameField(controller: _nameController),
+                /// Name
+                RegisterNameField(
+                  controller: controller.nameController,
+                ),
 
-            const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-            RegisterEmailField(controller: _emailController),
+                /// Email
+                RegisterEmailField(
+                  controller: controller.emailController,
+                ),
 
-            const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-            RegisterPhoneField(controller: _phoneController),
+                /// Phone
+                RegisterPhoneField(
+                  controller: controller.phoneController,
+                ),
 
-            const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-            /// Password Field (Reactive)
-            Consumer<UserController>(
-              builder: (context, controller, _) {
-                return RegisterPasswordField(
-                  controller: _passwordController,
+                /// Password
+                RegisterPasswordField(
+                  controller: controller.passwordController,
                   isVisible: controller.isRegisterPasswordVisible,
                   onToggle: controller.toggleRegisterPassword,
-                );
-              },
-            ),
+                ),
 
-            const SizedBox(height: 16),
+                const SizedBox(height: 16),
 
-            /// Confirm Password Field (Reactive)
-            Consumer<UserController>(
-              builder: (context, controller, _) {
-                return RegisterConfirmPasswordField(
-                  controller: _confirmPasswordController,
+                /// Confirm Password
+                RegisterConfirmPasswordField(
+                  controller: controller.confirmPasswordController,
                   isVisible: controller.isConfirmPasswordVisible,
                   onToggle: controller.toggleConfirmPassword,
-                );
-              },
-            ),
+                ),
 
-            const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-            /// Terms Checkbox (Reactive)
-            Consumer<UserController>(
-              builder: (context, controller, _) {
-                return RegisterTermsCheckbox(
+                /// Terms Checkbox
+                RegisterTermsCheckbox(
                   value: controller.agreeTerms,
                   onChanged: controller.toggleAgreeTerms,
-                );
-              },
-            ),
+                ),
 
-            const SizedBox(height: 20),
+                const SizedBox(height: 20),
 
-            /// Register Button (Reactive)
-            Consumer<UserController>(
-              builder: (context, controller, _) {
-                return RegisterButton(
+                /// Register Button
+                RegisterButton(
                   isLoading: controller.isLoading,
-                  onPressed: _submit,
-                );
-              },
+                  onPressed: () => _submit(context),
+                ),
+
+                const SizedBox(height: 20),
+
+                const RegisterRedirectText(),
+              ],
             ),
-
-            const SizedBox(height: 20),
-
-            const RegisterRedirectText(),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../../data/models/chat_model.dart';
-import '../../data/repositories/chat_repository.dart';
+import '../../../../data/models/chat_model.dart';
+import '../../../../data/services/chat_api_service.dart';
 
 class ChatController extends ChangeNotifier {
-  final ChatRepository _repository = ChatRepository();
+  final ChatApiService _apiService;
+
+  ChatController(this._apiService);
 
   List<ChatModel> _chats = [];
   ChatModel? _selectedChat;
@@ -45,8 +47,7 @@ class ChatController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final data = await _repository.getChats();
-      _chats = data;
+      _chats = await _apiService.getChats();
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -62,8 +63,8 @@ class ChatController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final chat = await _repository.getChatById(chatId);
-      _selectedChat = chat;
+      _selectedChat =
+          await _apiService.getChatById(chatId);
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -82,7 +83,8 @@ class ChatController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final newChat = await _repository.createChat(
+      final newChat =
+          await _apiService.createChat(
         jobId: jobId,
         participantIds: participantIds,
       );
@@ -100,15 +102,14 @@ class ChatController extends ChangeNotifier {
   // ==========================
   Future<void> markChatAsRead(String chatId) async {
     try {
-      await _repository.markChatAsRead(chatId);
+      await _apiService.markChatAsRead(chatId);
 
       final index =
           _chats.indexWhere((chat) => chat.id == chatId);
 
       if (index != -1) {
-        final updatedChat =
+        _chats[index] =
             _chats[index].copyWith(unreadCount: 0);
-        _chats[index] = updatedChat;
         notifyListeners();
       }
     } catch (e) {
@@ -124,9 +125,10 @@ class ChatController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      await _repository.deleteChat(chatId);
+      await _apiService.deleteChat(chatId);
 
-      _chats.removeWhere((chat) => chat.id == chatId);
+      _chats.removeWhere(
+          (chat) => chat.id == chatId);
 
       if (_selectedChat?.id == chatId) {
         _selectedChat = null;
