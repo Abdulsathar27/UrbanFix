@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/data/controller/appointment_controller.dart';
-import 'package:frontend/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/app_strings.dart';
@@ -72,12 +72,11 @@ class _AppointmentListScreenState
                     trailing: const Icon(
                         Icons.arrow_forward_ios),
                     onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes
-                            .appointmentDetails,
-                        arguments:
-                            appointment.id,
+                      context.pushNamed(
+                        'appointment_detail',
+                        pathParameters: {
+                          'id': appointment.id.toString(),
+                        },
                       );
                     },
                   ),

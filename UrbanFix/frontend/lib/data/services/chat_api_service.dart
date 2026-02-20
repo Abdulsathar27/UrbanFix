@@ -5,10 +5,9 @@ import '../models/chat_model.dart';
 import 'dio_client.dart';
 
 class ChatApiService {
-  final Dio _dio;
+  final Dio _dio = DioClient().dio;
 
-  ChatApiService(DioClient dioClient)
-      : _dio = dioClient.dio;
+  
 
   // ==========================================================
   // Get All Chats

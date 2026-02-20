@@ -5,9 +5,7 @@ import '../../../../data/models/report_model.dart';
 import '../../../../data/services/report_api_service.dart';
 
 class ReportController extends ChangeNotifier {
-  final ReportApiService _reportApiService;
-
-  ReportController(this._reportApiService);
+  ReportApiService reportApiService = ReportApiService();
 
   // ==========================
   // State
@@ -62,7 +60,7 @@ class ReportController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final data = await _reportApiService.getReports();
+      final data = await reportApiService.getReports();
       _reports = data;
     } catch (e) {
       _setError(_extractErrorMessage(e));
@@ -80,7 +78,7 @@ class ReportController extends ChangeNotifier {
       _setError(null);
 
       final report =
-          await _reportApiService.getReportById(reportId);
+          await reportApiService.getReportById(reportId);
 
       _selectedReport = report;
     } catch (e) {
@@ -105,7 +103,7 @@ class ReportController extends ChangeNotifier {
       _setError(null);
 
       final newReport =
-          await _reportApiService.createReport(
+          await reportApiService.createReport(
         reason: reason,
         description: description,
         reportedUserId: reportedUserId,
@@ -135,7 +133,7 @@ class ReportController extends ChangeNotifier {
       _setError(null);
 
       final updatedReport =
-          await _reportApiService.updateReportStatus(
+          await reportApiService.updateReportStatus(
         reportId: reportId,
         status: status,
       );
@@ -165,7 +163,7 @@ class ReportController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      await _reportApiService.deleteReport(reportId);
+      await reportApiService.deleteReport(reportId);
 
       _reports.removeWhere((r) => r.id == reportId);
 

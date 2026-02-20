@@ -5,10 +5,9 @@ import '../models/notification_model.dart';
 import 'dio_client.dart';
 
 class NotificationApiService {
-  final Dio _dio;
+  final Dio _dio = DioClient().dio;
 
-  NotificationApiService(DioClient dioClient)
-      : _dio = dioClient.dio;
+  
 
   // ==========================================================
   // Get All Notifications

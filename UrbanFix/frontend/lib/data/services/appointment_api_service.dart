@@ -5,10 +5,7 @@ import '../models/appointment_model.dart';
 import 'dio_client.dart';
 
 class AppointmentApiService {
-  final Dio _dio;
-
-  AppointmentApiService(DioClient dioClient)
-      : _dio = dioClient.dio;
+  final Dio _dio = DioClient().dio;
 
   // ==========================================================
   // Get All Appointments

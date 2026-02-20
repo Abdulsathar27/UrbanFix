@@ -1,220 +1,158 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/data/controller/appointment_controller.dart';
-import 'package:frontend/data/controller/job_controller.dart';
-import 'package:frontend/data/controller/notification_controller.dart';
-import 'package:frontend/data/controller/user_controller.dart';
-import 'package:frontend/routes/app_routes.dart';
+import 'package:frontend/presentation/screens/home/widget/bottom_nav_bar.dart';
+import 'package:frontend/presentation/screens/home/widget/home_header.dart';
+import 'package:frontend/presentation/screens/home/widget/promo_banner.dart';
+import 'package:frontend/presentation/screens/home/widget/recent_booking_card.dart';
+import 'package:frontend/presentation/screens/home/widget/search_bar_widget.dart';
+import 'package:frontend/presentation/screens/home/widget/service_card.dart';
 import 'package:provider/provider.dart';
-import '../../../core/constants/app_strings.dart';
-import '../../../core/constants/app_constants.dart';
-import '../../../core/utils/helpers.dart';
+import '../../../data/controller/appointment_controller.dart';
+import '../../../data/controller/user_controller.dart';
 
-
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-
-  @override
-  void initState() {
-    super.initState();
-
-    Future.microtask(() {
-      context.read<JobController>().fetchJobs();
-      context.read<AppointmentController>().fetchAppointments();
-      context.read<NotificationController>().fetchNotifications();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    // 👇 Call API after first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final controller =
+          context.read<AppointmentController>();
+
+      if (controller.appointments.isEmpty) {
+        controller.fetchAppointments();
+      }
+    });
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.appName),
-        actions: [
-          Consumer<NotificationController>(
-            builder: (context, controller, _) {
-              return Stack(
+      bottomNavigationBar:
+          const BottomNavBar(currentIndex: 0),
+      body: SafeArea(
+        child: Consumer2<UserController,
+            AppointmentController>(
+          builder: (context, userController,
+              appointmentController, _) {
+
+            final user =
+                userController.currentUser;
+
+            return SingleChildScrollView(
+              padding:
+                  const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.notifications),
-                    onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.notifications,
-                      );
-                    },
+
+                  // ================= Header
+                  HomeHeader(
+                      key: ValueKey(
+                        user?.id ?? "header"),
                   ),
-                  if (controller.unreadCount > 0)
-                    Positioned(
-                      right: 8,
-                      top: 8,
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
-                        decoration: const BoxDecoration(
-                          color: Colors.red,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Text(
-                          controller.unreadCount.toString(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 10,
-                          ),
+
+                  const SizedBox(height: 20),
+
+                  // ================= Search
+                  const SearchBarWidget(),
+
+                  const SizedBox(height: 24),
+
+                  // ================= Promo
+                  const PromoBanner(),
+
+                  const SizedBox(height: 30),
+
+                  // ================= Services
+                  Row(
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text(
+                        "Our Services",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight:
+                              FontWeight.bold,
                         ),
                       ),
-                    ),
-                ],
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              final confirmed =
-                  await Helpers.showConfirmationDialog(
-                context,
-                title: "Logout",
-                message:
-                    "Are you sure you want to logout?",
-              );
-
-              if (confirmed == true) {
-                await context
-                    .read<UserController>()
-                    .logout();
-
-                if (context.mounted) {
-                  Navigator.pushReplacementNamed(
-                    context,
-                    AppRoutes.login,
-                  );
-                }
-              }
-            },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(
-            AppConstants.defaultPadding),
-        child: Consumer3<JobController,
-            AppointmentController, UserController>(
-          builder: (context, jobController,
-              appointmentController, userController, _) {
-
-            if (jobController.isLoading ||
-                appointmentController.isLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-
-            return Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Welcome, ${userController.currentUser?.name ?? ""}",
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineLarge,
-                ),
-
-                const SizedBox(height: 24),
-
-                _buildStatCard(
-                  title: AppStrings.jobs,
-                  value: jobController.jobs.length
-                      .toString(),
-                  icon: Icons.work,
-                ),
-
-                const SizedBox(height: 16),
-
-                _buildStatCard(
-                  title: AppStrings.appointments,
-                  value: appointmentController
-                      .appointments.length
-                      .toString(),
-                  icon: Icons.calendar_today,
-                ),
-
-                const SizedBox(height: 32),
-
-                Expanded(
-                  child: ListView.builder(
-                    itemCount:
-                        jobController.jobs.length,
-                    itemBuilder: (context, index) {
-                      final job =
-                          jobController.jobs[index];
-
-                      return Card(
-                        child: ListTile(
-                          title: Text(job.title),
-                          subtitle:
-                              Text(job.status),
-                          trailing: const Icon(
-                              Icons.arrow_forward_ios),
-                          onTap: () {
-                            Navigator.pushNamed(
-                              context,
-                              AppRoutes.jobDetails,
-                              arguments: job.id,
-                            );
-                          },
+                      Text(
+                        "See All",
+                        style: TextStyle(
+                          color: Colors.blue,
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   ),
-                ),
-              ],
+
+                  const SizedBox(height: 20),
+
+                  GridView.count(
+                    crossAxisCount: 3,
+                    shrinkWrap: true,
+                    physics:
+                        const NeverScrollableScrollPhysics(),
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    children: const [
+                      ServiceCard(
+                          icon: Icons.plumbing,
+                          label: "Plumbing"),
+                      ServiceCard(
+                          icon: Icons.electric_bolt,
+                          label: "Electrical"),
+                      ServiceCard(
+                          icon: Icons.cleaning_services,
+                          label: "Cleaning"),
+                      ServiceCard(
+                          icon: Icons.format_paint,
+                          label: "Painting"),
+                      ServiceCard(
+                          icon: Icons.handyman,
+                          label: "Carpentry"),
+                      ServiceCard(
+                          icon: Icons.local_shipping,
+                          label: "Moving"),
+                    ],
+                  ),
+
+                  const SizedBox(height: 30),
+
+                  // ================= Recent Bookings
+                  Row(
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                    children: const [
+                      Text(
+                        "Recent Bookings",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight:
+                              FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "History",
+                        style: TextStyle(
+                          color: Colors.blue,
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  ...appointmentController
+                      .appointments
+                      .take(2)
+                      .map((appointment) =>
+                          RecentBookingCard(
+                            appointment:
+                                appointment,
+                          )),
+                ],
+              ),
             );
           },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatCard({
-    required String title,
-    required String value,
-    required IconData icon,
-  }) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(
-            AppConstants.defaultPadding),
-        child: Row(
-          children: [
-            Icon(icon, size: 32),
-            const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                  ),
-                ),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight:
-                        FontWeight.bold,
-                  ),
-                ),
-              ],
-            ),
-          ],
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/data/controller/job_controller.dart';
 import 'package:frontend/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/app_strings.dart';
@@ -32,10 +33,7 @@ class _JobListScreenState extends State<JobListScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(
-            context,
-            AppRoutes.createJob,
-          );
+          context.pushNamed('create_job');
         },
         child: const Icon(Icons.add),
       ),
@@ -75,11 +73,9 @@ class _JobListScreenState extends State<JobListScreen> {
                     trailing: const Icon(
                         Icons.arrow_forward_ios),
                     onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.jobDetails,
-                        arguments: job.id,
-                      );
+                      context.pushNamed('job_details', pathParameters: {
+                        'id': job.id.toString(),
+                      });
                     },
                   ),
                 );

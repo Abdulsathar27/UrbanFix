@@ -4,9 +4,7 @@ import '../../../../data/models/notification_model.dart';
 import '../../../../data/services/notification_api_service.dart';
 
 class NotificationController extends ChangeNotifier {
-  final NotificationApiService _apiService;
-
-  NotificationController(this._apiService);
+ NotificationApiService notificationApiService = NotificationApiService();
 
   List<NotificationModel> _notifications = [];
   bool _isLoading = false;
@@ -52,7 +50,7 @@ class NotificationController extends ChangeNotifier {
       _setError(null);
 
       final data =
-          await _apiService.getNotifications();
+          await notificationApiService.getNotifications();
 
       // Sort newest first
       data.sort((a, b) =>
@@ -73,7 +71,7 @@ class NotificationController extends ChangeNotifier {
   Future<void> markAsRead(
       String notificationId) async {
     try {
-      await _apiService.markAsRead(notificationId);
+      await notificationApiService.markAsRead(notificationId);
 
       final index = _notifications.indexWhere(
           (n) => n.id == notificationId);
@@ -95,7 +93,7 @@ class NotificationController extends ChangeNotifier {
   // ==========================
   Future<void> markAllAsRead() async {
     try {
-      await _apiService.markAllAsRead();
+      await notificationApiService.markAllAsRead();
 
       _notifications = _notifications
           .map((n) => n.copyWith(isRead: true))
@@ -113,7 +111,7 @@ class NotificationController extends ChangeNotifier {
   Future<void> deleteNotification(
       String notificationId) async {
     try {
-      await _apiService.deleteNotification(
+      await notificationApiService.deleteNotification(
           notificationId);
 
       _notifications.removeWhere(

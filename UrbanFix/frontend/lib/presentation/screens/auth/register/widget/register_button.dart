@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
-import 'package:frontend/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class RegisterButton extends StatelessWidget {
@@ -24,7 +24,7 @@ class RegisterButton extends StatelessWidget {
             ? null
             : () {
                 onPressed();
-                Navigator.pushNamed(context, AppRoutes.login);
+                context.goNamed('login');
               },
         child: isLoading
             ? SizedBox(

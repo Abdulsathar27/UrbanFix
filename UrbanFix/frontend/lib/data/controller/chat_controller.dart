@@ -4,9 +4,7 @@ import '../../../../data/models/chat_model.dart';
 import '../../../../data/services/chat_api_service.dart';
 
 class ChatController extends ChangeNotifier {
-  final ChatApiService _apiService;
-
-  ChatController(this._apiService);
+  ChatApiService chatApiService = ChatApiService();
 
   List<ChatModel> _chats = [];
   ChatModel? _selectedChat;
@@ -47,7 +45,7 @@ class ChatController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      _chats = await _apiService.getChats();
+      _chats = await chatApiService.getChats();
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -64,7 +62,7 @@ class ChatController extends ChangeNotifier {
       _setError(null);
 
       _selectedChat =
-          await _apiService.getChatById(chatId);
+          await chatApiService.getChatById(chatId);
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -84,7 +82,7 @@ class ChatController extends ChangeNotifier {
       _setError(null);
 
       final newChat =
-          await _apiService.createChat(
+          await chatApiService.createChat(
         jobId: jobId,
         participantIds: participantIds,
       );
@@ -102,7 +100,7 @@ class ChatController extends ChangeNotifier {
   // ==========================
   Future<void> markChatAsRead(String chatId) async {
     try {
-      await _apiService.markChatAsRead(chatId);
+      await chatApiService.markChatAsRead(chatId);
 
       final index =
           _chats.indexWhere((chat) => chat.id == chatId);
@@ -125,7 +123,7 @@ class ChatController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      await _apiService.deleteChat(chatId);
+      await chatApiService.deleteChat(chatId);
 
       _chats.removeWhere(
           (chat) => chat.id == chatId);

@@ -5,10 +5,9 @@ import '../models/job_model.dart';
 import 'dio_client.dart';
 
 class JobApiService {
-  final Dio _dio;
+  final Dio _dio = DioClient().dio;
 
-  JobApiService(DioClient dioClient)
-      : _dio = dioClient.dio;
+ 
 
   // ==========================================================
   // Get All Jobs

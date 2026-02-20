@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/data/controller/chat_controller.dart';
 import 'package:frontend/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_constants.dart';
 
@@ -91,11 +92,10 @@ class _ChatListScreenState extends State<ChatListScreen> {
                           )
                         : null,
                     onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.chatDetails,
-                        arguments: chat.id,
-                      );
+                     context.pushNamed('chat_details', pathParameters: {
+                        'id': chat.id.toString(),
+                      });
+                      
                     },
                   ),
                 );

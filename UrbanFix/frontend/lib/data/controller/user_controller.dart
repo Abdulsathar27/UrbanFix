@@ -5,9 +5,7 @@ import '../../../../data/models/user_model.dart';
 import '../../../../data/services/user_api_service.dart';
 
 class UserController extends ChangeNotifier {
-  final UserApiService _userApiService;
-
-  UserController(this._userApiService);
+  UserApiService userApiService = UserApiService();
 
   // ==========================
   // State
@@ -25,7 +23,9 @@ class UserController extends ChangeNotifier {
   // Form Controllers
   // ==========================
   final emailController = TextEditingController();
+  final emailloginController = TextEditingController();
   final passwordController = TextEditingController();
+  final passwordLoginController = TextEditingController();
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -62,18 +62,12 @@ class UserController extends ChangeNotifier {
   // ==========================
   // Login
   // ==========================
-  Future<bool> login({
-    required String email,
-    required String password,
-  }) async {
+  Future<bool> login({required String email, required String password}) async {
     try {
       _setLoading(true);
       _setError(null);
 
-      final user = await _userApiService.login(
-        email: email,
-        password: password,
-      );
+      final user = await userApiService.login(email: email, password: password);
 
       _currentUser = user;
       return true;
@@ -98,7 +92,7 @@ class UserController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      await _userApiService.register(
+      await userApiService.register(
         name: name,
         email: email,
         phone: phone,
@@ -122,7 +116,7 @@ class UserController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final user = await _userApiService.getProfile();
+      final user = await userApiService.getProfile();
       _currentUser = user;
     } catch (e) {
       _setError(_extractErrorMessage(e));
@@ -142,8 +136,7 @@ class UserController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final updatedUser =
-          await _userApiService.updateProfile(
+      final updatedUser = await userApiService.updateProfile(
         name: name,
         phone: phone,
       );
@@ -164,7 +157,7 @@ class UserController extends ChangeNotifier {
   Future<void> logout() async {
     try {
       _setLoading(true);
-      await _userApiService.logout();
+      await userApiService.logout();
       _currentUser = null;
     } catch (e) {
       _setError(_extractErrorMessage(e));
@@ -176,11 +169,12 @@ class UserController extends ChangeNotifier {
   // ==========================
   // OTP
   // ==========================
-  final List<TextEditingController> otpControllers =
-      List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> otpControllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
 
-  final List<FocusNode> otpFocusNodes =
-      List.generate(6, (_) => FocusNode());
+  final List<FocusNode> otpFocusNodes = List.generate(6, (_) => FocusNode());
 
   Timer? _timer;
   int secondsRemaining = 60;
@@ -190,8 +184,7 @@ class UserController extends ChangeNotifier {
     notifyListeners();
 
     _timer?.cancel();
-    _timer =
-        Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (secondsRemaining == 0) {
         timer.cancel();
       } else {
@@ -201,39 +194,39 @@ class UserController extends ChangeNotifier {
     });
   }
 
-  String get otp =>
-      otpControllers.map((c) => c.text).join();
+  String get otp => otpControllers.map((c) => c.text).join();
 
   bool get isOtpComplete => otp.length == 6;
 
-  Future<bool> verifyOtp({
-    required String email,
-    required String otp,
-  }) async {
-    try {
-      _setLoading(true);
-      _setError(null);
+ Future<bool> verifyOtp({
+  required String email,
+  required String otp,
+}) async {
+  try {
+    _setLoading(true);
+    _setError(null);
 
-      await _userApiService.verifyOtp(
-        email: email,
-        otp: otp,
-      );
+    final response =
+        await userApiService.verifyOtp(email: email, otp: otp);
 
-      return true;
-    } catch (e) {
-      _setError(_extractErrorMessage(e));
-      return false;
-    } finally {
-      _setLoading(false);
-    }
+    // Extract user from response
+    final user = UserModel.fromJson(response['user']);
+
+    _currentUser = user;
+
+    return true;
+  } catch (e) {
+    _setError(_extractErrorMessage(e));
+    return false;
+  } finally {
+    _setLoading(false);
   }
+}
 
-  Future<bool> resendEmailOtp({
-    required String email,
-  }) async {
+  Future<bool> resendEmailOtp({required String email}) async {
     try {
       _setError(null);
-      await _userApiService.resendEmailOtp(email: email);
+      await userApiService.resendEmailOtp(email: email);
       return true;
     } catch (e) {
       _setError(_extractErrorMessage(e));
@@ -255,14 +248,12 @@ class UserController extends ChangeNotifier {
   }
 
   void toggleRegisterPassword() {
-    isRegisterPasswordVisible =
-        !isRegisterPasswordVisible;
+    isRegisterPasswordVisible = !isRegisterPasswordVisible;
     notifyListeners();
   }
 
   void toggleConfirmPassword() {
-    isConfirmPasswordVisible =
-        !isConfirmPasswordVisible;
+    isConfirmPasswordVisible = !isConfirmPasswordVisible;
     notifyListeners();
   }
 
@@ -292,10 +283,13 @@ class UserController extends ChangeNotifier {
     _timer?.cancel();
     super.dispose();
   }
+
   void clearState() {
     _currentUser = null;
     _errorMessage = null;
     emailController.clear();
+    emailloginController.clear();
+    passwordLoginController.clear();
     passwordController.clear();
     nameController.clear();
     phoneController.clear();
@@ -307,6 +301,92 @@ class UserController extends ChangeNotifier {
 
     _timer?.cancel();
     secondsRemaining = 60;
-    notifyListeners();
+    
+  }
+  void loginSuccess(UserModel user) {
+  _currentUser = user;
+  notifyListeners();
+}
+
+
+
+  // ==========================
+  // Registration Form Validation
+  //  =========================
+  Future<bool> submitRegistration() async {
+    // Clear previous error
+    _setError(null);
+
+    // Validate terms
+    if (!agreeTerms) {
+      _setError("Please accept terms");
+      return false;
+    }
+
+    // Validate password match
+    if (passwordController.text != confirmPasswordController.text) {
+      _setError("Passwords do not match");
+      return false;
+    }
+
+    // Validate empty fields
+    if (nameController.text.trim().isEmpty ||
+        emailController.text.trim().isEmpty ||
+        phoneController.text.trim().isEmpty ||
+        passwordController.text.trim().isEmpty) {
+      _setError("All fields are required");
+      return false;
+    }
+
+    try {
+      _setLoading(true);
+
+      await userApiService.register(
+        name: nameController.text.trim(),
+        email: emailController.text.trim(),
+        phone: phoneController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+
+      clearState();
+      return true;
+    } catch (e) {
+      _setError(_extractErrorMessage(e));
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  // ==========================
+  // Login Form Validation
+  // ==========================
+  Future<bool> submitLogin() async {
+    _setError(null);
+
+    final email = emailloginController.text.trim();
+    final password = passwordLoginController.text.trim();
+
+    // Basic validation (business-level)
+    if (email.isEmpty || password.isEmpty) {
+      _setError("Email and password are required");
+      return false;
+    }
+
+    try {
+      _setLoading(true);
+
+      final user = await userApiService.login(email: email, password: password);
+
+      _currentUser = user;
+
+      clearState();
+      return true;
+    } catch (e) {
+      _setError(_extractErrorMessage(e));
+      return false;
+    } finally {
+      _setLoading(false);
+    }
   }
 }

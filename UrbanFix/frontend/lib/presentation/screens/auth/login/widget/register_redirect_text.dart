@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_strings.dart';
-import 'package:frontend/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 
 
 class RegisterRedirectText extends StatelessWidget {
@@ -14,8 +14,7 @@ class RegisterRedirectText extends StatelessWidget {
         const Text(AppStrings.dontHaveAccount),
         GestureDetector(
           onTap: () {
-            Navigator.pushNamed(
-                context, AppRoutes.register);
+            context.goNamed('register');
           },
           child: const Text(
             AppStrings.register,

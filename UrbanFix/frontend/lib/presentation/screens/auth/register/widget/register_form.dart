@@ -5,10 +5,10 @@ import 'package:frontend/presentation/screens/auth/register/widget/register_name
 import 'package:frontend/presentation/screens/auth/register/widget/register_password_field.dart';
 import 'package:frontend/presentation/screens/auth/register/widget/register_phone_field.dart';
 import 'package:frontend/presentation/screens/auth/register/widget/register_terms_checkbox.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/data/controller/user_controller.dart';
 import 'package:frontend/core/utils/helpers.dart';
-import 'package:frontend/routes/app_routes.dart';
 import 'register_button.dart';
 import 'register_redirect_text.dart';
 
@@ -18,41 +18,22 @@ class RegisterForm extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Future<void> _submit(BuildContext context) async {
-    final controller = context.read<UserController>();
+  final controller = context.read<UserController>();
 
-    if (!_formKey.currentState!.validate()) return;
+  final success = await controller.submitRegistration();
 
-    if (!controller.agreeTerms) {
-      Helpers.showError(context, "Please accept terms");
-      return;
-    }
-
-    if (controller.passwordController.text !=
-        controller.confirmPasswordController.text) {
-      Helpers.showError(context, "Passwords do not match");
-      return;
-    }
-
-    final success = await controller.register(
-      name: controller.nameController.text.trim(),
-      email: controller.emailController.text.trim(),
-      phone: controller.phoneController.text.trim(),
-      password: controller.passwordController.text.trim(),
-    );
-
-    if (!success) {
-      Helpers.showError(
-        context,
-        controller.errorMessage ?? "Registration failed",
-      );
-      return;
-    }
-
-    Navigator.pushReplacementNamed(
+  if (!success) {
+    Helpers.showError(
       context,
-      AppRoutes.login,
+      controller.errorMessage ?? "Registration failed",
     );
+    return;
   }
+  
+
+  context.goNamed('home');
+}
+
 
   @override
   Widget build(BuildContext context) {

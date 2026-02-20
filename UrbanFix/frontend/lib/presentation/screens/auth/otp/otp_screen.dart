@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/data/controller/user_controller.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../../../../routes/app_routes.dart';
 import 'otp_input_field.dart';
 
 class OtpScreen extends StatefulWidget {
@@ -23,8 +23,7 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final routeArgument = ModalRoute.of(context)?.settings.arguments;
-    final email = routeArgument is String ? routeArgument : "";
+    final email = GoRouterState.of(context).extra as String? ?? "";
     return Consumer<UserController>(
       builder: (context, controller, _) {
         return Scaffold(
@@ -99,7 +98,8 @@ class _OtpScreenState extends State<OtpScreen> {
                             messenger.showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  controller.errorMessage ?? "Failed to resend OTP",
+                                  controller.errorMessage ??
+                                      "Failed to resend OTP",
                                 ),
                               ),
                             );
@@ -126,7 +126,9 @@ class _OtpScreenState extends State<OtpScreen> {
                             if (email.isEmpty) {
                               messenger.showSnackBar(
                                 const SnackBar(
-                                  content: Text("Missing email for OTP verification"),
+                                  content: Text(
+                                    "Missing email for OTP verification",
+                                  ),
                                 ),
                               );
                               return;
@@ -144,14 +146,13 @@ class _OtpScreenState extends State<OtpScreen> {
                             if (!mounted) return;
 
                             if (success) {
-                              navigator.pushReplacementNamed(AppRoutes.home);
+                              context.goNamed('home');
                             } else {
-                              final message = controller.errorMessage ??
+                              final message =
+                                  controller.errorMessage ??
                                   "Invalid or expired OTP";
                               messenger.showSnackBar(
-                                SnackBar(
-                                  content: Text(message),
-                                ),
+                                SnackBar(content: Text(message)),
                               );
                             }
                           }

@@ -1,136 +1,155 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/presentation/screens/auth/otp/otp_screen.dart';
+import 'package:go_router/go_router.dart';
 
+// Splash
 import '../presentation/screens/splash/splash_screen.dart';
+
+// Auth
 import '../presentation/screens/auth/login/login_screen.dart';
 import '../presentation/screens/auth/register/register_screen.dart';
+import '../presentation/screens/auth/otp/otp_screen.dart';
+
+// Home
 import '../presentation/screens/home/home_screen.dart';
+
+// User
 import '../presentation/screens/user/profile_screen.dart';
 import '../presentation/screens/user/edit_profile_screen.dart';
+
+// Appointment
 import '../presentation/screens/appointment/appointment_list_screen.dart';
 import '../presentation/screens/appointment/appointment_details_screen.dart';
+
+// Job
 import '../presentation/screens/job/job_list_screen.dart';
 import '../presentation/screens/job/job_details_screen.dart';
+
+// Chat
 import '../presentation/screens/chat/chat_list_screen.dart';
 import '../presentation/screens/chat/chat_screen.dart';
+
+// Notification
 import '../presentation/screens/notification/notification_screen.dart';
+
+// Report
 import '../presentation/screens/report/report_screen.dart';
 
-class AppRoutes {
-  // ================= Splash =================
-  static const String splash = '/';
+class AppRouter {
+  /// 🔥 Global Navigator Key
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
 
-  // ================= Auth =================
-  static const String login = '/login';
-  static const String register = '/register';
-  static const String otp = '/otp';
+  /// 🔥 GoRouter Instance
+  static final GoRouter router = GoRouter(
+    navigatorKey: navigatorKey,
+    debugLogDiagnostics: true,
+    initialLocation: '/',
+    routes: [
+      /// ================= Splash =================
+      GoRoute(
+        path: '/',
+        name: 'splash',
+        builder: (context, state) => const SplashScreen(),
+      ),
 
-  // ================= Home =================
-  static const String home = '/home';
+      /// ================= Auth =================
+      GoRoute(
+        path: '/login',
+        name: 'login',
+        builder: (context, state) => const LoginScreen(),
+      ),
 
-  // ================= User =================
-  static const String profile = '/profile';
-  static const String editProfile = '/edit-profile';
+      GoRoute(
+        path: '/register',
+        name: 'register',
+        builder: (context, state) => const RegisterScreen(),
+      ),
 
-  // ================= Appointment =================
-  static const String appointments = '/appointments';
-  static const String appointmentDetails =
-      '/appointment-details';
+      GoRoute(
+        path: '/otp',
+        name: 'otp',
+        builder: (context, state) => const OtpScreen(),
+      ),
 
-  // ================= Job =================
-  static const String jobs = '/jobs';
-  static const String jobDetails = '/job-details';
-  static const String createJob = '/create-job';
+      /// ================= Home =================
+      GoRoute(
+        path: '/home',
+        name: 'home',
+        builder: (context, state) => const HomeScreen(),
+      ),
 
-  // ================= Chat =================
-  static const String chats = '/chats';
-  static const String chatDetails = '/chat-details';
+      /// ================= User =================
+      GoRoute(
+        path: '/profile',
+        name: 'profile',
+        builder: (context, state) => const ProfileScreen(),
+      ),
 
-  // ================= Notification =================
-  static const String notifications =
-      '/notifications';
+      GoRoute(
+        path: '/edit-profile',
+        name: 'editProfile',
+        builder: (context, state) => const EditProfileScreen(),
+      ),
 
-  // ================= Report =================
-  static const String report = '/report';
+      /// ================= Appointment =================
+      GoRoute(
+        path: '/appointments',
+        name: 'appointments',
+        builder: (context, state) =>
+            const AppointmentListScreen(),
+      ),
 
-  // ================= Route Generator =================
-  static Route<dynamic> generateRoute(
-      RouteSettings settings) {
-    switch (settings.name) {
-      case splash:
-        return _materialRoute(
-            const SplashScreen());
+      GoRoute(
+        path: '/appointment-details',
+        name: 'appointmentDetails',
+        builder: (context, state) =>
+            const AppointmentDetailsScreen(),
+      ),
 
-      case login:
-        return _materialRoute(
-            const LoginScreen());
+      /// ================= Job =================
+      GoRoute(
+        path: '/jobs',
+        name: 'jobs',
+        builder: (context, state) => const JobListScreen(),
+      ),
 
-      case register:
-        return _materialRoute(
-            const RegisterScreen());
-      case otp:
-        return _materialRoute(
-            const OtpScreen());
+      GoRoute(
+        path: '/job-details',
+        name: 'jobDetails',
+        builder: (context, state) =>
+            const JobDetailsScreen(),
+      ),
 
-      case home:
-        return _materialRoute(
-            const HomeScreen());
+      /// ================= Chat =================
+      GoRoute(
+        path: '/chats',
+        name: 'chats',
+        builder: (context, state) =>
+            const ChatListScreen(),
+      ),
 
-      case profile:
-        return _materialRoute(
-            const ProfileScreen());
+      GoRoute(
+        path: '/chat-details',
+        name: 'chatDetails',
+        builder: (context, state) =>
+            const ChatScreen(),
+      ),
 
-      case editProfile:
-        return _materialRoute(
-            const EditProfileScreen());
+      /// ================= Notification =================
+      GoRoute(
+        path: '/notifications',
+        name: 'notifications',
+        builder: (context, state) =>
+            const NotificationScreen(),
+      ),
 
-      case appointments:
-        return _materialRoute(
-            const AppointmentListScreen());
-
-      case appointmentDetails:
-        return _materialRoute(
-            const AppointmentDetailsScreen());
-
-      case jobs:
-        return _materialRoute(
-            const JobListScreen());
-
-      case jobDetails:
-        return _materialRoute(
-            const JobDetailsScreen());
-
-      case chats:
-        return _materialRoute(
-            const ChatListScreen());
-
-      case chatDetails:
-        return _materialRoute(
-            const ChatScreen());
-
-      case notifications:
-        return _materialRoute(
-            const NotificationScreen());
-
-      case report:
-        return _materialRoute(
-            const ReportScreen());
-
-      default:
-        return _materialRoute(
-          const Scaffold(
-            body: Center(
-              child: Text('Route not found'),
-            ),
-          ),
-        );
-    }
-  }
-
-  static MaterialPageRoute _materialRoute(
-      Widget page) {
-    return MaterialPageRoute(
-      builder: (_) => page,
-    );
-  }
+      /// ================= Report =================
+      GoRoute(
+        path: '/report',
+        name: 'report',
+        builder: (context, state) =>
+            const ReportScreen(),
+      ),
+    ],
+  );
 }

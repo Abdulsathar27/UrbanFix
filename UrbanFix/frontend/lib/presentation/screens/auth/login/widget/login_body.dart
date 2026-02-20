@@ -44,7 +44,7 @@ class LoginBody extends StatelessWidget {
                         top: Radius.circular(30),
                       ),
                     ),
-                    child: const LoginForm(),
+                    child: LoginForm(),
                   ),
                 ),
               ],

@@ -4,9 +4,7 @@ import '../../../../data/models/job_model.dart';
 import '../../../../data/services/job_api_service.dart';
 
 class JobController extends ChangeNotifier {
-  final JobApiService _apiService;
-
-  JobController(this._apiService);
+ JobApiService jobApiService = JobApiService();
 
   List<JobModel> _jobs = [];
   JobModel? _selectedJob;
@@ -47,7 +45,7 @@ class JobController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      _jobs = await _apiService.getJobs();
+      _jobs = await jobApiService.getJobs();
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -64,7 +62,7 @@ class JobController extends ChangeNotifier {
       _setError(null);
 
       _selectedJob =
-          await _apiService.getJobById(jobId);
+          await jobApiService.getJobById(jobId);
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -86,7 +84,7 @@ class JobController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final newJob = await _apiService.createJob(
+      final newJob = await jobApiService.createJob(
         title: title,
         description: description,
         category: category,
@@ -117,7 +115,7 @@ class JobController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final updatedJob = await _apiService.updateJob(
+      final updatedJob = await jobApiService.updateJob(
         jobId: jobId,
         title: title,
         description: description,
@@ -155,7 +153,7 @@ class JobController extends ChangeNotifier {
       _setError(null);
 
       final updatedJob =
-          await _apiService.updateJobStatus(
+          await jobApiService.updateJobStatus(
         jobId: jobId,
         status: status,
       );
@@ -185,7 +183,7 @@ class JobController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      await _apiService.deleteJob(jobId);
+      await jobApiService.deleteJob(jobId);
 
       _jobs.removeWhere((job) => job.id == jobId);
 

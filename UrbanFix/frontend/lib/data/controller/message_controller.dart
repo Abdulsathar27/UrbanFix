@@ -4,9 +4,7 @@ import '../../../../data/models/message_model.dart';
 import '../../../../data/services/message_api_service.dart';
 
 class MessageController extends ChangeNotifier {
-  final MessageApiService _apiService;
-
-  MessageController(this._apiService);
+  MessageApiService messageApiService = MessageApiService();
 
   List<MessageModel> _messages = [];
   bool _isLoading = false;
@@ -45,13 +43,14 @@ class MessageController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final data =
-          await _apiService.getMessages(chatId);
+      final data = await messageApiService.getMessages(chatId);
 
       // Sort messages by time (oldest first)
-      data.sort((a, b) =>
-          (a.createdAt ?? DateTime.now())
-              .compareTo(b.createdAt ?? DateTime.now()));
+      data.sort(
+        (a, b) => (a.createdAt ?? DateTime.now()).compareTo(
+          b.createdAt ?? DateTime.now(),
+        ),
+      );
 
       _messages = data;
     } catch (e) {
@@ -71,8 +70,7 @@ class MessageController extends ChangeNotifier {
     String type = "text",
   }) async {
     try {
-      final newMessage =
-          await _apiService.sendMessage(
+      final newMessage = await messageApiService.sendMessage(
         chatId: chatId,
         receiverId: receiverId,
         message: message,
@@ -89,19 +87,14 @@ class MessageController extends ChangeNotifier {
   // ==========================
   // Mark Message As Seen
   // ==========================
-  Future<void> markMessageAsSeen(
-      String messageId) async {
+  Future<void> markMessageAsSeen(String messageId) async {
     try {
-      await _apiService.markMessageAsSeen(
-          messageId);
+      await messageApiService.markMessageAsSeen(messageId);
 
-      final index = _messages.indexWhere(
-          (message) => message.id == messageId);
+      final index = _messages.indexWhere((message) => message.id == messageId);
 
       if (index != -1) {
-        _messages[index] =
-            _messages[index]
-                .copyWith(isSeen: true);
+        _messages[index] = _messages[index].copyWith(isSeen: true);
         notifyListeners();
       }
     } catch (e) {
@@ -112,14 +105,11 @@ class MessageController extends ChangeNotifier {
   // ==========================
   // Delete Message
   // ==========================
-  Future<void> deleteMessage(
-      String messageId) async {
+  Future<void> deleteMessage(String messageId) async {
     try {
-      await _apiService.deleteMessage(
-          messageId);
+      await messageApiService.deleteMessage(messageId);
 
-      _messages.removeWhere(
-          (message) => message.id == messageId);
+      _messages.removeWhere((message) => message.id == messageId);
 
       notifyListeners();
     } catch (e) {

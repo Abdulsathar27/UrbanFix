@@ -4,9 +4,7 @@ import '../models/user_model.dart';
 import 'dio_client.dart';
 
 class UserApiService {
-  final Dio _dio;
-
-  UserApiService(DioClient dioClient) : _dio = dioClient.dio;
+  final Dio _dio = DioClient().dio;
 
   // ==========================
   // Register
@@ -152,29 +150,27 @@ class UserApiService {
   // ==========================
   // Verify OTP
   // ==========================
-  Future<void> verifyOtp({
-    required String email,
-    required String otp,
-  }) async {
-    try {
-      final response = await _dio.post(
-        ApiConstants.verifyEmail,
-        data: {
-          "email": email,
-          "otp": otp,
-        },
-      );
+  Future<Map<String, dynamic>> verifyOtp({
+  required String email,
+  required String otp,
+}) async {
+  try {
+    final response = await _dio.post(
+      ApiConstants.verifyEmail,
+      data: {
+        "email": email,
+        "otp": otp,
+      },
+    );
 
-      if (response.statusCode != 200) {
-        throw Exception("OTP verification failed");
-      }
-    } on DioException catch (e) {
-      throw Exception(
-        e.response?.data["message"] ??
-            "OTP verification failed",
-      );
-    }
+    return Map<String, dynamic>.from(response.data);
+  } on DioException catch (e) {
+    throw Exception(
+      e.response?.data["message"] ??
+          "OTP verification failed",
+    );
   }
+}
 
   // ==========================
   // Resend OTP

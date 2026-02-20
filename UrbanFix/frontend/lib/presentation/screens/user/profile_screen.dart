@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/data/controller/user_controller.dart';
 import 'package:frontend/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../../../core/constants/app_constants.dart';
@@ -119,9 +120,8 @@ class _ProfileScreenState
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.editProfile,
+                      context.pushNamed(
+                          'editProfile'
                       );
                     },
                     child: const Text(

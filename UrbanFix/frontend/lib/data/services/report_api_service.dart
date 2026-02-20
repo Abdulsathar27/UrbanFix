@@ -5,10 +5,7 @@ import '../models/report_model.dart';
 import 'dio_client.dart';
 
 class ReportApiService {
-  final Dio _dio;
-
-  ReportApiService(DioClient dioClient)
-      : _dio = dioClient.dio;
+  final Dio _dio = DioClient().dio;
 
   // ==========================
   // Get All Reports

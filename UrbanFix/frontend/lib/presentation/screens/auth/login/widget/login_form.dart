@@ -1,65 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/core/constants/app_strings.dart';
-import 'package:frontend/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:frontend/data/controller/user_controller.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/core/utils/helpers.dart';
 import 'package:frontend/core/utils/validators.dart';
+import 'package:frontend/data/controller/user_controller.dart';
 import 'login_button.dart';
 import 'social_login_section.dart';
 import 'register_redirect_text.dart';
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+class LoginForm extends StatelessWidget {
+  LoginForm({super.key});
 
-  @override
-  State<LoginForm> createState() => _LoginFormState();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+Future<void> _submit(BuildContext context) async {
+  if (!_formKey.currentState!.validate()) return;
+
+  final controller = context.read<UserController>();
+
+  final success = await controller.submitLogin();
+
+  if (success) {
+    // User already verified
+    context.goNamed('home');
+    return;
+  }
+
+  // If login failed because email not verified
+  if (controller.errorMessage == "Please verify your email") {
+    context.goNamed(
+      'otp',
+      extra: controller.emailloginController.text.trim(),
+    );
+    return;
+  }
+
+  // Other login errors
+  Helpers.showError(
+    context,
+    controller.errorMessage ?? "Login failed",
+  );
 }
 
-class _LoginFormState extends State<LoginForm> {
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-    Future.microtask(() {
-      if (!mounted) return;
-      context.read<UserController>().clearState();
-    });
-  }
-
-  Future<void> _submit(
-    dynamic emailController,
-    dynamic passwordController,
-  ) async {
-    if (!_formKey.currentState!.validate()) return;
-
-    final controller = context.read<UserController>();
-    final email = emailController.text.trim();
-
-    await controller.login(
-      email: email,
-      password: passwordController.text.trim(),
-    );
-
-    if (!mounted) return;
-
-    if (controller.errorMessage != null) {
-      final error = controller.errorMessage!.toLowerCase();
-      if (error.contains("verify your email")) {
-        Navigator.pushReplacementNamed(
-          context,
-          AppRoutes.otp,
-          arguments: email,
-        );
-        return;
-      }
-      Helpers.showError(context, controller.errorMessage!);
-    } else {
-      controller.clearState();
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,8 +52,10 @@ class _LoginFormState extends State<LoginForm> {
           key: _formKey,
           child: ListView(
             children: [
+
+              /// Email Field
               TextFormField(
-                controller: controller.emailController,
+                controller: controller.emailloginController,
                 validator: Validators.validateEmail,
                 decoration: const InputDecoration(
                   hintText: AppStrings.emailOrPhoneNumber,
@@ -80,8 +65,9 @@ class _LoginFormState extends State<LoginForm> {
 
               const SizedBox(height: 16),
 
+              /// Password Field
               TextFormField(
-                controller: controller.passwordController,
+                controller: controller.passwordLoginController,
                 obscureText: !controller.isPasswordVisible,
                 validator: Validators.validatePassword,
                 decoration: InputDecoration(
@@ -100,22 +86,23 @@ class _LoginFormState extends State<LoginForm> {
 
               const SizedBox(height: 8),
 
+              /// Forgot Password
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    // You can add navigation later
+                  },
                   child: const Text(AppStrings.forgotPassword),
                 ),
               ),
 
               const SizedBox(height: 20),
 
+              /// Login Button
               LoginButton(
                 isLoading: controller.isLoading,
-                onPressed: () => _submit(
-                  controller.emailController,
-                  controller.passwordController,
-                ),
+                onPressed: () => _submit(context),
               ),
 
               const SizedBox(height: 30),

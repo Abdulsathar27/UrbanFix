@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:frontend/data/controller/user_controller.dart';
-import 'package:frontend/routes/app_routes.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_constants.dart';
@@ -52,9 +52,9 @@ class _SplashScreenState extends State<SplashScreen>
     final userController = context.read<UserController>();
 
     if (userController.isLoggedIn) {
-      Navigator.pushReplacementNamed(context, AppRoutes.home);
+      context.goNamed('home');
     } else {
-      Navigator.pushReplacementNamed(context, AppRoutes.login);
+      context.goNamed('login');
     }
   }
 

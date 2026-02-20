@@ -5,10 +5,7 @@ import '../models/message_model.dart';
 import 'dio_client.dart';
 
 class MessageApiService {
-  final Dio _dio;
-
-  MessageApiService(DioClient dioClient)
-      : _dio = dioClient.dio;
+  final Dio _dio = DioClient().dio;
 
   // ==========================================================
   // Get Messages By Chat ID

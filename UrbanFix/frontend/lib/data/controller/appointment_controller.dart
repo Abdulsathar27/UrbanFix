@@ -4,9 +4,7 @@ import '../../../../data/models/appointment_model.dart';
 import '../../../../data/services/appointment_api_service.dart';
 
 class AppointmentController extends ChangeNotifier {
-  final AppointmentApiService _apiService;
-
-  AppointmentController(this._apiService);
+  AppointmentApiService appointmentApiService = AppointmentApiService();
 
   List<AppointmentModel> _appointments = [];
   bool _isLoading = false;
@@ -47,7 +45,7 @@ class AppointmentController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      _appointments = await _apiService.getAppointments();
+      _appointments = await appointmentApiService.getAppointments();
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -70,7 +68,7 @@ class AppointmentController extends ChangeNotifier {
       _setError(null);
 
       final newAppointment =
-          await _apiService.createAppointment(
+          await appointmentApiService.createAppointment(
         jobId: jobId,
         serviceProviderId: serviceProviderId,
         appointmentDate: appointmentDate,
@@ -98,7 +96,7 @@ class AppointmentController extends ChangeNotifier {
       _setError(null);
 
       final updatedAppointment =
-          await _apiService.updateStatus(
+          await appointmentApiService.updateStatus(
         appointmentId: appointmentId,
         status: status,
       );
@@ -125,7 +123,7 @@ class AppointmentController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      await _apiService.deleteAppointment(
+      await appointmentApiService.deleteAppointment(
           appointmentId);
 
       _appointments
