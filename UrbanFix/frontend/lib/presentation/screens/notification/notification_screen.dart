@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/data/controller/notification_controller.dart';
-import 'package:frontend/presentation/screens/notification/widgets/notificationtile.dart';
+import 'package:frontend/presentation/screens/notification/widgets/notification_card.dart';
+import 'package:frontend/presentation/screens/notification/widgets/notification_empty_state.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import '../../../core/constants/app_strings.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
@@ -20,6 +20,18 @@ class NotificationScreen extends StatelessWidget {
     });
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text("Notifications"),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        elevation: 1,
+        leading: IconButton(
+                          icon: const Icon(Icons.arrow_back_ios),
+                          onPressed: () {
+                            context.goNamed('home');
+                          },
+                        ),
+      ),
       backgroundColor: Colors.grey.shade50,
       body: SafeArea(
         child: Consumer<NotificationController>(
@@ -29,7 +41,7 @@ class NotificationScreen extends StatelessWidget {
             }
 
             if (controller.notifications.isEmpty) {
-              return const Center(child: Text(AppStrings.noNotifications));
+              return const NotificationEmptyState();
             }
 
             return Padding(
@@ -42,13 +54,7 @@ class NotificationScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back_ios),
-                        onPressed: () {
-                          context.pop(); // go back
-                        },
-                      ),
-
+                      
                       const Text(
                         "Notifications",
                         style: TextStyle(
@@ -84,23 +90,7 @@ class NotificationScreen extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final notification = controller.notifications[index];
 
-                        return NotificationTile(
-                          notification: notification,
-                          onTap: () {
-                            if (!notification.isRead) {
-                              controller.markAsRead(notification.id);
-                            }
-
-                            if (notification.referenceId != null) {
-                              context.pushNamed(
-                                'job_details',
-                                pathParameters: {
-                                  'id': notification.referenceId.toString(),
-                                },
-                              );
-                            }
-                          },
-                        );
+                        return NotificationCard(notification: notification);
                       },
                     ),
                   ),

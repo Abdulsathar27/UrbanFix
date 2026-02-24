@@ -1,42 +1,97 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/data/models/job_model.dart';
-import 'job_status_badge.dart';
+import 'package:frontend/presentation/screens/job/widgets/job_status_badge.dart';
+
 
 class JobCard extends StatelessWidget {
-  final JobModel job;
-  final VoidCallback? onTap;
+  final String title;
+  final String location;
+  final String price;
+  final String status;
+  final String imageUrl;
 
   const JobCard({
     super.key,
-    required this.job,
-    this.onTap,
+    required this.title,
+    required this.location,
+    required this.price,
+    required this.status,
+    required this.imageUrl,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: ListTile(
-        onTap: onTap,
-        title: Text(
-          job.title,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: const [
+          BoxShadow(
+              color: Colors.black12, blurRadius: 8)
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment:
+            CrossAxisAlignment.start,
+        children: [
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20)),
+                child: Image.network(
+                  imageUrl,
+                  height: 170,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned(
+                top: 15,
+                left: 15,
+                child:
+                    JobStatusBadge(status: status),
+              )
+            ],
           ),
-        ),
-        subtitle: Column(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 4),
-            Text("Category: ${job.category}"),
-            if (job.budget != null)
-              Text(
-                  "Budget: ₹${job.budget!.toStringAsFixed(0)}"),
-          ],
-        ),
-        trailing: JobStatusBadge(
-          status: job.status,
-        ),
+
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment:
+                  CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight:
+                                FontWeight.bold),
+                      ),
+                    ),
+                    Text(
+                      price,
+                      style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight:
+                              FontWeight.bold,
+                          color:
+                              Color(0xFF2E5BFF)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  location,
+                  style: const TextStyle(
+                      color: Colors.grey),
+                ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

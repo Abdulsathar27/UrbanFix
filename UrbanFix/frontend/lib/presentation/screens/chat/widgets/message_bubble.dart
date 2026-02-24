@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/data/models/message_model.dart';
-
 
 class MessageBubble extends StatelessWidget {
-  final MessageModel message;
+  final String message;
   final bool isMine;
+  final String time;
 
   const MessageBubble({
     super.key,
     required this.message,
     required this.isMine,
+    required this.time,
   });
 
   @override
@@ -18,49 +18,62 @@ class MessageBubble extends StatelessWidget {
       alignment: isMine
           ? Alignment.centerRight
           : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.symmetric(
-          vertical: 4,
-        ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 14,
-          vertical: 10,
-        ),
-        constraints: BoxConstraints(
-          maxWidth:
-              MediaQuery.of(context).size.width * 0.7,
-        ),
-        decoration: BoxDecoration(
-          color: isMine
-              ? Theme.of(context).primaryColor
-              : Colors.grey.shade300,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              message.message,
+      child: Column(
+        crossAxisAlignment: isMine
+            ? CrossAxisAlignment.end
+            : CrossAxisAlignment.start,
+        children: [
+          Container(
+            margin:
+                const EdgeInsets.symmetric(
+                    vertical: 6),
+            padding:
+                const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12),
+            constraints: BoxConstraints(
+              maxWidth:
+                  MediaQuery.of(context)
+                          .size
+                          .width *
+                      0.75,
+            ),
+            decoration: BoxDecoration(
+              color: isMine
+                  ? const Color(0xFF2D6CDF)
+                  : Colors.white,
+              borderRadius:
+                  BorderRadius.circular(20),
+              boxShadow: [
+                if (!isMine)
+                  BoxShadow(
+                    color: Colors.black
+                        .withOpacity(0.05),
+                    blurRadius: 5,
+                  )
+              ],
+            ),
+            child: Text(
+              message,
               style: TextStyle(
                 color: isMine
                     ? Colors.white
                     : Colors.black,
               ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              message.createdAt != null
-                  ? "${message.createdAt!.hour}:${message.createdAt!.minute.toString().padLeft(2, '0')}"
-                  : "",
-              style: TextStyle(
-                fontSize: 10,
-                color: isMine
-                    ? Colors.white70
-                    : Colors.black54,
-              ),
+          ),
+          Padding(
+            padding:
+                const EdgeInsets.only(
+                    left: 8, right: 8),
+            child: Text(
+              time,
+              style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey),
             ),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }

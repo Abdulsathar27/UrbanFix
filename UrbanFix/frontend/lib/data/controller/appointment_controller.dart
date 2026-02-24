@@ -1,51 +1,94 @@
-import 'package:flutter/material.dart';
+import 'dart:collection';
 
-import '../../../../data/models/appointment_model.dart';
-import '../../../../data/services/appointment_api_service.dart';
+import 'package:flutter/material.dart';
+import 'package:frontend/data/models/appointment_model.dart';
+import 'package:frontend/data/services/appointment_api_service.dart';
 
 class AppointmentController extends ChangeNotifier {
-  AppointmentApiService appointmentApiService = AppointmentApiService();
+  AppointmentController({
+    AppointmentApiService? appointmentApiService,
+  }) : _appointmentApiService =
+            appointmentApiService ?? AppointmentApiService();
 
-  List<AppointmentModel> _appointments = [];
+  static const List<String> _defaultTimeSlots = <String>[
+    '09:00 AM',
+    '10:30 AM',
+    '12:00 PM',
+    '01:30 PM',
+    '03:00 PM',
+    '04:30 PM',
+  ];
+  static const Set<String> _disabledTimeSlots = <String>{
+    '04:30 PM',
+  };
+
+  final AppointmentApiService _appointmentApiService;
+
+  final List<AppointmentModel> _appointments = <AppointmentModel>[];
   bool _isLoading = false;
   String? _errorMessage;
+  DateTime _selectedDate = DateUtils.dateOnly(DateTime.now());
+  String _selectedTimeSlot = _defaultTimeSlots.first;
 
-  // ==========================
-  // Getters
-  // ==========================
-  List<AppointmentModel> get appointments => _appointments;
-
+  List<AppointmentModel> get appointments =>
+      UnmodifiableListView<AppointmentModel>(_appointments);
   bool get isLoading => _isLoading;
-
   String? get errorMessage => _errorMessage;
 
-  // ==========================
-  // Private Helpers
-  // ==========================
+  DateTime get selectedDate => _selectedDate;
+  String get selectedTimeSlot => _selectedTimeSlot;
+  List<String> get availableTimeSlots => _defaultTimeSlots;
+  Set<String> get disabledTimeSlots => _disabledTimeSlots;
+
+  List<DateTime> get availableDates => List<DateTime>.generate(
+        14,
+        (int index) => DateUtils.dateOnly(
+          DateTime.now().add(Duration(days: index)),
+        ),
+      );
+
+  double get estimatedTotal => 50;
+
   void _setLoading(bool value) {
+    if (_isLoading == value) return;
     _isLoading = value;
     notifyListeners();
   }
 
   void _setError(String? message) {
+    if (_errorMessage == message) return;
     _errorMessage = message;
     notifyListeners();
   }
 
   void clearError() {
-    _errorMessage = null;
+    _setError(null);
+  }
+
+  void selectDate(DateTime date) {
+    final DateTime normalizedDate = DateUtils.dateOnly(date);
+    if (DateUtils.isSameDay(_selectedDate, normalizedDate)) return;
+    _selectedDate = normalizedDate;
     notifyListeners();
   }
 
-  // ==========================
-  // Fetch All Appointments
-  // ==========================
+  void selectTimeSlot(String timeSlot) {
+    if (_disabledTimeSlots.contains(timeSlot)) return;
+    if (_selectedTimeSlot == timeSlot) return;
+    _selectedTimeSlot = timeSlot;
+    notifyListeners();
+  }
+
   Future<void> fetchAppointments() async {
     try {
       _setLoading(true);
       _setError(null);
 
-      _appointments = await appointmentApiService.getAppointments();
+      final List<AppointmentModel> fetchedAppointments =
+          await _appointmentApiService.getAppointments();
+      _appointments
+        ..clear()
+        ..addAll(fetchedAppointments);
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -53,10 +96,7 @@ class AppointmentController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Create Appointment
-  // ==========================
-  Future<void> createAppointment({
+  Future<bool> createAppointment({
     required String jobId,
     required String serviceProviderId,
     required DateTime appointmentDate,
@@ -67,8 +107,8 @@ class AppointmentController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final newAppointment =
-          await appointmentApiService.createAppointment(
+      final AppointmentModel newAppointment =
+          await _appointmentApiService.createAppointment(
         jobId: jobId,
         serviceProviderId: serviceProviderId,
         appointmentDate: appointmentDate,
@@ -76,17 +116,16 @@ class AppointmentController extends ChangeNotifier {
         notes: notes,
       );
 
-      _appointments.add(newAppointment);
+      _appointments.insert(0, newAppointment);
+      return true;
     } catch (e) {
       _setError(e.toString());
+      return false;
     } finally {
       _setLoading(false);
     }
   }
 
-  // ==========================
-  // Update Status
-  // ==========================
   Future<void> updateStatus({
     required String appointmentId,
     required String status,
@@ -95,14 +134,15 @@ class AppointmentController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final updatedAppointment =
-          await appointmentApiService.updateStatus(
+      final AppointmentModel updatedAppointment =
+          await _appointmentApiService.updateStatus(
         appointmentId: appointmentId,
         status: status,
       );
 
-      final index = _appointments
-          .indexWhere((a) => a.id == appointmentId);
+      final int index = _appointments.indexWhere(
+        (AppointmentModel appointment) => appointment.id == appointmentId,
+      );
 
       if (index != -1) {
         _appointments[index] = updatedAppointment;
@@ -114,20 +154,16 @@ class AppointmentController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Delete Appointment
-  // ==========================
-  Future<void> deleteAppointment(
-      String appointmentId) async {
+  Future<void> deleteAppointment(String appointmentId) async {
     try {
       _setLoading(true);
       _setError(null);
 
-      await appointmentApiService.deleteAppointment(
-          appointmentId);
+      await _appointmentApiService.deleteAppointment(appointmentId);
 
-      _appointments
-          .removeWhere((a) => a.id == appointmentId);
+      _appointments.removeWhere(
+        (AppointmentModel appointment) => appointment.id == appointmentId,
+      );
     } catch (e) {
       _setError(e.toString());
     } finally {

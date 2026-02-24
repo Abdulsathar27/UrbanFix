@@ -28,7 +28,7 @@ class NotificationCard extends StatelessWidget {
         /// ✅ Navigate if reference exists
         if (notification.referenceId != null) {
           context.pushNamed(
-            'job_details',
+            'jobDetails',
             pathParameters: {
               'id': notification.referenceId.toString(),
             },

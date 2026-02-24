@@ -5,6 +5,7 @@ import 'package:frontend/presentation/screens/home/widget/promo_banner.dart';
 import 'package:frontend/presentation/screens/home/widget/recent_booking_card.dart';
 import 'package:frontend/presentation/screens/home/widget/search_bar_widget.dart';
 import 'package:frontend/presentation/screens/home/widget/service_card.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../data/controller/appointment_controller.dart';
 import '../../../data/controller/user_controller.dart';
@@ -148,6 +149,10 @@ class HomeScreen extends StatelessWidget {
                           RecentBookingCard(
                             appointment:
                                 appointment,
+                            onTap: () {
+                              context.pushNamed(
+                                  'booking');
+                            },
                           )),
                 ],
               ),

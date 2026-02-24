@@ -1,138 +1,82 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/data/controller/user_controller.dart';
-import 'package:frontend/routes/app_routes.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../../data/controller/user_controller.dart';
+import 'widgets/profile_header.dart';
+import 'widgets/profile_menu_card.dart';
+import 'widgets/logout_button.dart';
 
-import '../../../core/constants/app_constants.dart';
-import '../../../core/constants/app_strings.dart';
-
-
-class ProfileScreen extends StatefulWidget {
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() =>
-      _ProfileScreenState();
-}
-
-class _ProfileScreenState
-    extends State<ProfileScreen> {
-
-  @override
-  void initState() {
-    super.initState();
-
-    Future.microtask(() {
-      context.read<UserController>().fetchProfile();
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = context.read<UserController>();
+    final user = controller.currentUser;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppStrings.profile),
+        leading: IconButton(
+          onPressed: () => context.go('/home'),
+          icon: const Icon(Icons.arrow_back),
+        ),
+        title: const Text("Profile"),
+        actions: [
+          IconButton(
+            onPressed: () {
+              context.go('/editProfile');
+            },
+            icon: const Icon(Icons.edit),
+          )
+        ],
       ),
-      body: Consumer<UserController>(
-        builder: (context, controller, _) {
-          if (controller.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+      body: controller.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : user == null
+              ? const Center(child: Text("User not found"))
+              : SingleChildScrollView(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      ProfileHeader(
+                        name: user.name,
+                        email: user.email,
+                        imageUrl: user.profileImage,
+                      ),
+                      const SizedBox(height: 30),
 
-          if (controller.currentUser == null) {
-            return const Center(
-              child: Text("User not found"),
-            );
-          }
+                      /// Menu Cards
+                      ProfileMenuCard(
+                        icon: Icons.calendar_today,
+                        title: "My Appointments",
+                        subtitle: "2 upcoming visits",
+                        onTap: () {},
+                      ),
 
-          final user = controller.currentUser!;
+                      const SizedBox(height: 15),
 
-          return Padding(
-            padding: const EdgeInsets.all(
-                AppConstants.defaultPadding),
-            child: Column(
-              children: [
-                const SizedBox(height: 24),
+                      ProfileMenuCard(
+                        icon: Icons.location_on,
+                        title: "Saved Addresses",
+                        subtitle: "Home, Office, Parents",
+                        onTap: () {},
+                      ),
 
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage:
-                      user.profileImage != null
-                          ? NetworkImage(
-                              user.profileImage!)
-                          : null,
-                  child: user.profileImage == null
-                      ? const Icon(
-                          Icons.person,
-                          size: 50,
-                        )
-                      : null,
-                ),
+                      const SizedBox(height: 15),
 
-                const SizedBox(height: 16),
+                      ProfileMenuCard(
+                        icon: Icons.settings,
+                        title: "Settings",
+                        subtitle: "Notifications, security, preferences",
+                        onTap: () {},
+                      ),
 
-                Text(
-                  user.name,
-                  style: Theme.of(context)
-                      .textTheme
-                      .headlineLarge,
-                ),
+                      const SizedBox(height: 40),
 
-                const SizedBox(height: 8),
-
-                Text(
-                  user.email,
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyMedium,
-                ),
-
-                const SizedBox(height: 24),
-
-                Card(
-                  child: ListTile(
-                    leading:
-                        const Icon(Icons.phone),
-                    title: const Text("Phone"),
-                    subtitle:
-                        Text(user.phone ?? "Not added"),
+                      const LogoutButton(),
+                    ],
                   ),
                 ),
-
-                const SizedBox(height: 16),
-
-                Card(
-                  child: ListTile(
-                    leading:
-                        const Icon(Icons.badge),
-                    title: const Text("Role"),
-                    subtitle:
-                        Text(user.role ?? "User"),
-                  ),
-                ),
-
-                const Spacer(),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      context.pushNamed(
-                          'editProfile'
-                      );
-                    },
-                    child: const Text(
-                        AppStrings.editProfile),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
     );
   }
 }

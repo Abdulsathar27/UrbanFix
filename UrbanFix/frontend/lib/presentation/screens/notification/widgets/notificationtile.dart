@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:go_router/go_router.dart';
-import '../../../../data/controller/notification_controller.dart';
 import '../../../../data/models/notification_model.dart';
 
 class NotificationTile extends StatelessWidget {
@@ -17,27 +14,8 @@ class NotificationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller =
-        context.read<NotificationController>();
-
     return InkWell(
-      onTap: () {
-
-        /// ✅ Mark as read
-        if (!notification.isRead) {
-          controller.markAsRead(notification.id);
-        }
-
-        /// ✅ Navigate if reference exists
-        if (notification.referenceId != null) {
-          context.pushNamed(
-            'job_details',
-            pathParameters: {
-              'id': notification.referenceId.toString(),
-            },
-          );
-        }
-      },
+      onTap: onTap,
       child: Row(
         crossAxisAlignment:
             CrossAxisAlignment.start,

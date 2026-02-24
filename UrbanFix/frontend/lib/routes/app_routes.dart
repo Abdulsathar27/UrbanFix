@@ -14,15 +14,17 @@ import '../presentation/screens/home/home_screen.dart';
 
 // User
 import '../presentation/screens/user/profile_screen.dart';
-import '../presentation/screens/user/edit_profile_screen.dart';
+import '../presentation/screens/user/widgets/edit_profile_screen.dart';
 
 // Appointment
-import '../presentation/screens/appointment/appointment_list_screen.dart';
-import '../presentation/screens/appointment/appointment_details_screen.dart';
+import '../presentation/screens/appointment/booking_screen.dart';
+import '../presentation/screens/appointment/success_screen.dart';
 
 // Job
 import '../presentation/screens/job/job_list_screen.dart';
 import '../presentation/screens/job/job_details_screen.dart';
+
+
 
 // Chat
 import '../presentation/screens/chat/chat_list_screen.dart';
@@ -32,7 +34,7 @@ import '../presentation/screens/chat/chat_screen.dart';
 import '../presentation/screens/notification/notification_screen.dart';
 
 // Report
-import '../presentation/screens/report/report_screen.dart';
+import '../presentation/screens/report/report_issue_screen.dart';
 
 class AppRouter {
   /// 🔥 Global Navigator Key
@@ -93,17 +95,15 @@ class AppRouter {
 
       /// ================= Appointment =================
       GoRoute(
-        path: '/appointments',
-        name: 'appointments',
-        builder: (context, state) =>
-            const AppointmentListScreen(),
+        name: "booking",
+        path: "/booking",
+        builder: (context, state) => const BookingScreen(),
       ),
 
       GoRoute(
-        path: '/appointment-details',
-        name: 'appointmentDetails',
-        builder: (context, state) =>
-            const AppointmentDetailsScreen(),
+        name: "appointment_success",
+        path: "/success",
+        builder: (context, state) => const SuccessScreen(),
       ),
 
       /// ================= Job =================
@@ -114,41 +114,38 @@ class AppRouter {
       ),
 
       GoRoute(
-        path: '/job-details',
+        path: '/job-details/:id',
         name: 'jobDetails',
         builder: (context, state) =>
-            const JobDetailsScreen(),
+            JobDetailsScreen(jobId: state.pathParameters['id']!),
       ),
 
       /// ================= Chat =================
       GoRoute(
         path: '/chats',
         name: 'chats',
-        builder: (context, state) =>
-            const ChatListScreen(),
+        builder: (context, state) => const ChatListScreen(),
       ),
 
       GoRoute(
-        path: '/chat-details',
+        path: '/chat-details/:chatId',
         name: 'chatDetails',
         builder: (context, state) =>
-            const ChatScreen(),
+            ChatScreen(chatId: state.pathParameters['chatId']!),
       ),
 
       /// ================= Notification =================
       GoRoute(
         path: '/notifications',
         name: 'notifications',
-        builder: (context, state) =>
-            const NotificationScreen(),
+        builder: (context, state) => const NotificationScreen(),
       ),
 
       /// ================= Report =================
       GoRoute(
         path: '/report',
         name: 'report',
-        builder: (context, state) =>
-            const ReportScreen(),
+        builder: (context, state) => const ReportIssueScreen(),
       ),
     ],
   );

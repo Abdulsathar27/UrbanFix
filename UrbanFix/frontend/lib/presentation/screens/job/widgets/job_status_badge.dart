@@ -8,40 +8,34 @@ class JobStatusBadge extends StatelessWidget {
     required this.status,
   });
 
-  Color _getColor() {
-    switch (status.toLowerCase()) {
-      case "assigned":
-        return Colors.blue;
-      case "in_progress":
-        return Colors.orange;
-      case "completed":
-        return Colors.green;
-      case "cancelled":
-        return Colors.red;
-      default:
-        return Colors.grey; // open
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final color = _getColor();
+    Color bgColor;
+
+    switch (status) {
+      case "COMPLETED":
+        bgColor = Colors.green;
+        break;
+      case "PENDING":
+        bgColor = Colors.orange;
+        break;
+      default:
+        bgColor = const Color(0xFF2E5BFF);
+    }
 
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: 10,
-        vertical: 4,
-      ),
+          horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.15),
+        color: bgColor,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
-        status.toUpperCase(),
-        style: TextStyle(
-          color: color,
+        status,
+        style: const TextStyle(
+          color: Colors.white,
           fontSize: 12,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );
