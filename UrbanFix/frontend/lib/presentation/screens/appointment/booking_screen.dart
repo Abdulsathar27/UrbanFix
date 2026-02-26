@@ -11,32 +11,6 @@ import 'package:provider/provider.dart';
 class BookingScreen extends StatelessWidget {
   const BookingScreen({super.key});
 
-  Future<void> _confirmAppointment(BuildContext context) async {
-    final AppointmentController controller =
-        context.read<AppointmentController>();
-    controller.clearError();
-
-    final bool isCreated = await controller.createAppointment(
-      jobId: 'house-cleaning',
-      serviceProviderId: 'provider-001',
-      appointmentDate: controller.selectedDate,
-      timeSlot: controller.selectedTimeSlot,
-    );
-
-    if (!context.mounted) return;
-
-    if (isCreated) {
-      context.goNamed('appointment_success');
-      return;
-    }
-
-    final String message = controller.errorMessage ??
-        'Failed to create appointment. Please try again.';
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,8 +39,7 @@ class BookingScreen extends StatelessWidget {
                   const ServiceCard(),
                   const SizedBox(height: 24),
                   Consumer<AppointmentController>(
-                    builder: (context, controller, _) =>
-                        DateSection(
+                    builder: (context, controller, _) => DateSection(
                       availableDates: controller.availableDates,
                       selectedDate: controller.selectedDate,
                       onDateSelected: controller.selectDate,
@@ -74,8 +47,7 @@ class BookingScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   Consumer<AppointmentController>(
-                    builder: (context, controller, _) =>
-                        TimeSection(
+                    builder: (context, controller, _) => TimeSection(
                       timeSlots: controller.availableTimeSlots,
                       selectedTimeSlot: controller.selectedTimeSlot,
                       disabledTimeSlots: controller.disabledTimeSlots,
@@ -89,11 +61,10 @@ class BookingScreen extends StatelessWidget {
             ),
           ),
           Consumer<AppointmentController>(
-            builder: (context, controller, _) =>
-                BottomSection(
+            builder: (context, controller, _) => BottomSection(
               totalAmount: controller.estimatedTotal,
-              isLoading: controller.isLoading,
-              onConfirm: () => _confirmAppointment(context),
+              // isLoading: controller.isLoading,
+              // onConfirm: () => controller.confirmAppointment(context),
             ),
           ),
         ],

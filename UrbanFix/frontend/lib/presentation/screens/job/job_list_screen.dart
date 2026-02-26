@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/data/controller/job_controller.dart';
+import 'package:provider/provider.dart';
 import 'widgets/job_card.dart';
 import 'widgets/category_chip.dart';
 
@@ -7,13 +9,18 @@ class JobListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    // ✅ ADDED: Fetch jobs when screen loads
+    Future.microtask(() =>
+        context.read<JobController>().fetchJobs());
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6F8),
       body: SafeArea(
         child: Column(
           children: [
 
-            /// HEADER SECTION
+            /// HEADER SECTION (UNCHANGED DESIGN)
             Container(
               padding: const EdgeInsets.all(20),
               color: Colors.white,
@@ -27,8 +34,7 @@ class JobListScreen extends StatelessWidget {
                           color: const Color(0xFF2E5BFF),
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: const Icon(Icons.build,
-                            color: Colors.white),
+                        child: const Icon(Icons.build, color: Colors.white),
                       ),
                       const SizedBox(width: 15),
                       const Text(
@@ -44,31 +50,25 @@ class JobListScreen extends StatelessWidget {
                       const CircleAvatar(radius: 18),
                     ],
                   ),
-
                   const SizedBox(height: 20),
 
-                  /// Search Bar
                   Row(
                     children: [
                       Expanded(
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
                           height: 55,
                           decoration: BoxDecoration(
                             color: const Color(0xFFF1F3F6),
-                            borderRadius:
-                                BorderRadius.circular(18),
+                            borderRadius: BorderRadius.circular(18),
                           ),
                           child: const Row(
                             children: [
-                              Icon(Icons.search,
-                                  color: Colors.grey),
+                              Icon(Icons.search, color: Colors.grey),
                               SizedBox(width: 10),
                               Text(
                                 "Search tasks or services...",
-                                style: TextStyle(
-                                    color: Colors.grey),
+                                style: TextStyle(color: Colors.grey),
                               )
                             ],
                           ),
@@ -80,24 +80,19 @@ class JobListScreen extends StatelessWidget {
                         width: 55,
                         decoration: BoxDecoration(
                           color: const Color(0xFF2E5BFF),
-                          borderRadius:
-                              BorderRadius.circular(18),
+                          borderRadius: BorderRadius.circular(18),
                         ),
-                        child: const Icon(Icons.tune,
-                            color: Colors.white),
+                        child: const Icon(Icons.tune, color: Colors.white),
                       )
                     ],
                   ),
-
                   const SizedBox(height: 20),
 
-                  /// Category Chips
                   const SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
-                        CategoryChip(
-                            label: "All Jobs", isActive: true),
+                        CategoryChip(label: "All Jobs", isActive: true),
                         CategoryChip(label: "Plumbing"),
                         CategoryChip(label: "Electrical"),
                         CategoryChip(label: "Cleaning"),
@@ -108,82 +103,86 @@ class JobListScreen extends StatelessWidget {
               ),
             ),
 
-            /// BODY LIST
+            /// BODY LIST (CONNECTED TO CONTROLLER)
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.all(20),
-                children: const [
-                  Text(
-                    "AVAILABLE NEARBY",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey),
-                  ),
-                  SizedBox(height: 15),
+              child: Consumer<JobController>(
+                builder: (context, controller, child) {
 
-                  JobCard(
-                    title: "Leaky Faucet Repair",
-                    location: "Brooklyn, NY (2.5 miles away)",
-                    price: "\$150.00",
-                    status: "IN PROGRESS",
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1581578731548-c64695cc6952",
-                  ),
+                  // ✅ ADDED: Loading State
+                  if (controller.isLoading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
 
-                  SizedBox(height: 20),
+                  // ✅ ADDED: Error State
+                  if (controller.errorMessage != null) {
+                    return Center(
+                      child: Text(controller.errorMessage!),
+                    );
+                  }
 
-                  JobCard(
-                    title: "Living Room Rewiring",
-                    location: "Queens, NY (5.1 miles away)",
-                    price: "\$420.00",
-                    status: "COMPLETED",
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1581090700227-1e8a2f8f32d0",
-                  ),
+                  // ✅ ADDED: Empty State
+                  if (controller.jobs.isEmpty) {
+                    return const Center(
+                      child: Text("No jobs available"),
+                    );
+                  }
 
-                  SizedBox(height: 20),
+                  return ListView(
+                    padding: const EdgeInsets.all(20),
+                    children: [
+                      const Text(
+                        "AVAILABLE NEARBY",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(height: 15),
 
-                  JobCard(
-                    title: "Garden Landscaping",
-                    location: "Manhattan, NY (0.8 miles away)",
-                    price: "\$300.00",
-                    status: "PENDING",
-                    imageUrl:
-                        "https://images.unsplash.com/photo-1501004318641-b39e6451bec6",
-                  ),
-                ],
+                      // ✅ ADDED: Dynamic Job List
+                      ...controller.jobs.map(
+                        (job) => Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: JobCard(
+                            title: job.title,
+                            location: job.location,
+                            price: "\$${job.budget ?? 0}",
+                            status: job.status,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
             )
           ],
         ),
       ),
 
-      /// Bottom Navigation
+      /// Bottom Navigation (UNCHANGED DESIGN)
       bottomNavigationBar: Container(
         height: 75,
         padding: const EdgeInsets.symmetric(horizontal: 25),
         decoration: const BoxDecoration(
           color: Colors.white,
           boxShadow: [
-            BoxShadow(
-                blurRadius: 10,
-                color: Colors.black12)
+            BoxShadow(blurRadius: 10, color: Colors.black12)
           ],
         ),
         child: const Row(
-          mainAxisAlignment:
-              MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Icon(Icons.explore, color: Color(0xFF2E5BFF)),
-            Icon(Icons.check_circle_outline,
-                color: Colors.grey),
-            Icon(Icons.message_outlined,
-                color: Colors.grey),
-            Icon(Icons.person_outline,
-                color: Colors.grey),
+            Icon(Icons.check_circle_outline, color: Colors.grey),
+            Icon(Icons.message_outlined, color: Colors.grey),
+            Icon(Icons.person_outline, color: Colors.grey),
           ],
         ),
       ),
     );
   }
 }
+

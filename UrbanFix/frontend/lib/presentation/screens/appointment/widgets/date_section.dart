@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/presentation/screens/appointment/widgets/date_circle.dart';
 
 class DateSection extends StatelessWidget {
   const DateSection({
@@ -55,7 +56,7 @@ class DateSection extends StatelessWidget {
                 spacing: 20,
                 runSpacing: 20,
                 children: availableDates.map((DateTime date) {
-                  return _DateCircle(
+                  return DateCircle(
                     day: date.day.toString(),
                     selected: DateUtils.isSameDay(date, selectedDate),
                     onTap: () => onDateSelected(date),
@@ -70,38 +71,3 @@ class DateSection extends StatelessWidget {
   }
 }
 
-class _DateCircle extends StatelessWidget {
-  final String day;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _DateCircle({
-    required this.day,
-    required this.onTap,
-    this.selected = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      customBorder: const CircleBorder(),
-      child: Container(
-        height: 40,
-        width: 40,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: selected ? Colors.blue : Colors.transparent,
-          shape: BoxShape.circle,
-        ),
-        child: Text(
-          day,
-          style: TextStyle(
-            color: selected ? Colors.white : Colors.black,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ),
-    );
-  }
-}

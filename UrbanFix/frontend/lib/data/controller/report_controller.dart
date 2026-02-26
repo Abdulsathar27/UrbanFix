@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 
-import '../../../../data/models/report_model.dart';
-import '../../../../data/services/report_api_service.dart';
+import 'package:frontend/data/models/report_model.dart';
+import 'package:frontend/data/services/report_api_service.dart';
 
 class ReportController extends ChangeNotifier {
   ReportApiService reportApiService = ReportApiService();
@@ -77,8 +77,7 @@ class ReportController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final report =
-          await reportApiService.getReportById(reportId);
+      final report = await reportApiService.getReportById(reportId);
 
       _selectedReport = report;
     } catch (e) {
@@ -102,8 +101,7 @@ class ReportController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final newReport =
-          await reportApiService.createReport(
+      final newReport = await reportApiService.createReport(
         reason: reason,
         description: description,
         reportedUserId: reportedUserId,
@@ -132,15 +130,12 @@ class ReportController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final updatedReport =
-          await reportApiService.updateReportStatus(
+      final updatedReport = await reportApiService.updateReportStatus(
         reportId: reportId,
         status: status,
       );
 
-      final index = _reports.indexWhere(
-        (r) => r.id == reportId,
-      );
+      final index = _reports.indexWhere((r) => r.id == reportId);
 
       if (index != -1) {
         _reports[index] = updatedReport;

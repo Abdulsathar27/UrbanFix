@@ -11,72 +11,77 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = context.read<UserController>();
-    final user = controller.currentUser;
+    return Consumer<UserController>(
+      builder: (context, controller, _) {
+        final user = controller.currentUser;
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => context.go('/home'),
-          icon: const Icon(Icons.arrow_back),
-        ),
-        title: const Text("Profile"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              context.go('/editProfile');
-            },
-            icon: const Icon(Icons.edit),
-          )
-        ],
-      ),
-      body: controller.isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : user == null
-              ? const Center(child: Text("User not found"))
-              : SingleChildScrollView(
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      ProfileHeader(
-                        name: user.name,
-                        email: user.email,
-                        imageUrl: user.profileImage,
-                      ),
-                      const SizedBox(height: 30),
+        if (controller.isLoading) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
 
-                      /// Menu Cards
-                      ProfileMenuCard(
-                        icon: Icons.calendar_today,
-                        title: "My Appointments",
-                        subtitle: "2 upcoming visits",
-                        onTap: () {},
-                      ),
+        if (user == null) {
+          return const Scaffold(
+            body: Center(child: Text("User not found")),
+          );
+        }
 
-                      const SizedBox(height: 15),
-
-                      ProfileMenuCard(
-                        icon: Icons.location_on,
-                        title: "Saved Addresses",
-                        subtitle: "Home, Office, Parents",
-                        onTap: () {},
-                      ),
-
-                      const SizedBox(height: 15),
-
-                      ProfileMenuCard(
-                        icon: Icons.settings,
-                        title: "Settings",
-                        subtitle: "Notifications, security, preferences",
-                        onTap: () {},
-                      ),
-
-                      const SizedBox(height: 40),
-
-                      const LogoutButton(),
-                    ],
-                  ),
+        return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: () => context.go('/home'),
+              icon: const Icon(Icons.arrow_back),
+            ),
+            title: const Text("Profile"),
+            actions: [
+              IconButton(
+                onPressed: () => context.goNamed('editProfile'),
+                icon: const Icon(Icons.edit),
+              )
+            ],
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                ProfileHeader(
+                  name: user.name,
+                  email: user.email,
+                  imageUrl: user.profileImage,
                 ),
+                const SizedBox(height: 30),
+
+                ProfileMenuCard(
+                  icon: Icons.calendar_today,
+                  title: "My Appointments",
+                  subtitle: "2 upcoming visits",
+                  onTap: () {},
+                ),
+                const SizedBox(height: 15),
+
+                ProfileMenuCard(
+                  icon: Icons.location_on,
+                  title: "Saved Addresses",
+                  subtitle: "Home, Office",
+                  onTap: () {},
+                ),
+                const SizedBox(height: 15),
+
+                ProfileMenuCard(
+                  icon: Icons.settings,
+                  title: "Settings",
+                  subtitle: "Notifications & security",
+                  onTap: () {},
+                ),
+                const SizedBox(height: 40),
+
+                const LogoutButton(),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -92,4 +92,19 @@ class ChatApiService {
       throw Exception("Failed to delete chat: ${e.message}");
     }
   }
+
+ Future<ChatModel> sendMessage({
+  required String chatId,
+  required String message,
+}) async {
+  try {
+    final response = await _dio.post(
+      "${ApiConstants.chats}/$chatId/messages",
+      data: {"content": message},
+    );
+    return ChatModel.fromJson(response.data);
+  } on DioException catch (e) {
+    throw Exception("Failed to send message: ${e.message}");
+  }
+}
 }

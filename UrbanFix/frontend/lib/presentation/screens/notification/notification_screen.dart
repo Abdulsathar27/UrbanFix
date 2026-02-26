@@ -10,15 +10,6 @@ class NotificationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    /// 👇 Fetch after first frame (safe)
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final controller = context.read<NotificationController>();
-
-      if (controller.notifications.isEmpty && !controller.isLoading) {
-        controller.fetchNotifications();
-      }
-    });
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Notifications"),
@@ -26,35 +17,59 @@ class NotificationScreen extends StatelessWidget {
         foregroundColor: Colors.black,
         elevation: 1,
         leading: IconButton(
-                          icon: const Icon(Icons.arrow_back_ios),
-                          onPressed: () {
-                            context.goNamed('home');
-                          },
-                        ),
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            context.goNamed('home');
+          },
+        ),
       ),
       backgroundColor: Colors.grey.shade50,
       body: SafeArea(
         child: Consumer<NotificationController>(
           builder: (context, controller, _) {
-            if (controller.isLoading) {
-              return const Center(child: CircularProgressIndicator());
+
+            /// ✅ SAFE FETCH
+            if (!controller.hasFetched &&
+                !controller.isLoading) {
+              controller.fetchNotifications();
             }
 
+            /// ================= LOADING
+            if (controller.isLoading) {
+              return const Center(
+                  child: CircularProgressIndicator());
+            }
+
+            /// ================= ERROR
+            if (controller.errorMessage != null) {
+              return Center(
+                child: Text(
+                  controller.errorMessage!,
+                  style: const TextStyle(color: Colors.red),
+                ),
+              );
+            }
+
+            /// ================= EMPTY STATE
             if (controller.notifications.isEmpty) {
               return const NotificationEmptyState();
             }
 
+            /// ================= MAIN UI
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
                 children: [
-                  /// ================= HEADER
                   const SizedBox(height: 10),
+
+                  /// HEADER
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
                     children: [
-                      
                       const Text(
                         "Notifications",
                         style: TextStyle(
@@ -63,16 +78,16 @@ class NotificationScreen extends StatelessWidget {
                         ),
                       ),
 
-                      if (controller.notifications
-                          .where((n) => !n.isRead)
-                          .isNotEmpty)
+                      if (controller.unreadCount > 0)
                         TextButton(
-                          onPressed: controller.markAllAsRead,
+                          onPressed:
+                              controller.markAllAsRead,
                           child: const Text(
                             "Mark all as read",
                             style: TextStyle(
                               color: Colors.blue,
-                              fontWeight: FontWeight.w600,
+                              fontWeight:
+                                  FontWeight.w600,
                             ),
                           ),
                         ),
@@ -81,16 +96,24 @@ class NotificationScreen extends StatelessWidget {
 
                   const SizedBox(height: 20),
 
-                  /// ================= LIST
+                  /// LIST
                   Expanded(
                     child: ListView.separated(
-                      itemCount: controller.notifications.length,
+                      itemCount:
+                          controller.notifications.length,
                       separatorBuilder: (_, __) =>
-                          Divider(height: 30, color: Colors.grey.shade300),
+                          Divider(
+                              height: 30,
+                              color:
+                                  Colors.grey.shade300),
                       itemBuilder: (context, index) {
-                        final notification = controller.notifications[index];
+                        final notification =
+                            controller
+                                .notifications[index];
 
-                        return NotificationCard(notification: notification);
+                        return NotificationCard(
+                            notification:
+                                notification);
                       },
                     ),
                   ),

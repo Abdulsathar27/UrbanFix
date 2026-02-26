@@ -9,6 +9,9 @@ class AppointmentModel {
   final String? notes;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final String serviceName;
+  final String date;
+  final String time;
 
   AppointmentModel({
     required this.id,
@@ -21,6 +24,9 @@ class AppointmentModel {
     this.notes,
     this.createdAt,
     this.updatedAt,
+    required this.serviceName,
+    required this.date,
+    required this.time,
   });
 
   // ==========================
@@ -42,6 +48,9 @@ class AppointmentModel {
       updatedAt: json['updatedAt'] != null
           ? DateTime.parse(json['updatedAt'])
           : null,
+      serviceName: json['serviceName'] ?? '',
+      date: json['date'] ?? '',         
+      time: json['time'] ?? '',
     );
   }
 
@@ -62,6 +71,9 @@ class AppointmentModel {
       'notes': notes,
       'createdAt': createdAt?.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
+      'serviceName': serviceName,
+      'date': date,
+      'time': time,
     };
   }
 
@@ -93,6 +105,9 @@ class AppointmentModel {
       notes: notes ?? this.notes,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      serviceName: serviceName,
+      date: date,
+      time: time,
     );
   }
 }

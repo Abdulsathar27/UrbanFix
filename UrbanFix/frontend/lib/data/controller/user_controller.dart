@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import '../../../../data/models/user_model.dart';
-import '../../../../data/services/user_api_service.dart';
+import 'package:frontend/data/models/appointment_model.dart';
+import 'package:frontend/data/models/user_model.dart';
+import 'package:frontend/data/services/user_api_service.dart';
 
 class UserController extends ChangeNotifier {
   UserApiService userApiService = UserApiService();
@@ -29,6 +30,9 @@ class UserController extends ChangeNotifier {
   final nameController = TextEditingController();
   final phoneController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  
+  // ✅ FIXED: Properly initialize searchController
+  final TextEditingController searchController = TextEditingController();
 
   // ==========================
   // Private Helpers
@@ -158,7 +162,7 @@ class UserController extends ChangeNotifier {
     try {
       _setLoading(true);
       await userApiService.logout();
-      _currentUser = null;
+      clearState(clearCurrentUser: true);
     } catch (e) {
       _setError(_extractErrorMessage(e));
     } finally {
@@ -266,53 +270,61 @@ class UserController extends ChangeNotifier {
   // Dispose
   // ==========================
   @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    nameController.dispose();
-    phoneController.dispose();
-    confirmPasswordController.dispose();
+void dispose() {
+  emailController.dispose();
+  emailloginController.dispose();
+  passwordController.dispose();
+  passwordLoginController.dispose();
+  nameController.dispose();
+  phoneController.dispose();
+  confirmPasswordController.dispose();
+  searchController.dispose(); // ✅ FIXED: Now properly disposed
 
-    for (var c in otpControllers) {
-      c.dispose();
-    }
-    for (var f in otpFocusNodes) {
-      f.dispose();
-    }
-
-    _timer?.cancel();
-    super.dispose();
+  for (var c in otpControllers) {
+    c.dispose();
+  }
+  for (var f in otpFocusNodes) {
+    f.dispose();
   }
 
-  void clearState() {
+  _timer?.cancel();
+  super.dispose();
+}
+
+ void clearState({bool clearCurrentUser = false}) {
+  if (clearCurrentUser) {
     _currentUser = null;
-    _errorMessage = null;
-    emailController.clear();
-    emailloginController.clear();
-    passwordLoginController.clear();
-    passwordController.clear();
-    nameController.clear();
-    phoneController.clear();
-    confirmPasswordController.clear();
-
-    for (var c in otpControllers) {
-      c.clear();
-    }
-
-    _timer?.cancel();
-    secondsRemaining = 60;
-    
   }
-  void loginSuccess(UserModel user) {
-  _currentUser = user;
+
+  _errorMessage = null;
+
+  emailController.clear();
+  emailloginController.clear();
+  passwordLoginController.clear();
+  passwordController.clear();
+  nameController.clear();
+  phoneController.clear();
+  confirmPasswordController.clear();
+  searchController.clear(); // ✅ ADDED: Clear search controller
+
+  isPasswordVisible = false;
+  isRegisterPasswordVisible = false;
+  isConfirmPasswordVisible = false;
+  agreeTerms = false;
+
+  for (var c in otpControllers) {
+    c.clear();
+  }
+
+  _timer?.cancel();
+  secondsRemaining = 60;
+
   notifyListeners();
 }
 
-
-
   // ==========================
   // Registration Form Validation
-  //  =========================
+  // =========================
   Future<bool> submitRegistration() async {
     // Clear previous error
     _setError(null);
@@ -367,7 +379,7 @@ class UserController extends ChangeNotifier {
     final email = emailloginController.text.trim();
     final password = passwordLoginController.text.trim();
 
-    // Basic validation (business-level)
+    // Basic validation
     if (email.isEmpty || password.isEmpty) {
       _setError("Email and password are required");
       return false;
@@ -389,4 +401,65 @@ class UserController extends ChangeNotifier {
       _setLoading(false);
     }
   }
+
+  // =============================
+  // HOME SERVICES LIST
+  // =============================
+  final List<String> _services = [
+    "Haircut",
+    "Shaving",
+    "Facial",
+    "Massage",
+    "Hair Coloring",
+    "Beard Styling",
+  ];
+
+  List<String> get services => _services;
+
+  // =============================
+  // RECENT BOOKING
+  // =============================
+  final List<String> _recentBookings = [
+    "John Doe - Haircut",
+    "Jane Smith - Facial",
+    "Bob Johnson - Massage",
+  ];
+
+  List<String> get recentBookings => _recentBookings;
+
+  // =============================
+  // APPOINTMENT & NAVIGATION
+  // =============================
+  AppointmentModel? _currentAppointment;
+  int _currentIndex = 0;
+  
+  AppointmentModel? get currentAppointment => _currentAppointment;
+  int get currentIndex => _currentIndex;
+  
+  void changeTab(int index) {
+    _currentIndex = index;
+    notifyListeners();
+  }
+  // Add these to your UserController class
+
+
+bool _isChatFloating = false;
+
+bool get isChatFloating => _isChatFloating;
+
+void changesTab(int index) {
+  _currentIndex = index;
+  _isChatFloating = false; 
+  notifyListeners();
+}
+
+void openFloatingChat() {
+  _isChatFloating = true;
+  notifyListeners();
+}
+
+void closeFloatingChat() {
+  _isChatFloating = false;
+  notifyListeners();
+}
 }

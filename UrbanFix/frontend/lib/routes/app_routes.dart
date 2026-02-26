@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/presentation/screens/home/home_screen.dart';
+import 'package:frontend/presentation/screens/home/widget/main_navigation_screen.dart';
 import 'package:go_router/go_router.dart';
 
 // Splash
@@ -9,22 +11,17 @@ import '../presentation/screens/auth/login/login_screen.dart';
 import '../presentation/screens/auth/register/register_screen.dart';
 import '../presentation/screens/auth/otp/otp_screen.dart';
 
-// Home
-import '../presentation/screens/home/home_screen.dart';
-
 // User
 import '../presentation/screens/user/profile_screen.dart';
 import '../presentation/screens/user/widgets/edit_profile_screen.dart';
 
-// Appointment
+// Appointment / Booking
 import '../presentation/screens/appointment/booking_screen.dart';
 import '../presentation/screens/appointment/success_screen.dart';
 
 // Job
 import '../presentation/screens/job/job_list_screen.dart';
 import '../presentation/screens/job/job_details_screen.dart';
-
-
 
 // Chat
 import '../presentation/screens/chat/chat_list_screen.dart';
@@ -73,31 +70,80 @@ class AppRouter {
         builder: (context, state) => const OtpScreen(),
       ),
 
-      /// ================= Home =================
-      GoRoute(
-        path: '/home',
-        name: 'home',
-        builder: (context, state) => const HomeScreen(),
+      /// ================= Main Navigation with ShellRoute =================
+      ShellRoute(
+        navigatorKey: GlobalKey<NavigatorState>(),
+        builder: (context, state, child) {
+          return MainNavigationScreen(
+            key: state.pageKey,
+            child: child,
+          );
+        },
+        routes: [
+          /// Home Tab
+          GoRoute(
+            path: '/home',
+            name: 'home',
+            pageBuilder: (context, state) {
+              return const NoTransitionPage(
+                child: HomeScreen(),
+              );
+            },
+            routes: [
+              /// Nested routes under home if needed
+            ],
+          ),
+
+          /// Bookings Tab
+          GoRoute(
+            path: '/bookings',
+            name: 'bookings',
+            pageBuilder: (context, state) {
+              return const NoTransitionPage(
+                child: BookingScreen(),
+              );
+            },
+          ),
+
+          /// Chats Tab
+          GoRoute(
+            path: '/chats',
+            name: 'chats',
+            pageBuilder: (context, state) {
+              return const NoTransitionPage(
+                child: ChatListScreen(),
+              );
+            },
+            routes: [
+              GoRoute(
+                path: 'details/:chatId',
+                name: 'chatDetails',
+                builder: (context, state) {
+                  final chatId = state.pathParameters['chatId']!;
+                  return ChatScreen(chatId: chatId);
+                },
+              ),
+            ],
+          ),
+
+          /// Profile Tab
+          GoRoute(
+            path: '/profile',
+            name: 'profile',
+            pageBuilder: (context, state) {
+              return const NoTransitionPage(
+                child: ProfileScreen(),
+              );
+            },
+          ),
+        ],
       ),
 
-      /// ================= User =================
-      GoRoute(
-        path: '/profile',
-        name: 'profile',
-        builder: (context, state) => const ProfileScreen(),
-      ),
-
+      /// ================= Other routes (full screen) =================
       GoRoute(
         path: '/edit-profile',
         name: 'editProfile',
         builder: (context, state) => const EditProfileScreen(),
-      ),
-
-      /// ================= Appointment =================
-      GoRoute(
-        name: "booking",
-        path: "/booking",
-        builder: (context, state) => const BookingScreen(),
       ),
 
       GoRoute(
@@ -106,7 +152,6 @@ class AppRouter {
         builder: (context, state) => const SuccessScreen(),
       ),
 
-      /// ================= Job =================
       GoRoute(
         path: '/jobs',
         name: 'jobs',
@@ -116,32 +161,18 @@ class AppRouter {
       GoRoute(
         path: '/job-details/:id',
         name: 'jobDetails',
-        builder: (context, state) =>
-            JobDetailsScreen(jobId: state.pathParameters['id']!),
+        builder: (context, state) {
+          final jobId = state.pathParameters['id']!;
+          return JobDetailsScreen(jobId: jobId);
+        },
       ),
 
-      /// ================= Chat =================
-      GoRoute(
-        path: '/chats',
-        name: 'chats',
-        builder: (context, state) => const ChatListScreen(),
-      ),
-
-      GoRoute(
-        path: '/chat-details/:chatId',
-        name: 'chatDetails',
-        builder: (context, state) =>
-            ChatScreen(chatId: state.pathParameters['chatId']!),
-      ),
-
-      /// ================= Notification =================
       GoRoute(
         path: '/notifications',
         name: 'notifications',
         builder: (context, state) => const NotificationScreen(),
       ),
 
-      /// ================= Report =================
       GoRoute(
         path: '/report',
         name: 'report',

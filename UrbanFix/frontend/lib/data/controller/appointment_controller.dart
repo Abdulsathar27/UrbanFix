@@ -3,12 +3,11 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:frontend/data/models/appointment_model.dart';
 import 'package:frontend/data/services/appointment_api_service.dart';
+import 'package:go_router/go_router.dart';
 
 class AppointmentController extends ChangeNotifier {
-  AppointmentController({
-    AppointmentApiService? appointmentApiService,
-  }) : _appointmentApiService =
-            appointmentApiService ?? AppointmentApiService();
+  AppointmentController({AppointmentApiService? appointmentApiService})
+    : _appointmentApiService = appointmentApiService ?? AppointmentApiService();
 
   static const List<String> _defaultTimeSlots = <String>[
     '09:00 AM',
@@ -18,9 +17,7 @@ class AppointmentController extends ChangeNotifier {
     '03:00 PM',
     '04:30 PM',
   ];
-  static const Set<String> _disabledTimeSlots = <String>{
-    '04:30 PM',
-  };
+  static const Set<String> _disabledTimeSlots = <String>{'04:30 PM'};
 
   final AppointmentApiService _appointmentApiService;
 
@@ -41,11 +38,10 @@ class AppointmentController extends ChangeNotifier {
   Set<String> get disabledTimeSlots => _disabledTimeSlots;
 
   List<DateTime> get availableDates => List<DateTime>.generate(
-        14,
-        (int index) => DateUtils.dateOnly(
-          DateTime.now().add(Duration(days: index)),
-        ),
-      );
+    14,
+    (int index) =>
+        DateUtils.dateOnly(DateTime.now().add(Duration(days: index))),
+  );
 
   double get estimatedTotal => 50;
 
@@ -79,6 +75,30 @@ class AppointmentController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> confirmAppointment(BuildContext context) async {
+    clearError();
+
+    final bool isCreated = await createAppointment(
+      jobId: 'house-cleaning',
+      serviceProviderId: 'provider-001',
+      appointmentDate: selectedDate,
+      timeSlot: selectedTimeSlot,
+    );
+
+    if (!context.mounted) return;
+
+    if (isCreated) {
+      context.goNamed('appointment_success');
+      return;
+    }
+
+    final String message =
+        errorMessage ?? 'Failed to create appointment. Please try again.';
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
+
   Future<void> fetchAppointments() async {
     try {
       _setLoading(true);
@@ -107,14 +127,14 @@ class AppointmentController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final AppointmentModel newAppointment =
-          await _appointmentApiService.createAppointment(
-        jobId: jobId,
-        serviceProviderId: serviceProviderId,
-        appointmentDate: appointmentDate,
-        timeSlot: timeSlot,
-        notes: notes,
-      );
+      final AppointmentModel newAppointment = await _appointmentApiService
+          .createAppointment(
+            jobId: jobId,
+            serviceProviderId: serviceProviderId,
+            appointmentDate: appointmentDate,
+            timeSlot: timeSlot,
+            notes: notes,
+          );
 
       _appointments.insert(0, newAppointment);
       return true;
@@ -134,11 +154,8 @@ class AppointmentController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final AppointmentModel updatedAppointment =
-          await _appointmentApiService.updateStatus(
-        appointmentId: appointmentId,
-        status: status,
-      );
+      final AppointmentModel updatedAppointment = await _appointmentApiService
+          .updateStatus(appointmentId: appointmentId, status: status);
 
       final int index = _appointments.indexWhere(
         (AppointmentModel appointment) => appointment.id == appointmentId,

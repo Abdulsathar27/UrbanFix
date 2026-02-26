@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../../data/models/message_model.dart';
-import '../../../../data/services/message_api_service.dart';
+import 'package:frontend/data/models/message_model.dart';
+import 'package:frontend/data/services/message_api_service.dart';
 
 class MessageController extends ChangeNotifier {
   MessageApiService messageApiService = MessageApiService();

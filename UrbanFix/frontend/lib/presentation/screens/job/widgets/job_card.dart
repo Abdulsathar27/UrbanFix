@@ -7,7 +7,7 @@ class JobCard extends StatelessWidget {
   final String location;
   final String price;
   final String status;
-  final String imageUrl;
+
 
   const JobCard({
     super.key,
@@ -15,7 +15,7 @@ class JobCard extends StatelessWidget {
     required this.location,
     required this.price,
     required this.status,
-    required this.imageUrl,
+   
   });
 
   @override
@@ -38,12 +38,6 @@ class JobCard extends StatelessWidget {
               ClipRRect(
                 borderRadius: const BorderRadius.vertical(
                     top: Radius.circular(20)),
-                child: Image.network(
-                  imageUrl,
-                  height: 170,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
               ),
               Positioned(
                 top: 15,

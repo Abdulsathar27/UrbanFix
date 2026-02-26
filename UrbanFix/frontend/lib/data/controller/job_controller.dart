@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../data/models/job_model.dart';
-import '../../../../data/services/job_api_service.dart';
+import 'package:frontend/data/models/job_model.dart';
+import 'package:frontend/data/services/job_api_service.dart';
 
 class JobController extends ChangeNotifier {
- JobApiService jobApiService = JobApiService();
+  JobApiService jobApiService = JobApiService();
 
   List<JobModel> _jobs = [];
   JobModel? _selectedJob;
@@ -61,8 +61,7 @@ class JobController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      _selectedJob =
-          await jobApiService.getJobById(jobId);
+      _selectedJob = await jobApiService.getJobById(jobId);
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -124,8 +123,7 @@ class JobController extends ChangeNotifier {
         budget: budget,
       );
 
-      final index =
-          _jobs.indexWhere((job) => job.id == jobId);
+      final index = _jobs.indexWhere((job) => job.id == jobId);
 
       if (index != -1) {
         _jobs[index] = updatedJob;
@@ -152,14 +150,12 @@ class JobController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final updatedJob =
-          await jobApiService.updateJobStatus(
+      final updatedJob = await jobApiService.updateJobStatus(
         jobId: jobId,
         status: status,
       );
 
-      final index =
-          _jobs.indexWhere((job) => job.id == jobId);
+      final index = _jobs.indexWhere((job) => job.id == jobId);
 
       if (index != -1) {
         _jobs[index] = updatedJob;
