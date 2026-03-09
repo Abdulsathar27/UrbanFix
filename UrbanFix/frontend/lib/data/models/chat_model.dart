@@ -31,14 +31,14 @@ class ChatModel {
           : [],
       lastMessage: json['lastMessage'],
       lastMessageTime: json['lastMessageTime'] != null
-          ? DateTime.parse(json['lastMessageTime'])
+          ? DateTime.tryParse(json['lastMessageTime'])
           : null,
       unreadCount: json['unreadCount'] ?? 0,
       createdAt: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'])
+          ? DateTime.tryParse(json['createdAt'])
           : null,
       updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'])
+          ? DateTime.tryParse(json['updatedAt'])
           : null,
     );
   }
@@ -77,8 +77,7 @@ class ChatModel {
       jobId: jobId ?? this.jobId,
       participantIds: participantIds ?? this.participantIds,
       lastMessage: lastMessage ?? this.lastMessage,
-      lastMessageTime:
-          lastMessageTime ?? this.lastMessageTime,
+      lastMessageTime: lastMessageTime ?? this.lastMessageTime,
       unreadCount: unreadCount ?? this.unreadCount,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

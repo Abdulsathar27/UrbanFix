@@ -97,4 +97,17 @@ class Helpers {
       },
     );
   }
+
+   static void showDetails(BuildContext context, String title) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Details for $title'),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: const Color(0xFF1B3A6B),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
 }

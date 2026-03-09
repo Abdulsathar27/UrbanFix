@@ -71,13 +71,13 @@ class MessageController extends ChangeNotifier {
   }) async {
     try {
       final newMessage = await messageApiService.sendMessage(
-        chatId: chatId,
-        receiverId: receiverId,
-        message: message,
-        type: type,
+       chatId,
+         receiverId,
+         message,
+       type,
       );
 
-      _messages.add(newMessage);
+      _messages.add(newMessage.first);
       notifyListeners();
     } catch (e) {
       _setError(e.toString());

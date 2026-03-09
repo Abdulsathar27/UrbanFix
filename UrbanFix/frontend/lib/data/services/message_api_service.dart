@@ -33,25 +33,21 @@ class MessageApiService {
   // ==========================================================
   // Send Message
   // ==========================================================
-  Future<MessageModel> sendMessage({
-    required String chatId,
-    required String receiverId,
-    required String message,
-    String type = "text",
-  }) async {
+  Future<List<MessageModel>> sendMessage(String chatId,String receiverId,String message,String type) async {
     try {
-      final response = await _dio.post(
-        ApiConstants.sendMessage,
+      final response = await _dio.post("${ApiConstants.sendMessage}/sendMessage",
         data: {
           "chatId": chatId,
           "receiverId": receiverId,
           "message": message,
-          "type": type,
-        },
+          "type": type
+        }
       );
+      final List<dynamic> data = response.data as List<dynamic>;
 
-      return MessageModel.fromJson(
-          response.data as Map<String, dynamic>);
+      return data
+          .map((json) => MessageModel.fromJson(json as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw Exception(
           "Failed to send message: ${e.message}");
@@ -61,12 +57,16 @@ class MessageApiService {
   // ==========================================================
   // Mark Message As Seen
   // ==========================================================
-  Future<void> markMessageAsSeen(
+  Future<List<MessageModel>> markMessageAsSeen(
       String messageId) async {
     try {
-      await _dio.put(
+      final response = await _dio.put(
         "${ApiConstants.messages}/$messageId/seen",
       );
+      final List<dynamic> data = response.data as List<dynamic>;
+      return data
+          .map((json) => MessageModel.fromJson(json as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw Exception(
           "Failed to mark message as seen: ${e.message}");
@@ -76,12 +76,16 @@ class MessageApiService {
   // ==========================================================
   // Delete Message
   // ==========================================================
-  Future<void> deleteMessage(
+  Future<List<MessageModel>> deleteMessage(
       String messageId) async {
     try {
-      await _dio.delete(
+      final response = await _dio.delete(
         "${ApiConstants.messages}/$messageId",
       );
+      final List<dynamic> data = response.data as List<dynamic>;
+      return data
+          .map((json) => MessageModel.fromJson(json as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw Exception(
           "Failed to delete message: ${e.message}");

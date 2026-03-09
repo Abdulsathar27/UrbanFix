@@ -8,7 +8,7 @@ class FloatingChatButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
-        context.go('/chats'); // This will now work with the ShellRoute
+        context.go('/chats');
       },
       child: const Icon(Icons.chat),
     );

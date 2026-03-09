@@ -10,8 +10,6 @@ import 'data/controller/report_controller.dart';
 import 'data/controller/theme_controller.dart';
 import 'data/controller/user_controller.dart';
 
-
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
@@ -24,30 +22,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => ThemeController()),
+        ChangeNotifierProvider(create: (_) => UserController()),
+        ChangeNotifierProvider(create: (_) => AppointmentController()),
         ChangeNotifierProvider(
-          create: (_) => ThemeController(),
+          create: (_) {
+            final controller = JobController();
+            controller.fetchJobs();
+            return controller;
+          },
         ),
-        ChangeNotifierProvider(
-          create: (_) => UserController(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => AppointmentController(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => JobController(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ChatController(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => MessageController(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => NotificationController(),
-        ),
-        ChangeNotifierProvider(
-          create: (_) => ReportController(),
-        ),
+        ChangeNotifierProvider(create: (_) => ChatController()),
+        ChangeNotifierProvider(create: (_) => MessageController()),
+        ChangeNotifierProvider(create: (_) => NotificationController()),
+        ChangeNotifierProvider(create: (_) => ReportController()),
       ],
       child: Consumer<ThemeController>(
         builder: (context, themeProvider, _) {
@@ -59,7 +47,7 @@ class MyApp extends StatelessWidget {
             darkTheme: themeProvider.darkTheme,
             themeMode: themeProvider.themeMode,
 
-            routerConfig: AppRouter.router,  
+            routerConfig: AppRouter.router,
           );
         },
       ),

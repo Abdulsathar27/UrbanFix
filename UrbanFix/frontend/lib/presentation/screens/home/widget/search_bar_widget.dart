@@ -1,5 +1,6 @@
-// NEW CODE - Design 2: Neomorphic Premium
 import 'package:flutter/material.dart';
+import 'package:frontend/data/controller/user_controller.dart';
+import 'package:provider/provider.dart';
 
 class SearchBarWidget extends StatelessWidget {
   final TextEditingController controller;
@@ -12,72 +13,28 @@ class SearchBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(25),
-          gradient: LinearGradient(
-            colors: [Colors.grey.shade50, Colors.white],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      padding: const EdgeInsets.all(16.0),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          hintText: "Search services...",
+          prefixIcon: const Icon(Icons.search),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
           ),
-          boxShadow: [
-            // Outer shadow for neomorphic effect
-            BoxShadow(
-              color: Colors.grey.shade300,
-              blurRadius: 15,
-              offset: const Offset(5, 5),
-            ),
-            BoxShadow(
-              color: Colors.white,
-              blurRadius: 15,
-              offset: const Offset(-5, -5),
-            ),
-          ],
-        ),
-        child: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            hintText: "What service are you looking for?",
-            hintStyle: TextStyle(
-              color: Colors.grey.shade400,
-              fontStyle: FontStyle.italic,
-            ),
-            prefixIcon: Icon(
-              Icons.search,
-              color: Colors.blue.shade700,
-              size: 24,
-            ),
-            suffixIcon: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 1,
-                  height: 30,
-                  color: Colors.grey.shade300,
-                ),
-                IconButton(
+          suffixIcon: controller.text.isNotEmpty
+              ? IconButton(
+                  icon: const Icon(Icons.clear),
                   onPressed: () {
-                    // Add filter functionality
+                    controller.clear();
+                    context.read<UserController>().notifyListeners();
                   },
-                  icon: Icon(
-                    Icons.filter_list,
-                    color: Colors.blue.shade700,
-                  ),
-                ),
-              ],
-            ),
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 16,
-            ),
-          ),
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
+                )
+              : null,
         ),
+        onChanged: (value) {
+          context.read<UserController>().notifyListeners();
+        },
       ),
     );
   }

@@ -8,8 +8,6 @@ class NotificationController extends ChangeNotifier {
   List<NotificationModel> _notifications = [];
   bool _isLoading = false;
   String? _errorMessage;
-
-  /// ✅ NEW: Prevent multiple API calls
   bool _hasFetched = false;
 
   // ==========================
@@ -20,14 +18,14 @@ class NotificationController extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   bool get hasFetched => _hasFetched;
 
-  int get unreadCount =>
-      _notifications.where((n) => !n.isRead).length;
+  int get unreadCount => _notifications.where((n) => !n.isRead).length;
 
   // ==========================
   // Private Helpers
   // ==========================
   void _setLoading(bool value) {
     _isLoading = value;
+
     notifyListeners();
   }
 
@@ -45,27 +43,18 @@ class NotificationController extends ChangeNotifier {
   // Fetch Notifications
   // ==========================
   Future<void> fetchNotifications() async {
-    /// ✅ NEW: prevent duplicate fetch
     if (_hasFetched) return;
-
     try {
       _setLoading(true);
       _setError(null);
-
-      final data =
-          await notificationApiService.getNotifications();
-
-      /// Sort newest first
+      final data = await notificationApiService.getNotifications();
       data.sort(
-        (a, b) => (b.createdAt ?? DateTime.now())
-            .compareTo(a.createdAt ?? DateTime.now()),
+        (a, b) => (b.createdAt ?? DateTime.now()).compareTo(
+          a.createdAt ?? DateTime.now(),
+        ),
       );
-
       _notifications = data;
-
-      /// ✅ NEW: mark as fetched
       _hasFetched = true;
-
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -79,15 +68,9 @@ class NotificationController extends ChangeNotifier {
   Future<void> markAsRead(String notificationId) async {
     try {
       await notificationApiService.markAsRead(notificationId);
-
-      final index = _notifications
-          .indexWhere((n) => n.id == notificationId);
-
+      final index = _notifications.indexWhere((n) => n.id == notificationId);
       if (index != -1) {
-        _notifications[index] =
-            _notifications[index]
-                .copyWith(isRead: true);
-
+        _notifications[index] = _notifications[index].copyWith(isRead: true);
         notifyListeners();
       }
     } catch (e) {
@@ -101,11 +84,9 @@ class NotificationController extends ChangeNotifier {
   Future<void> markAllAsRead() async {
     try {
       await notificationApiService.markAllAsRead();
-
       _notifications = _notifications
           .map((n) => n.copyWith(isRead: true))
           .toList();
-
       notifyListeners();
     } catch (e) {
       _setError(e.toString());
@@ -115,14 +96,11 @@ class NotificationController extends ChangeNotifier {
   // ==========================
   // Delete Notification
   // ==========================
-  Future<void> deleteNotification(
-      String notificationId) async {
+  Future<void> deleteNotification(String notificationId) async {
     try {
-      await notificationApiService
-          .deleteNotification(notificationId);
+      await notificationApiService.deleteNotification(notificationId);
 
-      _notifications
-          .removeWhere((n) => n.id == notificationId);
+      _notifications.removeWhere((n) => n.id == notificationId);
 
       notifyListeners();
     } catch (e) {
@@ -135,7 +113,9 @@ class NotificationController extends ChangeNotifier {
   // ==========================
   void clearNotifications() {
     _notifications = [];
-    _hasFetched = false; /// ✅ Reset fetch state
+    _hasFetched = false;
+
+    /// ✅ Reset fetch state
     notifyListeners();
   }
 }

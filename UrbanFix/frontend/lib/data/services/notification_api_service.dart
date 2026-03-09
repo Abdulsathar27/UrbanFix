@@ -7,8 +7,6 @@ import 'dio_client.dart';
 class NotificationApiService {
   final Dio _dio = DioClient().dio;
 
-  
-
   // ==========================================================
   // Get All Notifications
   // ==========================================================
@@ -33,12 +31,16 @@ class NotificationApiService {
   // ==========================================================
   // Mark Single Notification As Read
   // ==========================================================
-  Future<void> markAsRead(
+  Future<List<NotificationModel>> markAsRead(
       String notificationId) async {
     try {
-      await _dio.put(
+      final response = await _dio.put(
         "${ApiConstants.notifications}/$notificationId/read",
       );
+      final List<dynamic> data = response.data as List<dynamic>;
+      return data
+          .map((json) => NotificationModel.fromJson(json as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw Exception(
           "Failed to mark notification as read: ${e.message}");
@@ -48,11 +50,15 @@ class NotificationApiService {
   // ==========================================================
   // Mark All Notifications As Read
   // ==========================================================
-  Future<void> markAllAsRead() async {
+  Future<List<NotificationModel>> markAllAsRead() async {
     try {
-      await _dio.put(
+      final response = await _dio.put(
         "${ApiConstants.notifications}/read-all",
       );
+      final List<dynamic> data = response.data as List<dynamic>;
+      return data
+          .map((json) => NotificationModel.fromJson(json as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw Exception(
           "Failed to mark all notifications as read: ${e.message}");
@@ -62,12 +68,16 @@ class NotificationApiService {
   // ==========================================================
   // Delete Notification
   // ==========================================================
-  Future<void> deleteNotification(
+  Future<List<NotificationModel>> deleteNotification(
       String notificationId) async {
     try {
-      await _dio.delete(
+      final response = await _dio.delete(
         "${ApiConstants.notifications}/$notificationId",
       );
+      final List<dynamic> data = response.data as List<dynamic>;
+      return data
+          .map((json) => NotificationModel.fromJson(json as Map<String, dynamic>))
+          .toList();
     } on DioException catch (e) {
       throw Exception(
           "Failed to delete notification: ${e.message}");

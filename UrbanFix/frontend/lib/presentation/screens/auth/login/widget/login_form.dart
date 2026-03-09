@@ -14,35 +14,31 @@ class LoginForm extends StatelessWidget {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-Future<void> _submit(BuildContext context) async {
-  if (!_formKey.currentState!.validate()) return;
+  Future<void> _submit(BuildContext context) async {
+    if (!_formKey.currentState!.validate()) return;
 
-  final controller = context.read<UserController>();
+    final controller = context.read<UserController>();
 
-  final success = await controller.submitLogin();
+    final success = await controller.submitLogin();
 
-  if (success) {
-    // User already verified
-    context.goNamed('home');
-    return;
+    if (success) {
+      // User already verified
+      context.goNamed('home');
+      return;
+    }
+
+    // If login failed because email not verified
+    if (controller.errorMessage == "Please verify your email") {
+      context.goNamed(
+        'otp',
+        extra: controller.emailloginController.text.trim(),
+      );
+      return;
+    }
+
+    // Other login errors
+    Helpers.showError(context, controller.errorMessage ?? "Login failed");
   }
-
-  // If login failed because email not verified
-  if (controller.errorMessage == "Please verify your email") {
-    context.goNamed(
-      'otp',
-      extra: controller.emailloginController.text.trim(),
-    );
-    return;
-  }
-
-  // Other login errors
-  Helpers.showError(
-    context,
-    controller.errorMessage ?? "Login failed",
-  );
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -52,17 +48,46 @@ Future<void> _submit(BuildContext context) async {
           key: _formKey,
           child: ListView(
             children: [
-
               /// Email Field
               TextFormField(
                 controller: controller.emailloginController,
                 validator: Validators.validateEmail,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   hintText: AppStrings.emailOrPhoneNumber,
-                  prefixIcon: Icon(Icons.person),
+                  prefixIcon: const Icon(Icons.person),
+                  // Add a border that is always visible
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0), // Rounded corners
+                    borderSide: const BorderSide(color: Colors.grey),
+                  ),
+                  // Style when the field is enabled but not focused
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(
+                      color: Colors.grey,
+                      width: 1.0,
+                    ),
+                  ),
+                  // Style when the field is focused
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(
+                      color: Colors.blue,
+                      width: 2.0,
+                    ),
+                  ),
+                  // Style when there’s an error
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(color: Colors.red, width: 1.0),
+                  ),
+                  // Style when focused and in error state
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(color: Colors.red, width: 2.0),
+                  ),
                 ),
               ),
-
               const SizedBox(height: 16),
 
               /// Password Field
@@ -80,6 +105,36 @@ Future<void> _submit(BuildContext context) async {
                           : Icons.visibility_off,
                     ),
                     onPressed: controller.togglePasswordVisibility,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0), // Rounded corners
+                    borderSide: const BorderSide(color: Colors.grey),
+                  ),
+                  // Style when the field is enabled but not focused
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(
+                      color: Colors.grey,
+                      width: 1.0,
+                    ),
+                  ),
+                  // Style when the field is focused
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(
+                      color: Colors.blue,
+                      width: 2.0,
+                    ),
+                  ),
+                  // Style when there’s an error
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(color: Colors.red, width: 1.0),
+                  ),
+                  // Style when focused and in error state
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(color: Colors.red, width: 2.0),
                   ),
                 ),
               ),

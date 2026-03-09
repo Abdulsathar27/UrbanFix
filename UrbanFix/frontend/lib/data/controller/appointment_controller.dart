@@ -1,15 +1,36 @@
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:frontend/data/models/appointment_model.dart';
 import 'package:frontend/data/services/appointment_api_service.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 class AppointmentController extends ChangeNotifier {
-  AppointmentController({AppointmentApiService? appointmentApiService})
-    : _appointmentApiService = appointmentApiService ?? AppointmentApiService();
+  final AppointmentApiService _appointmentApiService;
 
-  static const List<String> _defaultTimeSlots = <String>[
+  // Lists
+  final List<AppointmentModel> _sentAppointments = [];
+  final List<AppointmentModel> _receivedAppointments = [];
+
+  // State
+  bool _isLoading = false;
+  String? _errorMessage;
+  bool _isInitialized = false;
+
+  // Selected service details (from previous screen)
+  String? _jobId;
+  String? _workerId;
+  String? _workTitle;
+  double? _requestedWage;
+  String? _description;
+  String? _category;
+
+  // Date/Time selection
+  DateTime _selectedDate = DateUtils.dateOnly(DateTime.now());
+  String _selectedTimeSlot = _defaultTimeSlots.first;
+
+  // Time slots
+  static const List<String> _defaultTimeSlots = [
     '09:00 AM',
     '10:30 AM',
     '12:00 PM',
@@ -17,54 +38,198 @@ class AppointmentController extends ChangeNotifier {
     '03:00 PM',
     '04:30 PM',
   ];
-  static const Set<String> _disabledTimeSlots = <String>{'04:30 PM'};
+  Set<String> _disabledTimeSlots = {};
 
-  final AppointmentApiService _appointmentApiService;
+  // Constructor with dependency injection
+  AppointmentController({AppointmentApiService? appointmentApiService})
+      : _appointmentApiService = appointmentApiService ?? AppointmentApiService() {
+    _initialize();
+  }
 
-  final List<AppointmentModel> _appointments = <AppointmentModel>[];
-  bool _isLoading = false;
-  String? _errorMessage;
-  DateTime _selectedDate = DateUtils.dateOnly(DateTime.now());
-  String _selectedTimeSlot = _defaultTimeSlots.first;
+  Future<void> _initialize() async {
+    await Future.wait([
+      fetchSentAppointments(),
+      fetchReceivedAppointments(),
+    ]);
+    _isInitialized = true;
+    notifyListeners();
+  }
 
-  List<AppointmentModel> get appointments =>
-      UnmodifiableListView<AppointmentModel>(_appointments);
+  // ---------- Public Getters ----------
+  List<AppointmentModel> get sentAppointments =>
+      UnmodifiableListView(_sentAppointments);
+  List<AppointmentModel> get receivedAppointments =>
+      UnmodifiableListView(_receivedAppointments);
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
+  bool get isInitialized => _isInitialized;
 
   DateTime get selectedDate => _selectedDate;
   String get selectedTimeSlot => _selectedTimeSlot;
   List<String> get availableTimeSlots => _defaultTimeSlots;
   Set<String> get disabledTimeSlots => _disabledTimeSlots;
 
-  List<DateTime> get availableDates => List<DateTime>.generate(
+  List<DateTime> get availableDates => List.generate(
     14,
-    (int index) =>
-        DateUtils.dateOnly(DateTime.now().add(Duration(days: index))),
+    (index) => DateUtils.dateOnly(DateTime.now().add(Duration(days: index))),
   );
 
-  double get estimatedTotal => 50;
+  double get estimatedTotal => _requestedWage ?? 0;
 
-  void _setLoading(bool value) {
-    if (_isLoading == value) return;
-    _isLoading = value;
+  set category(String value) {
+    _category = value;
     notifyListeners();
   }
 
-  void _setError(String? message) {
-    if (_errorMessage == message) return;
-    _errorMessage = message;
-    notifyListeners();
+  String? get jobId => _jobId;
+  String? get workerId => _workerId;
+  String? get workTitle => _workTitle;
+  double? get requestedWage => _requestedWage;
+  String? get description => _description;
+  String? get category => _category;
+
+  // Filtered lists based on status and date
+  List<AppointmentModel> get upcomingAppointments {
+    final now = DateTime.now();
+    // Combine sent and received appointments for upcoming
+    final allAppointments = [..._sentAppointments, ..._receivedAppointments];
+    return allAppointments.where((appointment) {
+      try {
+        final appointmentDate = DateTime.parse(appointment.date);
+        return appointment.status == 'pending' ||
+            appointment.status == 'accepted' ||
+            (appointment.status == 'confirmed' && 
+             appointmentDate.isAfter(now.subtract(const Duration(days: 1))));
+      } catch (e) {
+        return false;
+      }
+    }).toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt)); // Sort by newest first
   }
 
-  void clearError() {
-    _setError(null);
+  List<AppointmentModel> get pastAppointments {
+    // Combine sent and received appointments for past
+    final allAppointments = [..._sentAppointments, ..._receivedAppointments];
+    return allAppointments.where((appointment) {
+      return appointment.status == 'completed' ||
+          appointment.status == 'cancelled' ||
+          appointment.status == 'rejected';
+    }).toList()
+      ..sort((a, b) => b.createdAt.compareTo(a.createdAt)); // Sort by newest first
+  }
+
+  // Get upcoming count for profile card
+  int get upcomingCount => upcomingAppointments.length;
+
+  // Helper methods for formatting
+  String formatDate(String date) {
+    try {
+      final parsed = DateTime.parse(date);
+      return DateFormat.yMMMd().format(parsed);
+    } catch (e) {
+      return date;
+    }
+  }
+
+  String formatTime(String? time) {
+    return time ?? 'TBD';
+  }
+
+  String formatStatus(String status) {
+    switch (status) {
+      case 'pending':
+        return 'Pending';
+      case 'accepted':
+        return 'Accepted';
+      case 'confirmed':
+        return 'Confirmed';
+      case 'completed':
+        return 'Completed';
+      case 'cancelled':
+        return 'Cancelled';
+      case 'rejected':
+        return 'Rejected';
+      default:
+        return status;
+    }
+  }
+
+  String formatCurrency(double amount) {
+    return '₱${amount.toStringAsFixed(2)}';
+  }
+
+  // Get worker name from appointment
+  String getWorkerName(AppointmentModel appointment) {
+    if (appointment.workerDetails != null && 
+        appointment.workerDetails!['name'] != null) {
+      return appointment.workerDetails!['name'];
+    }
+    return 'Service Provider';
+  }
+
+  // Get customer name from appointment
+  String getCustomerName(AppointmentModel appointment) {
+    if (appointment.userDetails != null && 
+        appointment.userDetails!['name'] != null) {
+      return appointment.userDetails!['name'];
+    }
+    return 'Customer';
+  }
+
+  void setServiceDetails({
+  required String jobId,
+  required String workerId,
+  required String workTitle,
+  required double requestedWage,
+  String? description,
+  String? category,
+}) {
+  _jobId = jobId;
+  _workerId = workerId;
+  _workTitle = workTitle;
+  _requestedWage = requestedWage;
+  _description = description;
+  if (category != null) _category = category; // ✅ don't overwrite with null
+  _fetchDisabledSlots(workerId);
+  notifyListeners();
+}
+
+  Future<void> _fetchDisabledSlots(String workerId) async {
+    try {
+      final slots = await _appointmentApiService.getWorkerAcceptedSlots(
+        workerId,
+      );
+      _updateDisabledSlots(slots);
+    } catch (e) {
+      debugPrint('Failed to fetch disabled slots: $e');
+    }
+  }
+
+  void _updateDisabledSlots(List<Map<String, String>> slots) {
+    final selectedDateStr = _formatDate(_selectedDate);
+    final disabled = <String>{};
+    for (var slot in slots) {
+      if (slot['date'] == selectedDateStr && slot['time'] != null) {
+        disabled.add(slot['time']!);
+      }
+    }
+    _disabledTimeSlots = disabled;
+    if (_disabledTimeSlots.contains(_selectedTimeSlot)) {
+      _selectedTimeSlot = _defaultTimeSlots.firstWhere(
+        (slot) => !_disabledTimeSlots.contains(slot),
+        orElse: () => _defaultTimeSlots.first,
+      );
+    }
+    notifyListeners();
   }
 
   void selectDate(DateTime date) {
-    final DateTime normalizedDate = DateUtils.dateOnly(date);
+    final normalizedDate = DateUtils.dateOnly(date);
     if (DateUtils.isSameDay(_selectedDate, normalizedDate)) return;
     _selectedDate = normalizedDate;
+    if (_workerId != null) {
+      _fetchDisabledSlots(_workerId!);
+    }
     notifyListeners();
   }
 
@@ -75,68 +240,72 @@ class AppointmentController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> confirmAppointment(BuildContext context) async {
+  String _formatDate(DateTime date) {
+    return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+  }
+
+  Future<bool> confirmAppointment(BuildContext context) async {
     clearError();
 
-    final bool isCreated = await createAppointment(
-      jobId: 'house-cleaning',
-      serviceProviderId: 'provider-001',
-      appointmentDate: selectedDate,
-      timeSlot: selectedTimeSlot,
+    if (_jobId == null ||
+        _workerId == null ||
+        _workTitle == null ||
+        _requestedWage == null) {
+      _setError(
+        "Service details missing. Please go back and select a service.",
+      );
+      return false;
+    }
+
+    final isCreated = await createAppointment(
+      workerId: _workerId!,
+      jobId: _jobId!,
+      workTitle: _workTitle!,
+      date: _formatDate(_selectedDate),
+      time: _selectedTimeSlot,
+      requestedWage: _requestedWage!,
+      description: _description,
     );
 
-    if (!context.mounted) return;
+    if (!context.mounted) return false;
 
     if (isCreated) {
       context.goNamed('appointment_success');
-      return;
-    }
-
-    final String message =
-        errorMessage ?? 'Failed to create appointment. Please try again.';
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
-  }
-
-  Future<void> fetchAppointments() async {
-    try {
-      _setLoading(true);
-      _setError(null);
-
-      final List<AppointmentModel> fetchedAppointments =
-          await _appointmentApiService.getAppointments();
-      _appointments
-        ..clear()
-        ..addAll(fetchedAppointments);
-    } catch (e) {
-      _setError(e.toString());
-    } finally {
-      _setLoading(false);
+      return true;
+    } else {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage ?? 'Failed to create appointment')),
+        );
+      }
+      return false;
     }
   }
 
   Future<bool> createAppointment({
+    required String workerId,
     required String jobId,
-    required String serviceProviderId,
-    required DateTime appointmentDate,
-    required String timeSlot,
-    String? notes,
+    required String workTitle,
+    required String date,
+    required String time,
+    required double requestedWage,
+    String? description,
   }) async {
     try {
       _setLoading(true);
       _setError(null);
 
-      final AppointmentModel newAppointment = await _appointmentApiService
-          .createAppointment(
-            jobId: jobId,
-            serviceProviderId: serviceProviderId,
-            appointmentDate: appointmentDate,
-            timeSlot: timeSlot,
-            notes: notes,
-          );
+      final newAppointment = await _appointmentApiService.createAppointment(
+        workerId,
+        jobId,
+        workTitle,
+        date,
+        time,
+        requestedWage,
+        description,
+      );
 
-      _appointments.insert(0, newAppointment);
+      _sentAppointments.insert(0, newAppointment.first);
       return true;
     } catch (e) {
       _setError(e.toString());
@@ -146,24 +315,75 @@ class AppointmentController extends ChangeNotifier {
     }
   }
 
+  Future<void> fetchSentAppointments() async {
+    try {
+      _setLoading(true);
+      _setError(null);
+      final appointments = await _appointmentApiService.getSentAppointments();
+      _sentAppointments
+        ..clear()
+        ..addAll(appointments);
+    } catch (e) {
+      _setError(e.toString());
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> fetchReceivedAppointments() async {
+    try {
+      _setLoading(true);
+      _setError(null);
+      final appointments = await _appointmentApiService
+          .getReceivedAppointments();
+      _receivedAppointments
+        ..clear()
+        ..addAll(appointments);
+    } catch (e) {
+      _setError(e.toString());
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<void> refreshAppointments() async {
+    await Future.wait([
+      fetchSentAppointments(),
+      fetchReceivedAppointments(),
+    ]);
+  }
+
   Future<void> updateStatus({
     required String appointmentId,
     required String status,
+    String? reason,
   }) async {
     try {
       _setLoading(true);
       _setError(null);
-
-      final AppointmentModel updatedAppointment = await _appointmentApiService
-          .updateStatus(appointmentId: appointmentId, status: status);
-
-      final int index = _appointments.indexWhere(
-        (AppointmentModel appointment) => appointment.id == appointmentId,
+      final updated = await _appointmentApiService.updateStatus(
+        appointmentId,
+        status,
+        reason,
       );
+      _replaceInList(_sentAppointments, updated.first);
+      _replaceInList(_receivedAppointments, updated.first);
+    } catch (e) {
+      _setError(e.toString());
+    } finally {
+      _setLoading(false);
+    }
+  }
 
-      if (index != -1) {
-        _appointments[index] = updatedAppointment;
-      }
+  Future<void> cancelAppointment({
+    required String appointmentId,
+    required String reason,
+  }) async {
+    try {
+      _setLoading(true);
+      _setError(null);
+      await _appointmentApiService.cancelAppointment(appointmentId, reason);
+      await refreshAppointments();
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -175,16 +395,61 @@ class AppointmentController extends ChangeNotifier {
     try {
       _setLoading(true);
       _setError(null);
-
       await _appointmentApiService.deleteAppointment(appointmentId);
-
-      _appointments.removeWhere(
-        (AppointmentModel appointment) => appointment.id == appointmentId,
-      );
+      _sentAppointments.removeWhere((a) => a.id == appointmentId);
+      _receivedAppointments.removeWhere((a) => a.id == appointmentId);
     } catch (e) {
       _setError(e.toString());
     } finally {
       _setLoading(false);
     }
   }
+
+  void _replaceInList(List<AppointmentModel> list, AppointmentModel updated) {
+    final index = list.indexWhere((a) => a.id == updated.id);
+    if (index != -1) {
+      list[index] = updated;
+    }
+  }
+
+  void _setLoading(bool value) {
+    if (_isLoading == value) return;
+    _isLoading = value;
+    notifyListeners();
+  }
+
+  void _setError(String? message) {
+    _errorMessage = message;
+    notifyListeners();
+  }
+
+  void clearError() {
+    _setError(null);
+  }
+
+  @override
+  void dispose() {
+    // Clean up any resources if needed
+    super.dispose();
+  }
+  int _index = 0;
+  int get index => _index;
+
+  void select(int i) {
+    if (_index == i) return;
+    _index = i;
+    notifyListeners();
+  }
+  bool _screenInitialized = false;
+
+Future<void> initialize() async {
+  if (_screenInitialized) return;
+
+  _screenInitialized = true;
+
+  if (!isInitialized) {
+    await refreshAppointments();
+  }
+}
+  
 }

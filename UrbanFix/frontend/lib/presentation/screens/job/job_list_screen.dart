@@ -9,18 +9,12 @@ class JobListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    // ✅ ADDED: Fetch jobs when screen loads
-    Future.microtask(() =>
-        context.read<JobController>().fetchJobs());
-
     return Scaffold(
       backgroundColor: const Color(0xFFF5F6F8),
       body: SafeArea(
         child: Column(
           children: [
-
-            /// HEADER SECTION (UNCHANGED DESIGN)
+            // ─── Header ───────────────────────────────────────────────────
             Container(
               padding: const EdgeInsets.all(20),
               color: Colors.white,
@@ -52,6 +46,7 @@ class JobListScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
 
+                  // Search bar
                   Row(
                     children: [
                       Expanded(
@@ -69,7 +64,7 @@ class JobListScreen extends StatelessWidget {
                               Text(
                                 "Search tasks or services...",
                                 style: TextStyle(color: Colors.grey),
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -83,11 +78,12 @@ class JobListScreen extends StatelessWidget {
                           borderRadius: BorderRadius.circular(18),
                         ),
                         child: const Icon(Icons.tune, color: Colors.white),
-                      )
+                      ),
                     ],
                   ),
                   const SizedBox(height: 20),
 
+                  // Category chips
                   const SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
@@ -98,35 +94,41 @@ class JobListScreen extends StatelessWidget {
                         CategoryChip(label: "Cleaning"),
                       ],
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
 
-            /// BODY LIST (CONNECTED TO CONTROLLER)
+            // ─── Body ─────────────────────────────────────────────────────
             Expanded(
               child: Consumer<JobController>(
                 builder: (context, controller, child) {
-
-                  // ✅ ADDED: Loading State
                   if (controller.isLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
+                    return const Center(child: CircularProgressIndicator());
                   }
 
-                  // ✅ ADDED: Error State
                   if (controller.errorMessage != null) {
                     return Center(
-                      child: Text(controller.errorMessage!),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            controller.errorMessage!,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(color: Colors.red),
+                          ),
+                          const SizedBox(height: 12),
+                          ElevatedButton(
+                            onPressed: controller.fetchJobs,
+                            child: const Text('Retry'),
+                          ),
+                        ],
+                      ),
                     );
                   }
 
-                  // ✅ ADDED: Empty State
                   if (controller.jobs.isEmpty) {
-                    return const Center(
-                      child: Text("No jobs available"),
-                    );
+                    return const Center(child: Text("No jobs available"));
                   }
 
                   return ListView(
@@ -140,15 +142,13 @@ class JobListScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 15),
-
-                      // ✅ ADDED: Dynamic Job List
                       ...controller.jobs.map(
                         (job) => Padding(
                           padding: const EdgeInsets.only(bottom: 20),
                           child: JobCard(
                             title: job.title,
                             location: job.location,
-                            price: "\$${job.budget ?? 0}",
+                            price: "₹${job.budget ?? 0}",
                             status: job.status,
                           ),
                         ),
@@ -157,20 +157,18 @@ class JobListScreen extends StatelessWidget {
                   );
                 },
               ),
-            )
+            ),
           ],
         ),
       ),
 
-      /// Bottom Navigation (UNCHANGED DESIGN)
+      // ─── Bottom Nav ───────────────────────────────────────────────────────
       bottomNavigationBar: Container(
         height: 75,
         padding: const EdgeInsets.symmetric(horizontal: 25),
         decoration: const BoxDecoration(
           color: Colors.white,
-          boxShadow: [
-            BoxShadow(blurRadius: 10, color: Colors.black12)
-          ],
+          boxShadow: [BoxShadow(blurRadius: 10, color: Colors.black12)],
         ),
         child: const Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -185,4 +183,3 @@ class JobListScreen extends StatelessWidget {
     );
   }
 }
-

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/presentation/screens/appointment/widgets/date_circle.dart';
+import 'package:frontend/presentation/screens/booking/widgets/date_circle.dart';
 
 class DateSection extends StatelessWidget {
   const DateSection({

@@ -40,34 +40,41 @@ class JobController extends ChangeNotifier {
   // ==========================
   // Fetch All Jobs
   // ==========================
-  Future<void> fetchJobs() async {
-    try {
-      _setLoading(true);
-      _setError(null);
-
-      _jobs = await jobApiService.getJobs();
-    } catch (e) {
-      _setError(e.toString());
-    } finally {
-      _setLoading(false);
-    }
+ Future<void> fetchJobs() async {
+  try {
+    _setLoading(true);
+    _setError(null);
+    _jobs = await jobApiService.getJobs();
+    notifyListeners(); // ✅ tell UI jobs are ready
+  } catch (e) {
+    _setError(e.toString());
+  } finally {
+    _setLoading(false);
   }
+}
 
   // ==========================
   // Fetch Single Job
   // ==========================
   Future<void> fetchJobById(String jobId) async {
-    try {
-      _setLoading(true);
-      _setError(null);
+  try {
+    _setLoading(true);
+    _setError(null);
 
-      _selectedJob = await jobApiService.getJobById(jobId);
-    } catch (e) {
-      _setError(e.toString());
-    } finally {
-      _setLoading(false);
+    final jobs = await jobApiService.getJobById(jobId); // returns List<JobModel>
+
+    if (jobs.isEmpty) {
+      _setError("Job not found");
+      _selectedJob = null;
+    } else {
+      _selectedJob = jobs.first; // take the first job
     }
+  } catch (e) {
+    _setError(e.toString());
+  } finally {
+    _setLoading(false);
   }
+}
 
   // ==========================
   // Create Job
@@ -84,14 +91,14 @@ class JobController extends ChangeNotifier {
       _setError(null);
 
       final newJob = await jobApiService.createJob(
-        title: title,
-        description: description,
-        category: category,
-        location: location,
-        budget: budget,
+        title,
+        description,
+         category,
+        location,
+        budget,
       );
 
-      _jobs.add(newJob);
+      _jobs.add(newJob.first);
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -115,22 +122,22 @@ class JobController extends ChangeNotifier {
       _setError(null);
 
       final updatedJob = await jobApiService.updateJob(
-        jobId: jobId,
-        title: title,
-        description: description,
-        category: category,
-        location: location,
-        budget: budget,
+         jobId,
+         title,
+         description,
+         category,
+         location,
+         budget,
       );
 
       final index = _jobs.indexWhere((job) => job.id == jobId);
 
       if (index != -1) {
-        _jobs[index] = updatedJob;
+        _jobs[index] = updatedJob.first;
       }
 
       if (_selectedJob?.id == jobId) {
-        _selectedJob = updatedJob;
+        _selectedJob = updatedJob.first;
       }
     } catch (e) {
       _setError(e.toString());
@@ -151,18 +158,18 @@ class JobController extends ChangeNotifier {
       _setError(null);
 
       final updatedJob = await jobApiService.updateJobStatus(
-        jobId: jobId,
-        status: status,
+     jobId,
+         status,
       );
 
       final index = _jobs.indexWhere((job) => job.id == jobId);
 
       if (index != -1) {
-        _jobs[index] = updatedJob;
+        _jobs[index] = updatedJob.first;
       }
 
       if (_selectedJob?.id == jobId) {
-        _selectedJob = updatedJob;
+        _selectedJob = updatedJob.first;
       }
     } catch (e) {
       _setError(e.toString());
@@ -192,4 +199,10 @@ class JobController extends ChangeNotifier {
       _setLoading(false);
     }
   }
+
+  Future<void> loadJobs() async {
+  await fetchJobs();
+}
+
+
 }

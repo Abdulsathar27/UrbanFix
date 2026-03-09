@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/presentation/screens/appointment/widgets/time_chip.dart';
+import 'package:frontend/presentation/screens/booking/widgets/time_chip.dart';
 
 class TimeSection extends StatelessWidget {
   const TimeSection({

@@ -1,15 +1,16 @@
-// NEW CODE - Design 3: Minimalist Premium with Border
 import 'package:flutter/material.dart';
 
-class ServiceCards extends StatelessWidget {
+class ServiceCard extends StatelessWidget {
   final String title;
-  final bool isSelected; // Optional selection state
+  final IconData icon;
+  final Color? iconColor;
   final VoidCallback? onTap;
 
-  const ServiceCards({
+  const ServiceCard({
     super.key,
     required this.title,
-    this.isSelected = false,
+    required this.icon,
+    this.iconColor,
     this.onTap,
   });
 
@@ -17,20 +18,13 @@ class ServiceCards extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
+      child: Container(
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue.shade50 : Colors.white,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected ? Colors.blue.shade400 : Colors.grey.shade200,
-            width: isSelected ? 2 : 1,
-          ),
           boxShadow: [
             BoxShadow(
-              color: isSelected 
-                  ? Colors.blue.withOpacity(0.2)
-                  : Colors.grey.withOpacity(0.1),
+              color: Colors.grey.withOpacity(0.1),
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -39,43 +33,32 @@ class ServiceCards extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Icon with animation
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              padding: const EdgeInsets.all(12),
+            Container(
+              width: 60,
+              height: 60,
               decoration: BoxDecoration(
-                color: isSelected ? Colors.blue : Colors.grey.shade100,
+                color: (iconColor ?? Colors.blue).withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                _getIconForTitle(title),
-                color: isSelected ? Colors.white : Colors.grey.shade600,
-                size: 24,
+                icon,
+                color: iconColor ?? Colors.blue,
+                size: 28,
               ),
             ),
             const SizedBox(height: 12),
-            // Title
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                color: isSelected ? Colors.blue.shade700 : Colors.grey.shade800,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF2C3E50),
               ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),
       ),
     );
-  }
-
-  IconData _getIconForTitle(String title) {
-    // Similar icon mapping as Design 1
-    if (title.toLowerCase().contains('hair')) return Icons.content_cut;
-    if (title.toLowerCase().contains('spa')) return Icons.spa;
-    if (title.toLowerCase().contains('massage')) return Icons.fitness_center;
-    if (title.toLowerCase().contains('facial')) return Icons.face;
-    if (title.toLowerCase().contains('nail')) return Icons.brush;
-    return Icons.star;
   }
 }

@@ -5,16 +5,14 @@ import 'package:frontend/data/services/chat_api_service.dart';
 import 'package:frontend/data/services/message_api_service.dart';
 
 class ChatController extends ChangeNotifier {
-  // ==========================
-  // 🔹 ADDED: Make service final (best practice)
-  // ==========================
-  final ChatApiService chatApiService = ChatApiService();
-  final MessageApiService messageApiService = MessageApiService();
+  final ChatApiService _chatApiService = ChatApiService();
+  final MessageApiService _messageApiService = MessageApiService();
 
   List<ChatModel> _chats = [];
   List<MessageModel> _messages = [];
   ChatModel? _selectedChat;
   bool _isLoading = false;
+  bool _isSending = false; // FIX: separate sending state so UI doesn't freeze
   String? _errorMessage;
 
   // ==========================
@@ -22,8 +20,9 @@ class ChatController extends ChangeNotifier {
   // ==========================
   List<ChatModel> get chats => _chats;
   ChatModel? get selectedChat => _selectedChat;
-  List<MessageModel> get messages => _messages; 
+  List<MessageModel> get messages => _messages;
   bool get isLoading => _isLoading;
+  bool get isSending => _isSending;
   String? get errorMessage => _errorMessage;
 
   // ==========================
@@ -31,12 +30,12 @@ class ChatController extends ChangeNotifier {
   // ==========================
   void _setLoading(bool value) {
     _isLoading = value;
-    notifyListeners(); // already correct
+    notifyListeners();
   }
 
   void _setError(String? message) {
     _errorMessage = message;
-    notifyListeners(); // already correct
+    notifyListeners();
   }
 
   void clearError() {
@@ -51,10 +50,7 @@ class ChatController extends ChangeNotifier {
     try {
       _setLoading(true);
       _setError(null);
-
-      _chats = await chatApiService.getChats();
-
-      // 🔹 ADDED: notify UI after updating list
+      _chats = await _chatApiService.getChats();
       notifyListeners();
     } catch (e) {
       _setError(e.toString());
@@ -64,16 +60,25 @@ class ChatController extends ChangeNotifier {
   }
 
   // ==========================
-  // Fetch Chat By ID
+  // Fetch Chat By ID + load messages
+  // FIX: also loads messages immediately after fetching chat
   // ==========================
   Future<void> fetchChatById(String chatId) async {
     try {
       _setLoading(true);
       _setError(null);
 
-      _selectedChat = await chatApiService.getChatById(chatId);
+      final chats = await _chatApiService.getChatById(chatId);
 
-      // 🔹 ADDED: notify UI after setting selected chat
+      if (chats.isEmpty) {
+        _selectedChat = null;
+        _setError('Chat not found');
+      } else {
+        _selectedChat = chats.first;
+        // FIX: Load messages right after selecting chat
+        await loadMessages(chatId);
+      }
+
       notifyListeners();
     } catch (e) {
       _setError(e.toString());
@@ -83,8 +88,7 @@ class ChatController extends ChangeNotifier {
   }
 
   // ==========================
-  // 🔹 ADDED: Set Selected Chat manually
-  // (Useful when opening chat screen)
+  // Set Selected Chat manually
   // ==========================
   void setSelectedChat(ChatModel chat) {
     _selectedChat = chat;
@@ -102,14 +106,8 @@ class ChatController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      final newChat = await chatApiService.createChat(
-        jobId: jobId,
-        participantIds: participantIds,
-      );
-
-      _chats.add(newChat);
-
-      // 🔹 ADDED: notify after adding
+      final newChat = await _chatApiService.createChat(jobId, participantIds);
+      _chats.add(newChat.first);
       notifyListeners();
     } catch (e) {
       _setError(e.toString());
@@ -123,10 +121,9 @@ class ChatController extends ChangeNotifier {
   // ==========================
   Future<void> markChatAsRead(String chatId) async {
     try {
-      await chatApiService.markChatAsRead(chatId);
+      await _chatApiService.markChatAsRead(chatId);
 
       final index = _chats.indexWhere((chat) => chat.id == chatId);
-
       if (index != -1) {
         _chats[index] = _chats[index].copyWith(unreadCount: 0);
         notifyListeners();
@@ -137,38 +134,53 @@ class ChatController extends ChangeNotifier {
   }
 
   // ==========================
-  // 🔹 ADDED: Send Message (Very Important for Chat Screen)
+  // Send Message
+  // FIX: uses _isSending instead of _isLoading so the full screen
+  // doesn't show a loading spinner while typing/sending
+  // FIX: appends the new message locally for instant UI feedback
   // ==========================
-   Future<void> sendMessage({
+  Future<void> sendMessage({
     required String chatId,
     required String message,
   }) async {
     try {
+      _isSending = true;
       _setError(null);
-      
-      await chatApiService.sendMessage(
-        chatId: chatId,
-        message: message,
-      );
-      
-      // Reload messages after sending
+      notifyListeners();
+
+      final sentMessage = await _chatApiService.sendMessage(chatId, message);
+
+      // Append new message at the front (list is reversed in UI)
+      _messages = [sentMessage, ..._messages];
+
+      // Refresh messages from server to stay in sync
       await loadMessages(chatId);
-      
-      // Also update the chat list if needed
-      final updatedChat = await chatApiService.getChatById(chatId);
-      _selectedChat = updatedChat;
-      
+
+      // Update last message preview in chat list
       final index = _chats.indexWhere((c) => c.id == chatId);
       if (index != -1) {
-        _chats[index] = updatedChat;
+        _chats[index] = _chats[index].copyWith(
+          lastMessage: message,
+          lastMessageTime: DateTime.now(),
+        );
       }
-      
+
+      // Update selectedChat last message too
+      if (_selectedChat?.id == chatId) {
+        _selectedChat = _selectedChat!.copyWith(
+          lastMessage: message,
+          lastMessageTime: DateTime.now(),
+        );
+      }
+
       notifyListeners();
     } catch (e) {
       _setError(e.toString());
+    } finally {
+      _isSending = false;
+      notifyListeners();
     }
   }
-
 
   // ==========================
   // Delete Chat
@@ -178,15 +190,13 @@ class ChatController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      await chatApiService.deleteChat(chatId);
-
+      await _chatApiService.deleteChat(chatId);
       _chats.removeWhere((chat) => chat.id == chatId);
 
       if (_selectedChat?.id == chatId) {
         _selectedChat = null;
       }
 
-      // 🔹 ADDED: notify after deletion
       notifyListeners();
     } catch (e) {
       _setError(e.toString());
@@ -194,14 +204,27 @@ class ChatController extends ChangeNotifier {
       _setLoading(false);
     }
   }
+
+  // ==========================
+  // Load Messages
+  // FIX: errors are now surfaced via _setError instead of silently swallowed
+  // ==========================
   Future<void> loadMessages(String chatId) async {
     try {
-      // Fetch messages from API
-      final fetchedMessages = await messageApiService.getMessages(chatId);
+      final fetchedMessages = await _messageApiService.getMessages(chatId);
       _messages = fetchedMessages;
       notifyListeners();
     } catch (e) {
-      // Handle error
+      _setError(e.toString());
     }
+  }
+
+  // ==========================
+  // Clear messages on screen exit
+  // ==========================
+  void clearMessages() {
+    _messages = [];
+    _selectedChat = null;
+    notifyListeners();
   }
 }

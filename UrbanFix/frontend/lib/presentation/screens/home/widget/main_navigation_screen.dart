@@ -1,37 +1,3 @@
-// OLD CODE:
-// class MainNavigationScreen extends StatelessWidget {
-//   final int initialIndex;
-//
-//   const MainNavigationScreen({
-//     super.key,
-//     this.initialIndex = 0,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Consumer<UserController>(
-//       builder: (context, controller, child) {
-//         return Scaffold(
-//           body: IndexedStack(
-//             index: controller.currentIndex,
-//             children: const [
-//               HomeScreen(),
-//               BookingScreen(),
-//               ChatListScreen(),
-//               ProfileScreen(),
-//             ],
-//           ),
-//           bottomNavigationBar: BottomNavBar(
-//             currentIndex: controller.currentIndex,
-//             onTap: controller.changeTab,
-//           ),
-//         );
-//       },
-//     );
-//   }
-// }
-
-// NEW CODE:
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -48,13 +14,11 @@ class MainNavigationScreen extends StatelessWidget {
     return Consumer<UserController>(
       builder: (context, controller, _) {
         return Scaffold(
-          body: child, // This will show the current tab's content
+          body: child, 
           bottomNavigationBar: BottomNavBar(
             currentIndex: controller.currentIndex,
             onTap: (index) {
               controller.changeTab(index);
-
-              // Navigate using GoRouter based on index
               switch (index) {
                 case 0:
                   context.go('/home');
@@ -63,11 +27,8 @@ class MainNavigationScreen extends StatelessWidget {
                   context.go('/bookings');
                   break;
                 case 2:
-                  context.go('/profile');
+                  context.go('/notifications');
                   break;
-                // case 3:
-                //   context.go('/chats');
-                //   break;
               }
             },
           ),

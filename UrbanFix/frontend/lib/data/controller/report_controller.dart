@@ -79,7 +79,7 @@ class ReportController extends ChangeNotifier {
 
       final report = await reportApiService.getReportById(reportId);
 
-      _selectedReport = report;
+      _selectedReport = report.first;
     } catch (e) {
       _setError(_extractErrorMessage(e));
     } finally {
@@ -102,14 +102,14 @@ class ReportController extends ChangeNotifier {
       _setError(null);
 
       final newReport = await reportApiService.createReport(
-        reason: reason,
-        description: description,
-        reportedUserId: reportedUserId,
-        jobId: jobId,
-        chatId: chatId,
+        reason,
+       description,
+         reportedUserId,
+     jobId,
+        chatId,
       );
 
-      _reports.insert(0, newReport);
+      _reports.insert(0, newReport.first);
       return true;
     } catch (e) {
       _setError(_extractErrorMessage(e));
@@ -131,14 +131,14 @@ class ReportController extends ChangeNotifier {
       _setError(null);
 
       final updatedReport = await reportApiService.updateReportStatus(
-        reportId: reportId,
-        status: status,
+      reportId,
+      status,
       );
 
       final index = _reports.indexWhere((r) => r.id == reportId);
 
       if (index != -1) {
-        _reports[index] = updatedReport;
+        _reports[index] = updatedReport.first;
       }
 
       return true;

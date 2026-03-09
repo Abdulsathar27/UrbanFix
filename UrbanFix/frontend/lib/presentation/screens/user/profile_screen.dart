@@ -31,7 +31,7 @@ class ProfileScreen extends StatelessWidget {
           appBar: AppBar(
             leading: IconButton(
               onPressed: () => context.go('/home'),
-              icon: const Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back_ios),
             ),
             title: const Text("Profile"),
             actions: [
@@ -55,15 +55,13 @@ class ProfileScreen extends StatelessWidget {
                 ProfileMenuCard(
                   icon: Icons.calendar_today,
                   title: "My Appointments",
-                  subtitle: "2 upcoming visits",
-                  onTap: () {},
+                  onTap: () => context.goNamed('my_appointments'),
                 ),
                 const SizedBox(height: 15),
 
                 ProfileMenuCard(
                   icon: Icons.location_on,
                   title: "Saved Addresses",
-                  subtitle: "Home, Office",
                   onTap: () {},
                 ),
                 const SizedBox(height: 15),
@@ -71,7 +69,6 @@ class ProfileScreen extends StatelessWidget {
                 ProfileMenuCard(
                   icon: Icons.settings,
                   title: "Settings",
-                  subtitle: "Notifications & security",
                   onTap: () {},
                 ),
                 const SizedBox(height: 40),

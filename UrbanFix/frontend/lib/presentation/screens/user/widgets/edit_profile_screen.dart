@@ -20,13 +20,17 @@ class EditProfileScreen extends StatelessWidget {
           );
         }
 
-        // Sync user data once
+        
         controller.nameController.text = user.name;
         controller.phoneController.text = user.phone ?? "";
 
         return Scaffold(
           appBar: AppBar(
             title: const Text("Edit Profile"),
+            leading:  IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () => context.go('/profile'),
+          ),
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(20),

@@ -7,6 +7,7 @@ class UserModel {
   final String? role;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final String? address; // Optional: for location display
 
   UserModel({
     required this.id,
@@ -17,6 +18,7 @@ class UserModel {
     this.role,
     this.createdAt,
     this.updatedAt,
+    this.address,
   });
 
   // ==========================
@@ -36,8 +38,13 @@ class UserModel {
       updatedAt: json['updatedAt'] != null
           ? DateTime.parse(json['updatedAt'])
           : null,
+      address: json['address'], // Optional field
     );
   }
+
+ 
+
+  
 
   // ==========================
   // To JSON
@@ -52,6 +59,7 @@ class UserModel {
       'role': role,
       'createdAt': createdAt?.toIso8601String(),
       'updatedAt': updatedAt?.toIso8601String(),
+      'address': address,
     };
   }
 
@@ -67,6 +75,7 @@ class UserModel {
     String? role,
     DateTime? createdAt,
     DateTime? updatedAt,
+    String? address,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -77,6 +86,8 @@ class UserModel {
       role: role ?? this.role,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
+      address: address ?? this.address,
+
     );
   }
 }

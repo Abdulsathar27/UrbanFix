@@ -32,6 +32,7 @@ class LoginButton extends StatelessWidget {
             : const Text(
                 AppStrings.login,
                 style: TextStyle(
+                  color: AppColors.white,
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                   letterSpacing: 1.5,

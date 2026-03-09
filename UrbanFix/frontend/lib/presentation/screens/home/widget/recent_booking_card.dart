@@ -27,7 +27,7 @@ class RecentBookingCard extends StatelessWidget {
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          Text("Service: ${appointment.serviceName}"),
+          Text("Service: ${appointment.workTitle}"),
           Text("Date: ${appointment.date}"),
           Text("Time: ${appointment.time}"),
         ],
