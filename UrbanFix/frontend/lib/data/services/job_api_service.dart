@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-
 import '../../core/constants/api_constants.dart';
 import '../models/job_model.dart';
 import 'dio_client.dart';
@@ -7,117 +6,216 @@ import 'dio_client.dart';
 class JobApiService {
   final Dio _dio = DioClient().dio;
 
-  // ==========================================================
-  // Get All Jobs
-  // ==========================================================
-  Future<List<JobModel>> getJobs() async {
+  // ✅ GET ALL JOBS - Matches backend /api/jobs GET
+  Future<Map<String, dynamic>> getJobs({
+    int page = 1,
+    int limit = 10,
+    String? search,
+    String? location,
+  }) async {
     try {
-      final response = await _dio.get(ApiConstants.jobs);
+      final queryParams = {
+        'page': page,
+        'limit': limit,
+        if (search != null) 'search': search,
+        if (location != null) 'location': location,
+      };
 
-      final List<dynamic> data = response.data as List<dynamic>;
+      final response = await _dio.get(
+        '${ApiConstants.baseUrl}/jobs',
+        queryParameters: queryParams,
+      );
 
-      return data
-          .map((json) => JobModel.fromJson(json as Map<String, dynamic>))
-          .toList();
+      return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
       throw Exception("Failed to fetch jobs: ${e.message}");
     }
   }
 
-  // ==========================================================
-  // Get Job By ID
-  // ==========================================================
-  Future<List<JobModel>> getJobById(String jobId) async {
+  // ✅ GET JOB BY ID - Matches backend /api/jobs/:id GET
+  Future<JobModel> getJobById(String jobId) async {
     try {
-      final response = await _dio.get("${ApiConstants.jobs}/$jobId");
-      final List<dynamic> data = response.data['jobs'] as List<dynamic>;
-      return data
-          .map((json) => JobModel.fromJson(json as Map<String, dynamic>))
-          .toList();
+      final response = await _dio.get(
+        '${ApiConstants.baseUrl}/jobs/$jobId',
+      );
+
+      return JobModel.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
       throw Exception("Failed to fetch job: ${e.message}");
     }
   }
 
-  // ==========================================================
-  // Create Job
-  // ==========================================================
-  Future<List<JobModel>> createJob(String? title, String? description, String? category, String? location, double? budget) async {
+  // ✅ GET LATEST JOBS - Matches backend /api/jobs/latest GET
+  Future<Map<String, dynamic>> getLatestJobs({
+    int page = 1,
+    int limit = 10,
+  }) async {
     try {
-      final response = await _dio.post('${ApiConstants.jobs}/create',
-        data: {
-          "title": title,
-          "description": description,
-          "category": category,
-          "location": location,
-          "budget": budget
-        }
+      final response = await _dio.get(
+        '${ApiConstants.baseUrl}/jobs/latest',
+        queryParameters: {
+          'page': page,
+          'limit': limit,
+        },
       );
 
-      final List<dynamic> data = response.data['jobs'] as List<dynamic>;
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      throw Exception("Failed to fetch latest jobs: ${e.message}");
+    }
+  }
+
+  // ✅ GET JOBS BY USER - Matches backend /api/jobs/user/:userId GET
+  Future<List<JobModel>> getJobsByUser(String userId) async {
+    try {
+      final response = await _dio.get(
+        '${ApiConstants.baseUrl}/jobs/user/$userId',
+      );
+
+      final List<dynamic> data = response.data as List<dynamic>;
       return data
           .map((json) => JobModel.fromJson(json as Map<String, dynamic>))
           .toList();
+    } on DioException catch (e) {
+      throw Exception("Failed to fetch user jobs: ${e.message}");
+    }
+  }
+
+  // ✅ GET NEARBY JOBS - Matches backend /api/jobs/nearby GET
+  Future<Map<String, dynamic>> getNearbyJobs({
+    required double lat,
+    required double lng,
+    double radius = 10,
+  }) async {
+    try {
+      final response = await _dio.get(
+        '${ApiConstants.baseUrl}/jobs/nearby',
+        queryParameters: {
+          'lat': lat,
+          'lng': lng,
+          'radius': radius,
+        },
+      );
+
+      return response.data as Map<String, dynamic>;
+    } on DioException catch (e) {
+      throw Exception("Failed to fetch nearby jobs: ${e.message}");
+    }
+  }
+
+  // ✅ CREATE JOB - Matches backend /api/jobs POST
+  Future<JobModel> createJob({
+    required String title,
+    required String description,
+    required String category,
+    required String location,
+    required String jobDuration,
+    required List<String> skills,
+    required String wage,
+    required String phone,
+    double? lat,
+    double? lng,
+    List<String>? images,
+  }) async {
+    try {
+      final payload = {
+        "title": title,
+        "description": description,
+        "category": category,
+        "location": location,
+        "jobDuration": jobDuration,
+        "skills": skills,
+        "wage": wage,
+        "phone": phone,
+        if (lat != null) "lat": lat,
+        if (lng != null) "lng": lng,
+        if (images != null) "images": images,
+      };
+
+      final response = await _dio.post(
+        '${ApiConstants.baseUrl}/jobs',
+        data: payload,
+      );
+
+      return JobModel.fromJson(response.data['job'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw Exception("Failed to create job: ${e.message}");
     }
   }
 
-  // ==========================================================
-  // Update Job
-  // ==========================================================
-  Future<List<JobModel>> updateJob(String? jobId,String? title,String? description,String? category,String? location,double? budget) async {
+  // ✅ UPDATE JOB - Matches backend /api/jobs/:id PUT
+  Future<JobModel> updateJob({
+    required String jobId,
+    String? title,
+    String? description,
+    String? category,
+    String? location,
+    String? jobDuration,
+    List<String>? skills,
+    String? wage,
+    String? phone,
+  }) async {
     try {
-      final response = await _dio.put("${ApiConstants.jobs}/$jobId/update",
-        data: {
-          "title": title,
-          "description": description,
-          "category": category,
-          "location": location,
-          "budget": budget
-        }
+      final payload = {
+        if (title != null) "title": title,
+        if (description != null) "description": description,
+        if (category != null) "category": category,
+        if (location != null) "location": location,
+        if (jobDuration != null) "jobDuration": jobDuration,
+        if (skills != null) "skills": skills,
+        if (wage != null) "wage": wage,
+        if (phone != null) "phone": phone,
+      };
+
+      final response = await _dio.put(
+        '${ApiConstants.baseUrl}/jobs/$jobId',
+        data: payload,
       );
 
-      final List<dynamic> data = response.data['jobs'] as List<dynamic>;
-      return data
-          .map((json) => JobModel.fromJson(json as Map<String, dynamic>))
-          .toList();
+      return JobModel.fromJson(response.data['job'] as Map<String, dynamic>);
     } on DioException catch (e) {
       throw Exception("Failed to update job: ${e.message}");
     }
   }
 
-  // ==========================================================
-  // Update Job Status
-  // ==========================================================
-  Future<List<JobModel>> updateJobStatus(String jobId, String status) async {
+  // ✅ DELETE JOB - Matches backend /api/jobs/:id DELETE
+  Future<void> deleteJob(String jobId) async {
     try {
-      final response = await _dio.put("${ApiConstants.jobs}/$jobId/status",
-        data: {
-          "status": status
-        }
-      );
-      final List<dynamic> data = response.data['jobs'] as List<dynamic>;
-      return data
-          .map((json) => JobModel.fromJson(json as Map<String, dynamic>))
-          .toList();
+      await _dio.delete('${ApiConstants.baseUrl}/jobs/$jobId');
     } on DioException catch (e) {
-      throw Exception("Failed to update job status: ${e.message}");
+      throw Exception("Failed to delete job: ${e.message}");
     }
   }
 
-  // ==========================================================
-  // Delete Job
-  // ==========================================================
-  Future<List<JobModel>> deleteJob(String jobId) async {
+  // ✅ ADD REVIEW - Matches backend /api/jobs/:id/reviews POST
+  Future<void> addReview({
+    required String jobId,
+    required int rating,
+    String? comment,
+  }) async {
     try {
-      final response = await _dio.delete("${ApiConstants.jobs}/$jobId");
-      final List<dynamic> data = response.data['jobs'] as List<dynamic>;
-      return data
-          .map((json) => JobModel.fromJson(json as Map<String, dynamic>))
-          .toList();
+      await _dio.post(
+        '${ApiConstants.baseUrl}/jobs/$jobId/reviews',
+        data: {
+          "rating": rating,
+          if (comment != null) "comment": comment,
+        },
+      );
     } on DioException catch (e) {
-      throw Exception("Failed to delete job: ${e.message}");
+      throw Exception("Failed to add review: ${e.message}");
+    }
+  }
+
+  // ✅ GET REVIEWS - Matches backend /api/jobs/:id/reviews GET
+  Future<List<Map<String, dynamic>>> getReviews(String jobId) async {
+    try {
+      final response = await _dio.get(
+        '${ApiConstants.baseUrl}/jobs/$jobId/reviews',
+      );
+
+      return List<Map<String, dynamic>>.from(response.data as List<dynamic>);
+    } on DioException catch (e) {
+      throw Exception("Failed to fetch reviews: ${e.message}");
     }
   }
 }

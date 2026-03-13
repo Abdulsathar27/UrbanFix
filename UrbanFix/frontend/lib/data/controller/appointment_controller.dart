@@ -5,19 +5,30 @@ import 'package:frontend/data/services/appointment_api_service.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
+/// Appointment Controller
+/// 
+/// Manages appointment booking flow and appointment list management
+/// State: Selected service details, date/time selection, appointments list
+/// Methods: Create, fetch, update, cancel appointments
 class AppointmentController extends ChangeNotifier {
   final AppointmentApiService _appointmentApiService;
 
-  // Lists
+  // ============================================================
+  // LISTS
+  // ============================================================
   final List<AppointmentModel> _sentAppointments = [];
   final List<AppointmentModel> _receivedAppointments = [];
 
-  // State
+  // ============================================================
+  // STATE
+  // ============================================================
   bool _isLoading = false;
   String? _errorMessage;
   bool _isInitialized = false;
 
-  // Selected service details (from previous screen)
+  // ============================================================
+  // SELECTED SERVICE DETAILS (from booking flow)
+  // ============================================================
   String? _jobId;
   String? _workerId;
   String? _workTitle;
@@ -25,11 +36,20 @@ class AppointmentController extends ChangeNotifier {
   String? _description;
   String? _category;
 
-  // Date/Time selection
+  // ============================================================
+  // CUSTOMER DETAILS (from location section)
+  // ============================================================
+  String _customerName = '';
+  String _customerPhone = '';
+  String _customerAddress = '';
+
+  // ============================================================
+  // DATE/TIME SELECTION
+  // ============================================================
   DateTime _selectedDate = DateUtils.dateOnly(DateTime.now());
   String _selectedTimeSlot = _defaultTimeSlots.first;
 
-  // Time slots
+  // Time slots (7 AM - 8 PM as per backend validation)
   static const List<String> _defaultTimeSlots = [
     '09:00 AM',
     '10:30 AM',
@@ -40,26 +60,66 @@ class AppointmentController extends ChangeNotifier {
   ];
   Set<String> _disabledTimeSlots = {};
 
-  // Constructor with dependency injection
+  // ============================================================
+  // CONSTRUCTOR WITH DEPENDENCY INJECTION
+  // ============================================================
   AppointmentController({AppointmentApiService? appointmentApiService})
-      : _appointmentApiService = appointmentApiService ?? AppointmentApiService() {
+    : _appointmentApiService =
+          appointmentApiService ?? AppointmentApiService() {
     _initialize();
   }
 
   Future<void> _initialize() async {
     await Future.wait([
       fetchSentAppointments(),
-      fetchReceivedAppointments(),
+      fetchReceivedAppointments()
     ]);
     _isInitialized = true;
     notifyListeners();
   }
 
-  // ---------- Public Getters ----------
+  // ============================================================
+  // PUBLIC GETTERS - SERVICE & CUSTOMER DETAILS
+  // ============================================================
+  String? get jobId => _jobId;
+  String? get workerId => _workerId;
+  String? get workTitle => _workTitle;
+  double? get requestedWage => _requestedWage;
+  String? get description => _description;
+  String? get category => _category;
+
+  String get customerName => _customerName;
+  String get customerPhone => _customerPhone;
+  String get customerAddress => _customerAddress;
+
+  set customerName(String value) {
+    _customerName = value;
+    notifyListeners();
+  }
+
+  set customerPhone(String value) {
+    _customerPhone = value;
+    notifyListeners();
+  }
+
+  set customerAddress(String value) {
+    _customerAddress = value;
+    notifyListeners();
+  }
+
+  set category(String value) {
+    _category = value;
+    notifyListeners();
+  }
+
+  // ============================================================
+  // PUBLIC GETTERS - APPOINTMENTS & STATE
+  // ============================================================
   List<AppointmentModel> get sentAppointments =>
       UnmodifiableListView(_sentAppointments);
   List<AppointmentModel> get receivedAppointments =>
       UnmodifiableListView(_receivedAppointments);
+  
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isInitialized => _isInitialized;
@@ -74,54 +134,48 @@ class AppointmentController extends ChangeNotifier {
     (index) => DateUtils.dateOnly(DateTime.now().add(Duration(days: index))),
   );
 
-  double get estimatedTotal => _requestedWage ?? 0;
+  double get estimatedTotal => _requestedWage ?? 0.0;
 
-  set category(String value) {
-    _category = value;
-    notifyListeners();
-  }
-
-  String? get jobId => _jobId;
-  String? get workerId => _workerId;
-  String? get workTitle => _workTitle;
-  double? get requestedWage => _requestedWage;
-  String? get description => _description;
-  String? get category => _category;
-
-  // Filtered lists based on status and date
+  // ============================================================
+  // FILTERED LISTS
+  // ============================================================
+  
+  /// Upcoming appointments (pending, accepted, confirmed)
   List<AppointmentModel> get upcomingAppointments {
     final now = DateTime.now();
-    // Combine sent and received appointments for upcoming
     final allAppointments = [..._sentAppointments, ..._receivedAppointments];
+    
     return allAppointments.where((appointment) {
       try {
         final appointmentDate = DateTime.parse(appointment.date);
         return appointment.status == 'pending' ||
             appointment.status == 'accepted' ||
-            (appointment.status == 'confirmed' && 
-             appointmentDate.isAfter(now.subtract(const Duration(days: 1))));
+            (appointment.status == 'confirmed' &&
+                appointmentDate.isAfter(now.subtract(const Duration(days: 1))));
       } catch (e) {
         return false;
       }
-    }).toList()
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt)); // Sort by newest first
+    }).toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
+  /// Past appointments (completed, cancelled, rejected)
   List<AppointmentModel> get pastAppointments {
-    // Combine sent and received appointments for past
     final allAppointments = [..._sentAppointments, ..._receivedAppointments];
+    
     return allAppointments.where((appointment) {
       return appointment.status == 'completed' ||
           appointment.status == 'cancelled' ||
           appointment.status == 'rejected';
-    }).toList()
-      ..sort((a, b) => b.createdAt.compareTo(a.createdAt)); // Sort by newest first
+    }).toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
-  // Get upcoming count for profile card
+  /// Upcoming appointment count for profile card
   int get upcomingCount => upcomingAppointments.length;
 
-  // Helper methods for formatting
+  // ============================================================
+  // FORMATTING HELPERS
+  // ============================================================
+  
   String formatDate(String date) {
     try {
       final parsed = DateTime.parse(date);
@@ -155,44 +209,51 @@ class AppointmentController extends ChangeNotifier {
   }
 
   String formatCurrency(double amount) {
-    return '₱${amount.toStringAsFixed(2)}';
+    return '₹${amount.toStringAsFixed(2)}';
   }
 
-  // Get worker name from appointment
   String getWorkerName(AppointmentModel appointment) {
-    if (appointment.workerDetails != null && 
+    if (appointment.workerDetails != null &&
         appointment.workerDetails!['name'] != null) {
       return appointment.workerDetails!['name'];
     }
     return 'Service Provider';
   }
 
-  // Get customer name from appointment
   String getCustomerName(AppointmentModel appointment) {
-    if (appointment.userDetails != null && 
+    if (appointment.userDetails != null &&
         appointment.userDetails!['name'] != null) {
       return appointment.userDetails!['name'];
     }
     return 'Customer';
   }
 
+  // ============================================================
+  // CORE LOGIC: Set Service Details
+  // ============================================================
   void setServiceDetails({
-  required String jobId,
-  required String workerId,
-  required String workTitle,
-  required double requestedWage,
-  String? description,
-  String? category,
-}) {
-  _jobId = jobId;
-  _workerId = workerId;
-  _workTitle = workTitle;
-  _requestedWage = requestedWage;
-  _description = description;
-  if (category != null) _category = category; // ✅ don't overwrite with null
-  _fetchDisabledSlots(workerId);
-  notifyListeners();
-}
+    required String jobId,
+    required String workerId,
+    required String workTitle,
+    required double requestedWage,
+    String? description,
+    String? category,
+  }) {
+    _jobId = jobId;
+    _workerId = workerId;
+    _workTitle = workTitle;
+    _requestedWage = requestedWage;
+    _description = description;
+    
+    // ✅ Only set category if provided (don't overwrite with null)
+    if (category != null) {
+      _category = category;
+    }
+    
+    // ✅ Fetch disabled time slots for this worker
+    _fetchDisabledSlots(workerId);
+    notifyListeners();
+  }
 
   Future<void> _fetchDisabledSlots(String workerId) async {
     try {
@@ -208,34 +269,50 @@ class AppointmentController extends ChangeNotifier {
   void _updateDisabledSlots(List<Map<String, String>> slots) {
     final selectedDateStr = _formatDate(_selectedDate);
     final disabled = <String>{};
+    
+    // ✅ Add slots that are booked for this date
     for (var slot in slots) {
       if (slot['date'] == selectedDateStr && slot['time'] != null) {
         disabled.add(slot['time']!);
       }
     }
+    
     _disabledTimeSlots = disabled;
+    
+    // ✅ If selected slot is now disabled, pick first available
     if (_disabledTimeSlots.contains(_selectedTimeSlot)) {
       _selectedTimeSlot = _defaultTimeSlots.firstWhere(
         (slot) => !_disabledTimeSlots.contains(slot),
         orElse: () => _defaultTimeSlots.first,
       );
     }
+    
     notifyListeners();
   }
 
+  // ============================================================
+  // CORE LOGIC: Date/Time Selection
+  // ============================================================
+  
   void selectDate(DateTime date) {
     final normalizedDate = DateUtils.dateOnly(date);
     if (DateUtils.isSameDay(_selectedDate, normalizedDate)) return;
+    
     _selectedDate = normalizedDate;
+    
+    // ✅ Fetch new disabled slots for this date
     if (_workerId != null) {
       _fetchDisabledSlots(_workerId!);
     }
+    
     notifyListeners();
   }
 
   void selectTimeSlot(String timeSlot) {
+    // ✅ Don't allow selecting disabled slots
     if (_disabledTimeSlots.contains(timeSlot)) return;
     if (_selectedTimeSlot == timeSlot) return;
+    
     _selectedTimeSlot = timeSlot;
     notifyListeners();
   }
@@ -244,9 +321,14 @@ class AppointmentController extends ChangeNotifier {
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   }
 
+  // ============================================================
+  // CORE LOGIC: Confirm Appointment
+  // ============================================================
+  
   Future<bool> confirmAppointment(BuildContext context) async {
     clearError();
 
+    // ✅ Validate all required fields
     if (_jobId == null ||
         _workerId == null ||
         _workTitle == null ||
@@ -257,6 +339,21 @@ class AppointmentController extends ChangeNotifier {
       return false;
     }
 
+    // ✅ Validate customer details
+    if (_customerName.trim().isEmpty) {
+      _setError("Please enter your name");
+      return false;
+    }
+    if (_customerPhone.trim().isEmpty) {
+      _setError("Please enter your phone number");
+      return false;
+    }
+    if (_customerAddress.trim().isEmpty) {
+      _setError("Please enter your address");
+      return false;
+    }
+
+    // ✅ Create appointment
     final isCreated = await createAppointment(
       workerId: _workerId!,
       jobId: _jobId!,
@@ -265,23 +362,35 @@ class AppointmentController extends ChangeNotifier {
       time: _selectedTimeSlot,
       requestedWage: _requestedWage!,
       description: _description,
+      customerName: _customerName.trim(),
+      customerPhone: _customerPhone.trim(),
+      customerAddress: _customerAddress.trim(),
     );
 
     if (!context.mounted) return false;
 
     if (isCreated) {
+      // ✅ Navigate to success screen
       context.goNamed('appointment_success');
       return true;
     } else {
+      // ✅ Show error message
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage ?? 'Failed to create appointment')),
+          SnackBar(
+            content: Text(errorMessage ?? 'Failed to create appointment'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
       return false;
     }
   }
 
+  // ============================================================
+  // CORE LOGIC: Create Appointment
+  // ============================================================
+  
   Future<bool> createAppointment({
     required String workerId,
     required String jobId,
@@ -290,22 +399,28 @@ class AppointmentController extends ChangeNotifier {
     required String time,
     required double requestedWage,
     String? description,
+    required String customerName,
+    required String customerPhone,
+    required String customerAddress,
   }) async {
     try {
       _setLoading(true);
       _setError(null);
 
+      // ✅ Call API to create appointment
       final newAppointment = await _appointmentApiService.createAppointment(
-        workerId,
-        jobId,
-        workTitle,
-        date,
-        time,
-        requestedWage,
-        description,
+        workerId: workerId,
+        jobId: jobId,
+        workTitle: workTitle,
+        date: date,
+        time: time,
+        requestedWage: requestedWage,
+        description: description,
       );
 
-      _sentAppointments.insert(0, newAppointment.first);
+      // ✅ Add to sent appointments list
+      _sentAppointments.insert(0, newAppointment);
+      notifyListeners();
       return true;
     } catch (e) {
       _setError(e.toString());
@@ -315,14 +430,21 @@ class AppointmentController extends ChangeNotifier {
     }
   }
 
+  // ============================================================
+  // CORE LOGIC: Fetch Appointments
+  // ============================================================
+  
   Future<void> fetchSentAppointments() async {
     try {
       _setLoading(true);
       _setError(null);
+      
       final appointments = await _appointmentApiService.getSentAppointments();
       _sentAppointments
         ..clear()
         ..addAll(appointments);
+      
+      notifyListeners();
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -334,11 +456,13 @@ class AppointmentController extends ChangeNotifier {
     try {
       _setLoading(true);
       _setError(null);
-      final appointments = await _appointmentApiService
-          .getReceivedAppointments();
+      
+      final appointments = await _appointmentApiService.getReceivedAppointments();
       _receivedAppointments
         ..clear()
         ..addAll(appointments);
+      
+      notifyListeners();
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -349,10 +473,14 @@ class AppointmentController extends ChangeNotifier {
   Future<void> refreshAppointments() async {
     await Future.wait([
       fetchSentAppointments(),
-      fetchReceivedAppointments(),
+      fetchReceivedAppointments()
     ]);
   }
 
+  // ============================================================
+  // CORE LOGIC: Update/Cancel Appointments
+  // ============================================================
+  
   Future<void> updateStatus({
     required String appointmentId,
     required String status,
@@ -361,13 +489,16 @@ class AppointmentController extends ChangeNotifier {
     try {
       _setLoading(true);
       _setError(null);
+      
       final updated = await _appointmentApiService.updateStatus(
-        appointmentId,
-        status,
-        reason,
+        appointmentId: appointmentId,
+        status: status,
+        reason: reason,
       );
-      _replaceInList(_sentAppointments, updated.first);
-      _replaceInList(_receivedAppointments, updated.first);
+      
+      _replaceInList(_sentAppointments, updated);
+      _replaceInList(_receivedAppointments, updated);
+      notifyListeners();
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -382,7 +513,12 @@ class AppointmentController extends ChangeNotifier {
     try {
       _setLoading(true);
       _setError(null);
-      await _appointmentApiService.cancelAppointment(appointmentId, reason);
+      
+      await _appointmentApiService.cancelAppointment(
+        appointmentId: appointmentId,
+        reason: reason,
+      );
+      
       await refreshAppointments();
     } catch (e) {
       _setError(e.toString());
@@ -395,9 +531,13 @@ class AppointmentController extends ChangeNotifier {
     try {
       _setLoading(true);
       _setError(null);
+      
       await _appointmentApiService.deleteAppointment(appointmentId);
+      
       _sentAppointments.removeWhere((a) => a.id == appointmentId);
       _receivedAppointments.removeWhere((a) => a.id == appointmentId);
+      
+      notifyListeners();
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -412,6 +552,10 @@ class AppointmentController extends ChangeNotifier {
     }
   }
 
+  // ============================================================
+  // PRIVATE HELPERS
+  // ============================================================
+  
   void _setLoading(bool value) {
     if (_isLoading == value) return;
     _isLoading = value;
@@ -427,11 +571,10 @@ class AppointmentController extends ChangeNotifier {
     _setError(null);
   }
 
-  @override
-  void dispose() {
-    // Clean up any resources if needed
-    super.dispose();
-  }
+  // ============================================================
+  // TAB MANAGEMENT (for appointments screen)
+  // ============================================================
+  
   int _index = 0;
   int get index => _index;
 
@@ -440,16 +583,24 @@ class AppointmentController extends ChangeNotifier {
     _index = i;
     notifyListeners();
   }
+
   bool _screenInitialized = false;
 
-Future<void> initialize() async {
-  if (_screenInitialized) return;
-
-  _screenInitialized = true;
-
-  if (!isInitialized) {
-    await refreshAppointments();
+  Future<void> initialize() async {
+    if (_screenInitialized) return;
+    _screenInitialized = true;
+    
+    if (!isInitialized) {
+      await refreshAppointments();
+    }
   }
-}
+
+  // ============================================================
+  // CLEANUP
+  // ============================================================
   
+  @override
+  void dispose() {
+    super.dispose();
+  }
 }

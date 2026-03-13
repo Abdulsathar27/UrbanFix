@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/data/controller/user_controller.dart';
+import 'package:frontend/data/controller/appointment_controller.dart';
 import 'package:provider/provider.dart';
 
 class LocationSection extends StatelessWidget {
@@ -7,57 +7,57 @@ class LocationSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserController>(
-      builder: (context, userController, _) {
-        // Use address from user model if available, otherwise show a default
-        final address = userController.currentUser?.address ?? 
-            "123 Lavender Lane, Apt 4B, Silicon Valley, CA 94025";
-
+    return Consumer<AppointmentController>(
+      builder: (context, appointmentController, _) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Service Location",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              "Customer Details",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 12),
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Colors.grey[300]!),
               ),
-              child: Row(
+              child: Column(
                 children: [
-                  const Icon(Icons.location_on, color: Colors.blue),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Home Address",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          address,
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      // Navigate to edit address screen
+                  // Name Field
+                  _buildField(
+                    onChanged: (value) {
+                      appointmentController.customerName = value;
                     },
-                    child: const Text(
-                      "Edit",
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    label: "Full Name",
+                    icon: Icons.person,
+                    hint: "Enter your name",
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Phone Field
+                  _buildField(
+                    onChanged: (value) {
+                      appointmentController.customerPhone = value;
+                    },
+                    label: "Phone",
+                    icon: Icons.phone,
+                    hint: "10-digit number",
+                    keyboardType: TextInputType.phone,
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Address Field
+                  _buildField(
+                    onChanged: (value) {
+                      appointmentController.customerAddress = value;
+                    },
+                    label: "Address",
+                    icon: Icons.location_on,
+                    hint: "Street address",
+                    maxLines: 2,
                   ),
                 ],
               ),
@@ -65,6 +65,57 @@ class LocationSection extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  Widget _buildField({
+    required Function(String) onChanged,
+    required String label,
+    required IconData icon,
+    required String hint,
+    TextInputType keyboardType = TextInputType.text,
+    int maxLines = 1,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 4),
+        TextField(
+          onChanged: onChanged,
+          keyboardType: keyboardType,
+          maxLines: maxLines,
+          decoration: InputDecoration(
+            hintText: hint,
+            prefixIcon: Icon(icon, size: 18, color: Colors.grey[600]),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: Colors.grey[300]!),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(
+                color: Color(0xFF0066FF),
+                width: 2,
+              ),
+            ),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 10,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

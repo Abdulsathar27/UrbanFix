@@ -1,109 +1,159 @@
 class JobModel {
   final String id;
-  final String userId; // Person who created the job
-  final String? assignedWorkerId; // Worker assigned to job
   final String title;
   final String description;
-  final String category; // plumber, electrician, painter, etc.
   final String location;
-  final double? budget;
-  final String status; 
-  // open, assigned, in_progress, completed, cancelled
-
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
+  final String category;
+  final String jobDuration;
+  final List<String> skills;
+  final String wage;
+  final String phone;
+  
+  // User (job creator)
+  final Map<String, dynamic>? user;
+  
+  // Location geometry
+  final Map<String, dynamic>? locationGeo;
+  
+  // Additional fields
+  final List<String>? images;
+  final bool isBlocked;
+  final String? blockedReason;
+  final double averageRating;
+  final int reviewCount;
+  final List<Map<String, dynamic>> reviews;
+  
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   JobModel({
     required this.id,
-    required this.userId,
-    this.assignedWorkerId,
     required this.title,
     required this.description,
-    required this.category,
     required this.location,
-    this.budget,
-    required this.status,
-    this.createdAt,
-    this.updatedAt,
+    required this.category,
+    required this.jobDuration,
+    required this.skills,
+    required this.wage,
+    required this.phone,
+    this.user,
+    this.locationGeo,
+    this.images,
+    this.isBlocked = false,
+    this.blockedReason,
+    this.averageRating = 0,
+    this.reviewCount = 0,
+    this.reviews = const [],
+    required this.createdAt,
+    required this.updatedAt,
   });
 
-  // ==========================
-  // From JSON
-  // ==========================
   factory JobModel.fromJson(Map<String, dynamic> json) {
     return JobModel(
       id: json['_id'] ?? '',
-      userId: json['userId'] ?? '',
-      assignedWorkerId: json['assignedWorkerId'],
       title: json['title'] ?? '',
       description: json['description'] ?? '',
-      category: json['category'] ?? '',
       location: json['location'] ?? '',
-      budget: json['budget'] != null
-          ? (json['budget'] as num).toDouble()
+      category: json['category'] ?? 'General Service',
+      jobDuration: json['jobDuration'] ?? 'Depends on worksite',
+      skills: List<String>.from(json['skills'] ?? []),
+      wage: json['wage']?.toString() ?? '0',
+      phone: json['phone'] ?? '',
+      user: json['user'] is Map ? json['user'] as Map<String, dynamic> : null,
+      locationGeo: json['locationGeo'] is Map
+          ? json['locationGeo'] as Map<String, dynamic>
           : null,
-      status: json['status'] ?? 'open',
+      images: json['images'] != null
+          ? List<String>.from(json['images'] as List<dynamic>)
+          : null,
+      isBlocked: json['isBlocked'] ?? false,
+      blockedReason: json['blockedReason'],
+      averageRating: (json['averageRating'] as num?)?.toDouble() ?? 0,
+      reviewCount: json['reviewCount'] ?? 0,
+      reviews: json['reviews'] != null
+          ? List<Map<String, dynamic>>.from(
+              (json['reviews'] as List<dynamic>)
+                  .map((r) => r as Map<String, dynamic>))
+          : [],
       createdAt: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'])
-          : null,
+          ? DateTime.parse(json['createdAt'] as String)
+          : DateTime.now(),
       updatedAt: json['updatedAt'] != null
-          ? DateTime.parse(json['updatedAt'])
-          : null,
+          ? DateTime.parse(json['updatedAt'] as String)
+          : DateTime.now(),
     );
   }
 
-  
-
-  
-
-  // ==========================
-  // To JSON
-  // ==========================
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
-      'userId': userId,
-      'assignedWorkerId': assignedWorkerId,
       'title': title,
       'description': description,
-      'category': category,
       'location': location,
-      'budget': budget,
-      'status': status,
-      'createdAt': createdAt?.toIso8601String(),
-      'updatedAt': updatedAt?.toIso8601String(),
+      'category': category,
+      'jobDuration': jobDuration,
+      'skills': skills,
+      'wage': wage,
+      'phone': phone,
+      'user': user,
+      'locationGeo': locationGeo,
+      'images': images,
+      'isBlocked': isBlocked,
+      'blockedReason': blockedReason,
+      'averageRating': averageRating,
+      'reviewCount': reviewCount,
+      'reviews': reviews,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 
-  // ==========================
-  // Copy With
-  // ==========================
   JobModel copyWith({
     String? id,
-    String? userId,
-    String? assignedWorkerId,
     String? title,
     String? description,
-    String? category,
     String? location,
-    double? budget,
-    String? status,
+    String? category,
+    String? jobDuration,
+    List<String>? skills,
+    String? wage,
+    String? phone,
+    Map<String, dynamic>? user,
+    Map<String, dynamic>? locationGeo,
+    List<String>? images,
+    bool? isBlocked,
+    String? blockedReason,
+    double? averageRating,
+    int? reviewCount,
+    List<Map<String, dynamic>>? reviews,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
     return JobModel(
       id: id ?? this.id,
-      userId: userId ?? this.userId,
-      assignedWorkerId:
-          assignedWorkerId ?? this.assignedWorkerId,
       title: title ?? this.title,
       description: description ?? this.description,
-      category: category ?? this.category,
       location: location ?? this.location,
-      budget: budget ?? this.budget,
-      status: status ?? this.status,
+      category: category ?? this.category,
+      jobDuration: jobDuration ?? this.jobDuration,
+      skills: skills ?? this.skills,
+      wage: wage ?? this.wage,
+      phone: phone ?? this.phone,
+      user: user ?? this.user,
+      locationGeo: locationGeo ?? this.locationGeo,
+      images: images ?? this.images,
+      isBlocked: isBlocked ?? this.isBlocked,
+      blockedReason: blockedReason ?? this.blockedReason,
+      averageRating: averageRating ?? this.averageRating,
+      reviewCount: reviewCount ?? this.reviewCount,
+      reviews: reviews ?? this.reviews,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
     );
+  }
+
+  @override
+  String toString() {
+    return 'JobModel(id: $id, title: $title, category: $category, wage: $wage)';
   }
 }

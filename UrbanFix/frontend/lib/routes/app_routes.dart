@@ -8,13 +8,12 @@ import 'package:frontend/presentation/screens/auth/register/register_screen.dart
 import 'package:frontend/presentation/screens/booking/booking_screen.dart';
 import 'package:frontend/presentation/screens/booking/success_screen.dart';
 import 'package:frontend/presentation/screens/booking/widgets/select_job.dart';
+import 'package:frontend/presentation/screens/booking/widgets/category_selection_screen.dart'; // ✅ ADD THIS
 import 'package:frontend/presentation/screens/chat/chat_list_screen.dart';
 import 'package:frontend/presentation/screens/chat/chat_screen.dart';
 import 'package:frontend/presentation/screens/home/home_screen.dart';
 import 'package:frontend/presentation/screens/home/widget/main_navigation_screen.dart';
 import 'package:frontend/presentation/screens/home/widget/service_details_page.dart';
-import 'package:frontend/presentation/screens/job/job_details_screen.dart';
-import 'package:frontend/presentation/screens/job/job_list_screen.dart';
 import 'package:frontend/presentation/screens/notification/notification_screen.dart';
 import 'package:frontend/presentation/screens/report/report_issue_screen.dart';
 import 'package:frontend/presentation/screens/splash/splash_screen.dart';
@@ -71,8 +70,12 @@ class AppRouter {
           GoRoute(
             path: '/bookings',
             name: 'bookings',
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: BookingScreen()),
+            pageBuilder: (context, state) => NoTransitionPage(
+              child: BookingScreen(
+                // ✅ Get category from extras if passed
+                category: (state.extra as Map<String, dynamic>?)?['category'] as String?,
+              ),
+            ),
           ),
           GoRoute(
             path: '/notifications',
@@ -122,7 +125,14 @@ class AppRouter {
 
       // ================= Full-screen routes (outside ShellRoute) =================
 
-      // ✅ FIX: select-job moved here so pushNamed can return a value properly
+      // ✅ ADD: Category Selection Screen
+      GoRoute(
+        path: '/select-category',
+        name: 'select-category',
+        builder: (context, state) => const CategorySelectionScreen(),
+      ),
+
+      // ✅ Already exists: select-job moved here so pushNamed can return a value properly
       GoRoute(
         path: '/select-job',
         name: 'select-job',
@@ -141,19 +151,6 @@ class AppRouter {
         name: 'appointment_success',
         path: '/success',
         builder: (context, state) => const SuccessScreen(),
-      ),
-      GoRoute(
-        path: '/jobs',
-        name: 'jobs',
-        builder: (context, state) => const JobListScreen(),
-      ),
-      GoRoute(
-        path: '/job-details/:id',
-        name: 'jobDetails',
-        builder: (context, state) {
-          final jobId = state.pathParameters['id']!;
-          return JobDetailsScreen(jobId: jobId);
-        },
       ),
       GoRoute(
         path: '/report',

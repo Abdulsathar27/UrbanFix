@@ -12,7 +12,7 @@ class ChatController extends ChangeNotifier {
   List<MessageModel> _messages = [];
   ChatModel? _selectedChat;
   bool _isLoading = false;
-  bool _isSending = false; // FIX: separate sending state so UI doesn't freeze
+  bool _isSending = false; 
   String? _errorMessage;
 
   // ==========================

@@ -469,36 +469,6 @@ class UserController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // =============================
-  // SERVICES
-  // =============================
-  // final List<String> _services = [
-  //   'Plumbing',
-  //   'Electrical',
-  //   'Cleaning',
-  //   'Painting',
-  //   'Carpentry',
-  //   'Moving',
-  // ];
-
-  // List<String> get services => _services;
-
-  // String? _selectedService;
-  // String? get selectedService => _selectedService;
-
-  // void selectService(String serviceName) {
-  //   _selectedService = serviceName;
-  //   notifyListeners();
-  // }
-
-  // Add method to search services
-  // List<String> getFilteredServices(String query) {
-  //   if (query.isEmpty) return _services;
-  //   return _services
-  //       .where((service) => service.toLowerCase().contains(query.toLowerCase()))
-  //       .toList();
-  // }
-
   void clearSearch() {
     searchController.clear();
     notifyListeners();

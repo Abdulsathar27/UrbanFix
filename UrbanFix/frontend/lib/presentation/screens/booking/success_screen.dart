@@ -14,7 +14,6 @@ class SuccessScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Success Icon
               Container(
                 height: 120,
                 width: 120,

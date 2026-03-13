@@ -34,7 +34,7 @@ class AppointmentListTile extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title and type indicator
+              
               Row(
                 children: [
                   Expanded(
@@ -53,7 +53,7 @@ class AppointmentListTile extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               
-              // Date and time
+              
               Row(
                 children: [
                   const Icon(Icons.calendar_today, size: 16, color: Colors.grey),
@@ -73,7 +73,7 @@ class AppointmentListTile extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               
-              // Status and price
+              
               Row(
                 children: [
                   Container(
