@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 
 class RegisterHeader extends StatelessWidget {
   const RegisterHeader({super.key});
@@ -10,23 +12,23 @@ class RegisterHeader extends StatelessWidget {
         Icon(
           Icons.build,
           size: 60,
-          color: Colors.white,
+          color: AppColors.white,
         ),
         SizedBox(height: 16),
         Text(
-          "Join UrbanFix",
+          AppStrings.joinUrbanFix,
           style: TextStyle(
             fontSize: 26,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: AppColors.white,
           ),
         ),
         SizedBox(height: 6),
         Text(
-          "Get started with your pro maintenance account",
+          AppStrings.registerTagline,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Colors.white70,
+            color: AppColors.white70,
           ),
         ),
       ],

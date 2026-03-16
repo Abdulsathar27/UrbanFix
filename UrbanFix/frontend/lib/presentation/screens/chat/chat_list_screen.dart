@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/chat_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -23,16 +25,15 @@ class _ChatListScreenState extends State<ChatListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Chats'),
-        backgroundColor: Colors.white,
+        title: const Text(AppStrings.chats),
+        backgroundColor: AppColors.white,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: AppColors.lightTextPrimary),
         titleTextStyle: const TextStyle(
-          color: Colors.black,
+          color: AppColors.lightTextPrimary,
           fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
-
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => context.go('/home'),
@@ -45,7 +46,6 @@ class _ChatListScreenState extends State<ChatListScreen> {
             return const Center(child: CircularProgressIndicator());
           }
 
-
           if (controller.errorMessage != null && controller.chats.isEmpty) {
             return Center(
               child: Column(
@@ -54,12 +54,12 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   Text(
                     controller.errorMessage!,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.red),
+                    style: const TextStyle(color: AppColors.error),
                   ),
                   const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: controller.fetchChats,
-                    child: const Text('Retry'),
+                    child: const Text(AppStrings.retry),
                   ),
                 ],
               ),
@@ -69,8 +69,8 @@ class _ChatListScreenState extends State<ChatListScreen> {
           if (controller.chats.isEmpty) {
             return const Center(
               child: Text(
-                'No chats yet.',
-                style: TextStyle(color: Colors.grey),
+                AppStrings.noChatsYet,
+                style: TextStyle(color: AppColors.greyMedium),
               ),
             );
           }
@@ -79,22 +79,22 @@ class _ChatListScreenState extends State<ChatListScreen> {
             itemCount: controller.chats.length,
             separatorBuilder: (_, __) => const Divider(height: 1),
             itemBuilder: (context, index) {
-              final chat = controller.chats[index];          
+              final chat = controller.chats[index];
               final displayName = chat.participantIds.isNotEmpty
                   ? chat.participantIds.first
-                  : 'Unknown';
-              final lastMessage = chat.lastMessage ?? 'No messages yet';
+                  : AppStrings.unknown;
+              final lastMessage = chat.lastMessage ?? AppStrings.noMessagesYet;
               final time = chat.lastMessageTime != null
                   ? _formatTime(chat.lastMessageTime!)
                   : '';
 
               return ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: const Color(0xFF2D6CDF).withOpacity(0.15),
+                  backgroundColor: AppColors.primary.withValues(alpha: 0.15),
                   child: Text(
                     displayName.isNotEmpty ? displayName[0].toUpperCase() : '?',
                     style: const TextStyle(
-                      color: Color(0xFF2D6CDF),
+                      color: AppColors.primary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -107,20 +107,20 @@ class _ChatListScreenState extends State<ChatListScreen> {
                   lastMessage,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(color: Colors.grey),
+                  style: const TextStyle(color: AppColors.greyMedium),
                 ),
                 trailing: chat.unreadCount > 0
                     ? Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF2D6CDF),
+                          color: AppColors.primary,
                           borderRadius: BorderRadius.circular(999),
                         ),
                         child: Text(
                           chat.unreadCount.toString(),
                           style: const TextStyle(
-                            color: Colors.white,
+                            color: AppColors.white,
                             fontSize: 12,
                             fontWeight: FontWeight.w600,
                           ),
@@ -128,7 +128,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                       )
                     : Text(
                         time,
-                        style: const TextStyle(color: Colors.grey, fontSize: 12),
+                        style: const TextStyle(color: AppColors.greyMedium, fontSize: 12),
                       ),
                 onTap: () {
                   controller.setSelectedChat(chat);
@@ -157,7 +157,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
     }
 
     final yesterday = today.subtract(const Duration(days: 1));
-    if (msgDay == yesterday) return 'Yesterday';
+    if (msgDay == yesterday) return AppStrings.yesterday;
 
     return '${time.day}/${time.month}/${time.year}';
   }

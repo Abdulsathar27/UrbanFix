@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
 
 class LoginHeader extends StatelessWidget {
@@ -11,7 +12,7 @@ class LoginHeader extends StatelessWidget {
         Icon(
           Icons.build,
           size: 70,
-          color: Colors.white,
+          color: AppColors.white,
         ),
         SizedBox(height: 20),
         Text(
@@ -19,14 +20,14 @@ class LoginHeader extends StatelessWidget {
           style: TextStyle(
             fontSize: 32,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: AppColors.white,
           ),
         ),
         SizedBox(height: 8),
         Text(
           AppStrings.splashTagline,
           style: TextStyle(
-            color: Colors.white70,
+            color: AppColors.white70,
           ),
         ),
       ],

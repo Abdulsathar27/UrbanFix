@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
 
 class ServicesHeader extends StatelessWidget {
   final String title;
@@ -17,7 +18,7 @@ class ServicesHeader extends StatelessWidget {
             style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF2C3E50),
+              color: AppColors.lightTextSecondary,
             ),
           ),
         ],

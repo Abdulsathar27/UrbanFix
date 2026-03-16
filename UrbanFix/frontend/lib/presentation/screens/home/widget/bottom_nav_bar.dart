@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
+
 class BottomNavBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
@@ -13,22 +16,22 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       currentIndex: currentIndex,
-      onTap: onTap, 
+      onTap: onTap,
       type: BottomNavigationBarType.fixed,
-      selectedItemColor: Colors.blue,
-      unselectedItemColor: Colors.grey,
+      selectedItemColor: AppColors.primary,
+      unselectedItemColor: AppColors.greyMedium,
       items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.home_filled),
-          label: "Home",
+          label: AppStrings.home,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.calendar_today),
-          label: "Bookings",
+          label: AppStrings.bookings,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.notifications_active_rounded),
-          label: "notifications",
+          label: AppStrings.notifications,
         ),
       ],
     );

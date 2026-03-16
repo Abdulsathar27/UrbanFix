@@ -7,29 +7,11 @@ class AppointmentApiService {
   final Dio _dio = DioClient().dio;
 
   // ✅ CREATE APPOINTMENT - Matches backend POST /api/appointments
-  Future<AppointmentModel> createAppointment({
-    required String workerId,
-    required String jobId,
-    required String workTitle,
-    required String date,
-    required String time,
-    required double requestedWage,
-    String? description,
-  }) async {
+  Future<AppointmentModel> createAppointment(AppointmentModel appointment) async {
     try {
-      final payload = {
-        "workerId": workerId,
-        "jobId": jobId,
-        "workTitle": workTitle,
-        "date": date,
-        "time": time,
-        "requestedWage": requestedWage,
-        if (description != null) "description": description,
-      };
-
       final response = await _dio.post(
         '${ApiConstants.baseUrl}/appointments',
-        data: payload,
+        data: appointment.toJson(),
       );
 
       return AppointmentModel.fromJson(
@@ -74,24 +56,23 @@ class AppointmentApiService {
   }
 
   // ✅ UPDATE APPOINTMENT STATUS - Matches backend PATCH /api/appointments/:id/status
-  Future<AppointmentModel> updateStatus({
-    required String appointmentId,
-    required String status,
+  Future<AppointmentModel> updateStatus(
+    AppointmentModel appointment, {
     String? reason,
   }) async {
     try {
       final payload = {
-        "status": status,
+        "status": appointment.status,
         if (reason != null) "reason": reason,
       };
 
       final response = await _dio.patch(
-        '${ApiConstants.baseUrl}/appointments/$appointmentId/status',
+        '${ApiConstants.baseUrl}/appointments/${appointment.id}/status',
         data: payload,
       );
 
       return AppointmentModel.fromJson(
-        response.data as Map<String, dynamic>,
+        response.data['appointment'] as Map<String, dynamic>,
       );
     } on DioException catch (e) {
       throw Exception("Failed to update appointment status: ${e.message}");

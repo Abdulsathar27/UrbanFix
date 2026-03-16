@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 
 class RegisterTermsCheckbox
     extends StatelessWidget {
@@ -22,7 +23,7 @@ class RegisterTermsCheckbox
         ),
         const Expanded(
           child: Text(
-            "I agree to the Terms of Service and Privacy Policy",
+            AppStrings.termsAgreement,
           ),
         ),
       ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
 
 class ProfileMenuCard extends StatelessWidget {
   final IconData icon;
@@ -25,10 +26,10 @@ class ProfileMenuCard extends StatelessWidget {
         leading: Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.blue.shade50,
+            color: AppColors.primary.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(icon, color: Colors.blue),
+          child: Icon(icon, color: AppColors.primary),
         ),
         title: Text(
           title,

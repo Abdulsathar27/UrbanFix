@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/notification_controller.dart';
 import 'package:frontend/presentation/screens/notification/widgets/notification_card.dart';
 import 'package:frontend/presentation/screens/notification/widgets/notification_empty_state.dart';
@@ -11,47 +13,43 @@ class NotificationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Notifications"),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        title: const Text(AppStrings.notifications),
+        backgroundColor: AppColors.white,
+        foregroundColor: AppColors.lightTextPrimary,
         elevation: 1,
         // leading: IconButton(
         //   icon: const Icon(Icons.arrow_back_ios),
         //   onPressed: () => context.goNamed('home'),
         // ),
       ),
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: AppColors.lightBackground,
       body: SafeArea(
         child: Consumer<NotificationController>(
           builder: (context, controller, _) {
-            
+
             WidgetsBinding.instance.addPostFrameCallback((_) {
               if (!controller.hasFetched && !controller.isLoading) {
                 controller.fetchNotifications();
               }
             });
 
-            
             if (controller.isLoading) {
               return const Center(child: CircularProgressIndicator());
             }
 
-           
             if (controller.errorMessage != null) {
               return Center(
                 child: Text(
                   controller.errorMessage!,
-                  style: const TextStyle(color: Colors.red),
+                  style: const TextStyle(color: AppColors.error),
                 ),
               );
             }
 
-           
             if (controller.notifications.isEmpty) {
               return const NotificationEmptyState();
             }
 
-           
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
@@ -62,15 +60,15 @@ class NotificationScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        "Notifications",
+                        AppStrings.notifications,
                         style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                       ),
                       if (controller.unreadCount > 0)
                         TextButton(
                           onPressed: controller.markAllAsRead,
                           child: const Text(
-                            "Mark all as read",
-                            style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w600),
+                            AppStrings.markAllAsRead,
+                            style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600),
                           ),
                         ),
                     ],
@@ -79,7 +77,7 @@ class NotificationScreen extends StatelessWidget {
                   Expanded(
                     child: ListView.separated(
                       itemCount: controller.notifications.length,
-                      separatorBuilder: (_, __) => Divider(height: 30, color: Colors.grey.shade300),
+                      separatorBuilder: (_, __) => const Divider(height: 30, color: AppColors.greyLight),
                       itemBuilder: (context, index) {
                         final notification = controller.notifications[index];
                         return NotificationCard(notification: notification);

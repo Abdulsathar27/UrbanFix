@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'widgets/report_text_field.dart';
 import 'widgets/photo_upload_section.dart';
 import 'widgets/submit_button.dart';
@@ -10,18 +12,18 @@ class ReportIssueScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF6F7F9),
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.white,
         leading: IconButton(
           onPressed: () => context.go('/home'),
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
+          icon: const Icon(Icons.arrow_back, color: AppColors.lightTextSecondary),
         ),
         centerTitle: true,
         title: const Text(
-          "Report an Issue",
-          style: TextStyle(color: Colors.black),
+          AppStrings.reportAnIssue,
+          style: TextStyle(color: AppColors.lightTextPrimary),
         ),
       ),
       body: SafeArea(
@@ -33,7 +35,7 @@ class ReportIssueScreen extends StatelessWidget {
 
               /// Heading
               const Text(
-                "Tell us what needs fixing",
+                AppStrings.reportHeading,
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -43,10 +45,10 @@ class ReportIssueScreen extends StatelessWidget {
               const SizedBox(height: 8),
 
               const Text(
-                "Provide details about the urban issue you've encountered in your neighborhood.",
+                AppStrings.reportSubheading,
                 style: TextStyle(
                   fontSize: 15,
-                  color: Colors.grey,
+                  color: AppColors.greyMedium,
                 ),
               ),
 
@@ -54,7 +56,7 @@ class ReportIssueScreen extends StatelessWidget {
 
               /// Issue Title
               const Text(
-                "Issue Title",
+                AppStrings.issueTitle,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                 ),
@@ -63,14 +65,14 @@ class ReportIssueScreen extends StatelessWidget {
               const SizedBox(height: 10),
 
               const ReportTextField(
-                hintText: "e.g., Pothole on Main St",
+                hintText: AppStrings.issueTitleHint,
               ),
 
               const SizedBox(height: 25),
 
               /// Description
               const Text(
-                "Description",
+                AppStrings.description,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                 ),
@@ -79,8 +81,7 @@ class ReportIssueScreen extends StatelessWidget {
               const SizedBox(height: 10),
 
               const ReportTextField(
-                hintText:
-                    "Describe the issue in detail. The more info the better...",
+                hintText: AppStrings.issueDescriptionHint,
                 maxLines: 5,
               ),
 
@@ -88,7 +89,7 @@ class ReportIssueScreen extends StatelessWidget {
 
               /// Photo Section
               const Text(
-                "Visual Evidence",
+                AppStrings.visualEvidence,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                 ),

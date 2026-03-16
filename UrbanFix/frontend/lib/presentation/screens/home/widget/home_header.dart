@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import '../../../../data/controller/user_controller.dart';
 
 class HomeHeader extends StatelessWidget {
@@ -27,19 +29,19 @@ class HomeHeader extends StatelessWidget {
                         padding: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [Colors.amber, Colors.orange],
+                            colors: [AppColors.warning, AppColors.warning],
                           ),
                           shape: BoxShape.circle,
                         ),
                         child: CircleAvatar(
                           radius: 24,
-                          backgroundColor: Colors.white,
+                          backgroundColor: AppColors.white,
                           child: Text(
-                            user?.name?[0].toUpperCase() ?? "U",
-                            style: TextStyle(
+                            user?.name?[0].toUpperCase() ?? AppStrings.defaultInitial,
+                            style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: Colors.orange.shade800,
+                              color: AppColors.warning,
                             ),
                           ),
                         ),
@@ -51,14 +53,14 @@ class HomeHeader extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            "Welcome back,",
-                            style: TextStyle(color: Colors.grey),
+                            AppStrings.welcomeBack,
+                            style: TextStyle(color: AppColors.greyMedium),
                           ),
                           Row(
                             children: [
                               Expanded(
                                 child: Text(
-                                  user?.name ?? "User",
+                                  user?.name ?? AppStrings.defaultUser,
                                   style: const TextStyle(
                                     fontSize: 22,
                                     fontWeight: FontWeight.bold,
@@ -88,19 +90,19 @@ class HomeHeader extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: Colors.blue.shade50,
+                    color: AppColors.info.withValues(alpha: 0.08),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: Colors.blue.shade100),
+                    border: Border.all(color: AppColors.info.withValues(alpha: 0.2)),
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.navigation,
-                          color: Colors.blue.shade700, size: 16),
+                      const Icon(Icons.navigation,
+                          color: AppColors.info, size: 16),
                       const SizedBox(width: 4),
-                      Text(
-                        "Downtown",
+                      const Text(
+                        AppStrings.downtown,
                         style: TextStyle(
-                          color: Colors.blue.shade700,
+                          color: AppColors.info,
                           fontWeight: FontWeight.w500,
                         ),
                       ),

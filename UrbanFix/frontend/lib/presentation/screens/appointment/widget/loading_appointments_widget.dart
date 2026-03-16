@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 
 class LoadingAppointmentsWidget extends StatelessWidget {
   const LoadingAppointmentsWidget({super.key});
@@ -11,7 +12,7 @@ class LoadingAppointmentsWidget extends StatelessWidget {
         children: [
           CircularProgressIndicator(),
           SizedBox(height: 16),
-          Text('Loading your appointments...'),
+          Text(AppStrings.loadingAppointments),
         ],
       ),
     );

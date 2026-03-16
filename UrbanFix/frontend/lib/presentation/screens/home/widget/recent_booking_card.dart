@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/models/appointment_model.dart';
-
 
 class RecentBookingCard extends StatelessWidget {
   final AppointmentModel appointment;
@@ -16,20 +17,20 @@ class RecentBookingCard extends StatelessWidget {
       margin: const EdgeInsets.all(16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
+        color: AppColors.lightBackground,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            "Recent Booking",
+            AppStrings.recentBooking,
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          Text("Service: ${appointment.workTitle}"),
-          Text("Date: ${appointment.date}"),
-          Text("Time: ${appointment.time}"),
+          Text('${AppStrings.serviceLabel}${appointment.workTitle}'),
+          Text('${AppStrings.dateLabel}${appointment.date}'),
+          Text('${AppStrings.timeLabel}${appointment.time}'),
         ],
       ),
     );

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 
 class NotificationEmptyState extends StatelessWidget {
   const NotificationEmptyState({
@@ -19,13 +21,13 @@ class NotificationEmptyState extends StatelessWidget {
               height: 100,
               width: 100,
               decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.08),
+                color: AppColors.primary.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.notifications_none_rounded,
                 size: 50,
-                color: Colors.blue,
+                color: AppColors.primary,
               ),
             ),
 
@@ -33,7 +35,7 @@ class NotificationEmptyState extends StatelessWidget {
 
             /// ================= TITLE
             const Text(
-              "No Notifications Yet",
+              AppStrings.noNotificationsYet,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 20,
@@ -44,12 +46,12 @@ class NotificationEmptyState extends StatelessWidget {
             const SizedBox(height: 12),
 
             /// ================= SUBTITLE
-            Text(
-              "You're all caught up! \nNew notifications will appear here.",
+            const Text(
+              AppStrings.notificationsAllCaughtUp,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 15,
-                color: Colors.grey.shade600,
+                color: AppColors.greyDark,
                 height: 1.5,
               ),
             ),

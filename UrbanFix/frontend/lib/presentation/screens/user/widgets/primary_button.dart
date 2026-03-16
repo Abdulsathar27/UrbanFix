@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String text;
@@ -30,7 +31,7 @@ class PrimaryButton extends StatelessWidget {
                 width: 22,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: Colors.white,
+                  color: AppColors.white,
                 ),
               )
             : Text(

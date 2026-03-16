@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/notification_controller.dart';
 
 class NotificationBadge extends StatelessWidget {
@@ -25,7 +27,7 @@ class NotificationBadge extends StatelessWidget {
             vertical: 3,
           ),
           decoration: BoxDecoration(
-            color: Colors.red,
+            color: AppColors.error,
             borderRadius: BorderRadius.circular(12),
           ),
           constraints: const BoxConstraints(
@@ -35,10 +37,10 @@ class NotificationBadge extends StatelessWidget {
           child: Center(
             child: Text(
               unreadCount > 99
-                  ? "99+"
+                  ? AppStrings.maxNotificationCount
                   : unreadCount.toString(),
               style: const TextStyle(
-                color: Colors.white,
+                color: AppColors.white,
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/core/utils/helpers.dart';
 import 'package:frontend/core/utils/validators.dart';
@@ -37,7 +38,7 @@ class LoginForm extends StatelessWidget {
     }
 
     // Other login errors
-    Helpers.showError(context, controller.errorMessage ?? "Login failed");
+    Helpers.showError(context, controller.errorMessage ?? AppStrings.loginFailed);
   }
 
   @override
@@ -55,36 +56,31 @@ class LoginForm extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: AppStrings.emailOrPhoneNumber,
                   prefixIcon: const Icon(Icons.person),
-                  // Add a border that is always visible
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0), // Rounded corners
-                    borderSide: const BorderSide(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(color: AppColors.greyMedium),
                   ),
-                  // Style when the field is enabled but not focused
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                     borderSide: const BorderSide(
-                      color: Colors.grey,
+                      color: AppColors.greyMedium,
                       width: 1.0,
                     ),
                   ),
-                  // Style when the field is focused
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                     borderSide: const BorderSide(
-                      color: Colors.blue,
+                      color: AppColors.primary,
                       width: 2.0,
                     ),
                   ),
-                  // Style when there’s an error
                   errorBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
-                    borderSide: const BorderSide(color: Colors.red, width: 1.0),
+                    borderSide: const BorderSide(color: AppColors.error, width: 1.0),
                   ),
-                  // Style when focused and in error state
                   focusedErrorBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
-                    borderSide: const BorderSide(color: Colors.red, width: 2.0),
+                    borderSide: const BorderSide(color: AppColors.error, width: 2.0),
                   ),
                 ),
               ),
@@ -107,34 +103,30 @@ class LoginForm extends StatelessWidget {
                     onPressed: controller.togglePasswordVisibility,
                   ),
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8.0), // Rounded corners
-                    borderSide: const BorderSide(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: const BorderSide(color: AppColors.greyMedium),
                   ),
-                  // Style when the field is enabled but not focused
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                     borderSide: const BorderSide(
-                      color: Colors.grey,
+                      color: AppColors.greyMedium,
                       width: 1.0,
                     ),
                   ),
-                  // Style when the field is focused
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                     borderSide: const BorderSide(
-                      color: Colors.blue,
+                      color: AppColors.primary,
                       width: 2.0,
                     ),
                   ),
-                  // Style when there’s an error
                   errorBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
-                    borderSide: const BorderSide(color: Colors.red, width: 1.0),
+                    borderSide: const BorderSide(color: AppColors.error, width: 1.0),
                   ),
-                  // Style when focused and in error state
                   focusedErrorBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
-                    borderSide: const BorderSide(color: Colors.red, width: 2.0),
+                    borderSide: const BorderSide(color: AppColors.error, width: 2.0),
                   ),
                 ),
               ),

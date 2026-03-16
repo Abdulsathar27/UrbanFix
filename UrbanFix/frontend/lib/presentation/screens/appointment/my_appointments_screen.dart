@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/appointment_controller.dart';
 import 'package:frontend/presentation/screens/appointment/widget/appointment_list_widget.dart';
 import 'package:frontend/presentation/screens/appointment/widget/error_appointments_widget.dart';
@@ -17,7 +19,7 @@ class MyAppointmentsScreen extends StatelessWidget {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('My Appointments'),
+          title: const Text(AppStrings.myAppointments),
           leading: IconButton(
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
             onPressed: () {
@@ -30,18 +32,18 @@ class MyAppointmentsScreen extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
               child: Container(
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(0, 26, 46, 66),
+                  color: AppColors.transparent,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: TabBar(
                   indicator: BoxDecoration(
-                    color: const Color.fromARGB(179, 0, 45, 194),
+                    color: AppColors.primary,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   indicatorSize: TabBarIndicatorSize.tab,
-                  dividerColor: Colors.transparent,
-                  labelColor: const Color.fromARGB(255, 2, 5, 8),
-                  unselectedLabelColor: const Color(0xFF7A9BBF),
+                  dividerColor: AppColors.transparent,
+                  labelColor: AppColors.lightTextPrimary,
+                  unselectedLabelColor: AppColors.greyMedium,
                   labelStyle: const TextStyle(
                     fontWeight: FontWeight.w700,
                     fontSize: 13,
@@ -59,7 +61,7 @@ class MyAppointmentsScreen extends StatelessWidget {
                         children: const [
                           Icon(Icons.calendar_today_rounded, size: 14),
                           SizedBox(width: 6),
-                          Text('Upcoming'),
+                          Text(AppStrings.upcoming),
                         ],
                       ),
                     ),
@@ -70,7 +72,7 @@ class MyAppointmentsScreen extends StatelessWidget {
                         children: const [
                           Icon(Icons.history_rounded, size: 14),
                           SizedBox(width: 6),
-                          Text('Past'),
+                          Text(AppStrings.past),
                         ],
                       ),
                     ),
@@ -103,12 +105,12 @@ class MyAppointmentsScreen extends StatelessWidget {
                   AppointmentListWidget(
                     controller: controller,
                     appointments: controller.upcomingAppointments,
-                    emptyMessage: 'No upcoming appointments',
+                    emptyMessage: AppStrings.noUpcomingAppointments,
                   ),
                   AppointmentListWidget(
                     controller: controller,
                     appointments: controller.pastAppointments,
-                    emptyMessage: 'No past appointments',
+                    emptyMessage: AppStrings.noPastAppointments,
                   ),
                 ],
               ),

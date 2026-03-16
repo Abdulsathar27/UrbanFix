@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
 
 class ProfileHeader extends StatelessWidget {
   final String name;
@@ -21,7 +22,7 @@ class ProfileHeader extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 60,
-              backgroundColor: Colors.orange.shade200,
+              backgroundColor: AppColors.warning.withValues(alpha: 0.3),
               backgroundImage:
                   imageUrl != null ? NetworkImage(imageUrl!) : null,
               child: imageUrl == null
@@ -34,9 +35,9 @@ class ProfileHeader extends StatelessWidget {
               height: 22,
               width: 22,
               decoration: BoxDecoration(
-                color: Colors.green,
+                color: AppColors.success,
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 3),
+                border: Border.all(color: AppColors.white, width: 3),
               ),
             ),
           ],
@@ -59,7 +60,7 @@ class ProfileHeader extends StatelessWidget {
           style: Theme.of(context)
               .textTheme
               .bodyMedium
-              ?.copyWith(color: Colors.grey),
+              ?.copyWith(color: AppColors.greyMedium),
         ),
       ],
     );

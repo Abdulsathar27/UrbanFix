@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
 
 class ProfileTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -20,7 +21,7 @@ class ProfileTextField extends StatelessWidget {
         prefixIcon: Icon(icon),
         labelText: label,
         filled: true,
-        fillColor: Colors.grey.shade100,
+        fillColor: AppColors.lightBackground,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,

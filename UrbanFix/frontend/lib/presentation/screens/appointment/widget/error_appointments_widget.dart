@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 
 class ErrorAppointmentsWidget extends StatelessWidget {
   final String error;
@@ -21,24 +23,24 @@ class ErrorAppointmentsWidget extends StatelessWidget {
             const Icon(
               Icons.error_outline,
               size: 60,
-              color: Colors.red,
+              color: AppColors.error,
             ),
             const SizedBox(height: 16),
             Text(
-              'Something went wrong',
+              AppStrings.somethingWentWrong,
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 8),
             Text(
               error,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Colors.grey),
+              style: const TextStyle(color: AppColors.greyMedium),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh),
-              label: const Text('Try Again'),
+              label: const Text(AppStrings.retry),
             ),
           ],
         ),

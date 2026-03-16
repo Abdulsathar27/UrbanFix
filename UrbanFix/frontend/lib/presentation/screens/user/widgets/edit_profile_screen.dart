@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/user_controller.dart';
 import 'package:frontend/presentation/screens/user/widgets/primary_button.dart';
 import 'package:frontend/presentation/screens/user/widgets/profile_text_field.dart';
@@ -16,21 +17,20 @@ class EditProfileScreen extends StatelessWidget {
 
         if (user == null) {
           return const Scaffold(
-            body: Center(child: Text("User not found")),
+            body: Center(child: Text(AppStrings.userNotFound)),
           );
         }
 
-        
         controller.nameController.text = user.name;
         controller.phoneController.text = user.phone ?? "";
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text("Edit Profile"),
-            leading:  IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () => context.go('/profile'),
-          ),
+            title: const Text(AppStrings.editProfile),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: () => context.go('/profile'),
+            ),
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
@@ -53,20 +53,20 @@ class EditProfileScreen extends StatelessWidget {
 
                 ProfileTextField(
                   controller: controller.nameController,
-                  label: "Full Name",
+                  label: AppStrings.fullName,
                   icon: Icons.person,
                 ),
                 const SizedBox(height: 20),
 
                 ProfileTextField(
                   controller: controller.phoneController,
-                  label: "Phone Number",
+                  label: AppStrings.phoneNumber,
                   icon: Icons.phone,
                 ),
                 const SizedBox(height: 40),
 
                 PrimaryButton(
-                  text: "Save Changes",
+                  text: AppStrings.saveChanges,
                   isLoading: controller.isLoading,
                   onPressed: () async {
                     final success = await controller.updateProfile(
@@ -81,7 +81,7 @@ class EditProfileScreen extends StatelessWidget {
                         SnackBar(
                           content: Text(
                             controller.errorMessage ??
-                                "Failed to update profile",
+                                AppStrings.failedToUpdateProfile,
                           ),
                         ),
                       );

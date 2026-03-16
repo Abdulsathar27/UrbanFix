@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 
 class EmptyAppointmentsWidget extends StatelessWidget {
   final String message;
@@ -19,22 +21,22 @@ class EmptyAppointmentsWidget extends StatelessWidget {
           Icon(
             Icons.calendar_month_outlined,
             size: 80,
-            color: Colors.grey[400],
+            color: AppColors.greyMedium,
           ),
           const SizedBox(height: 16),
           Text(
             message,
-            style: const TextStyle(fontSize: 16, color: Colors.grey),
+            style: const TextStyle(fontSize: 16, color: AppColors.greyMedium),
           ),
           if (onRetry != null) ...[
             const SizedBox(height: 16),
             FilledButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh_rounded, size: 18),
-              label: const Text('Try Again'),
+              label: const Text(AppStrings.retry),
               style: FilledButton.styleFrom(
-                backgroundColor: const Color.fromARGB(201, 0, 71, 194),
-                foregroundColor: const Color(0xFF0D1B2A),
+                backgroundColor: AppColors.primary,
+                foregroundColor: AppColors.lightTextPrimary,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 28,
                   vertical: 14,
@@ -43,7 +45,7 @@ class EmptyAppointmentsWidget extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14),
                 ),
                 elevation: 0,
-                shadowColor: Colors.transparent,
+                shadowColor: AppColors.transparent,
                 textStyle: const TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 14,

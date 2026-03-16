@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/appointment_controller.dart';
 import 'package:frontend/data/models/appointment_model.dart';
 import 'package:frontend/presentation/screens/appointment/widget/appointment_list_tile.dart';
@@ -42,7 +43,7 @@ class AppointmentListWidget extends StatelessWidget {
               ? () {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text('Details for ${appointment.workTitle}'),
+                      content: Text('${AppStrings.detailsFor}${appointment.workTitle}'),
                     ),
                   );
                 }

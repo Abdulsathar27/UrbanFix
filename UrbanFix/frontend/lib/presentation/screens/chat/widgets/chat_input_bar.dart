@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/chat_controller.dart';
 import 'package:provider/provider.dart';
 
@@ -43,11 +45,11 @@ class _ChatInputBarState extends State<ChatInputBar> {
       builder: (context, controller, child) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          color: Colors.white,
+          color: AppColors.white,
           child: Row(
             children: [
               // Attachment button
-              const Icon(Icons.add, color: Colors.grey),
+              const Icon(Icons.add, color: AppColors.greyMedium),
               const SizedBox(width: 10),
 
               // Input field
@@ -55,7 +57,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
+                    color: AppColors.greyLight,
                     borderRadius: BorderRadius.circular(30),
                   ),
                   child: TextField(
@@ -64,7 +66,7 @@ class _ChatInputBarState extends State<ChatInputBar> {
                     minLines: 1,
                     maxLines: 4, // FIX: allow multiline input
                     decoration: const InputDecoration(
-                      hintText: 'Type a message...',
+                      hintText: AppStrings.typeMessage,
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.symmetric(vertical: 12),
                     ),
@@ -84,18 +86,18 @@ class _ChatInputBarState extends State<ChatInputBar> {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: controller.isSending
-                        ? Colors.grey.shade400
-                        : const Color(0xFF2D6CDF),
+                        ? AppColors.greyMedium
+                        : AppColors.primary,
                   ),
                   child: controller.isSending
                       ? const Padding(
                           padding: EdgeInsets.all(12),
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: Colors.white,
+                            color: AppColors.white,
                           ),
                         )
-                      : const Icon(Icons.send_rounded, color: Colors.white),
+                      : const Icon(Icons.send_rounded, color: AppColors.white),
                 ),
               ),
             ],

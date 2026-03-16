@@ -353,8 +353,10 @@ class AppointmentController extends ChangeNotifier {
       return false;
     }
 
-    // ✅ Create appointment
-    final isCreated = await createAppointment(
+    // ✅ Build appointment model and create
+    final appointment = AppointmentModel(
+      id: '',
+      userId: '',
       workerId: _workerId!,
       jobId: _jobId!,
       workTitle: _workTitle!,
@@ -362,10 +364,11 @@ class AppointmentController extends ChangeNotifier {
       time: _selectedTimeSlot,
       requestedWage: _requestedWage!,
       description: _description,
-      customerName: _customerName.trim(),
-      customerPhone: _customerPhone.trim(),
-      customerAddress: _customerAddress.trim(),
+      status: 'pending',
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
     );
+    final isCreated = await createAppointment(appointment);
 
     if (!context.mounted) return false;
 
@@ -391,31 +394,14 @@ class AppointmentController extends ChangeNotifier {
   // CORE LOGIC: Create Appointment
   // ============================================================
   
-  Future<bool> createAppointment({
-    required String workerId,
-    required String jobId,
-    required String workTitle,
-    required String date,
-    required String time,
-    required double requestedWage,
-    String? description,
-    required String customerName,
-    required String customerPhone,
-    required String customerAddress,
-  }) async {
+  Future<bool> createAppointment(AppointmentModel appointment) async {
     try {
       _setLoading(true);
       _setError(null);
 
       // ✅ Call API to create appointment
       final newAppointment = await _appointmentApiService.createAppointment(
-        workerId: workerId,
-        jobId: jobId,
-        workTitle: workTitle,
-        date: date,
-        time: time,
-        requestedWage: requestedWage,
-        description: description,
+        appointment,
       );
 
       // ✅ Add to sent appointments list
@@ -482,17 +468,15 @@ class AppointmentController extends ChangeNotifier {
   // ============================================================
   
   Future<void> updateStatus({
-    required String appointmentId,
-    required String status,
+    required AppointmentModel appointment,
     String? reason,
   }) async {
     try {
       _setLoading(true);
       _setError(null);
-      
+
       final updated = await _appointmentApiService.updateStatus(
-        appointmentId: appointmentId,
-        status: status,
+        appointment,
         reason: reason,
       );
       

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/models/service_model.dart';
-import 'package:go_router/go_router.dart'; // adjust path
+import 'package:go_router/go_router.dart';
 
 class ServiceDetailsPage extends StatelessWidget {
   final Service service;
 
-  const ServiceDetailsPage ({super.key, required this.service}); 
+  const ServiceDetailsPage({super.key, required this.service});
 
   @override
   Widget build(BuildContext context) {
@@ -13,11 +15,11 @@ class ServiceDetailsPage extends StatelessWidget {
       appBar: AppBar(
         title: Text(service.name),
         backgroundColor: service.color,
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new),
           onPressed: () {
-            context.go('/home'); 
+            context.go('/home');
           },
         ),
       ),
@@ -31,7 +33,7 @@ class ServiceDetailsPage extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: service.color.withOpacity(0.1),
+                    color: service.color.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(service.icon, size: 48, color: service.color),
@@ -50,10 +52,10 @@ class ServiceDetailsPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Starting at ₹${service.price.toStringAsFixed(2)}',
-                        style: TextStyle(
+                        '${AppStrings.startingAt}${service.price.toStringAsFixed(2)}',
+                        style: const TextStyle(
                           fontSize: 18,
-                          color: Colors.grey[600],
+                          color: AppColors.greyDark,
                         ),
                       ),
                     ],
@@ -63,7 +65,7 @@ class ServiceDetailsPage extends StatelessWidget {
             ),
             const SizedBox(height: 30),
             const Text(
-              'Description',
+              AppStrings.description,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
@@ -81,14 +83,14 @@ class ServiceDetailsPage extends StatelessWidget {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: service.color,
-                  foregroundColor: Colors.white,
+                  foregroundColor: AppColors.white,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
                 child: const Text(
-                  'Book This Service',
+                  AppStrings.bookThisService,
                   style: TextStyle(fontSize: 18),
                 ),
               ),

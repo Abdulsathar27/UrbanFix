@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/chat_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/presentation/screens/chat/widgets/chat_header.dart';
@@ -14,7 +16,6 @@ class ChatScreen extends StatefulWidget {
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
-
 
 class _ChatScreenState extends State<ChatScreen> {
   @override
@@ -34,7 +35,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F6FA),
+      backgroundColor: AppColors.lightBackground,
       body: Consumer<ChatController>(
         builder: (context, controller, child) {
           if (controller.isLoading && controller.selectedChat == null) {
@@ -49,25 +50,25 @@ class _ChatScreenState extends State<ChatScreen> {
                   Text(
                     controller.errorMessage!,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.red),
+                    style: const TextStyle(color: AppColors.error),
                   ),
                   const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: () =>
                         controller.fetchChatById(widget.chatId),
-                    child: const Text('Retry'),
+                    child: const Text(AppStrings.retry),
                   ),
                 ],
               ),
             );
           }
 
-          return Column(
+          return const Column(
             children: [
-              const ChatHeader(),
-              const Expanded(child: ChatMessages()),
-              const ChatSafetyBanner(),
-              const ChatInputBar(),
+              ChatHeader(),
+              Expanded(child: ChatMessages()),
+              ChatSafetyBanner(),
+              ChatInputBar(),
             ],
           );
         },

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/appointment_controller.dart';
 import 'package:frontend/data/models/appointment_model.dart';
 
@@ -56,14 +58,14 @@ class AppointmentListTile extends StatelessWidget {
               
               Row(
                 children: [
-                  const Icon(Icons.calendar_today, size: 16, color: Colors.grey),
+                  const Icon(Icons.calendar_today, size: 16, color: AppColors.greyMedium),
                   const SizedBox(width: 4),
                   Text(
                     controller.formatDate(appointment.date),
                     style: const TextStyle(fontSize: 14),
                   ),
                   const SizedBox(width: 12),
-                  const Icon(Icons.access_time, size: 16, color: Colors.grey),
+                  const Icon(Icons.access_time, size: 16, color: AppColors.greyMedium),
                   const SizedBox(width: 4),
                   Text(
                     controller.formatTime(appointment.time),
@@ -79,9 +81,9 @@ class AppointmentListTile extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: statusColor.withOpacity(0.1),
+                      color: statusColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: statusColor.withOpacity(0.5)),
+                      border: Border.all(color: statusColor.withValues(alpha: 0.5)),
                     ),
                     child: Text(
                       controller.formatStatus(appointment.status),
@@ -97,15 +99,15 @@ class AppointmentListTile extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: Colors.green.withOpacity(0.1),
+                        color: AppColors.success.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.green.withOpacity(0.3)),
+                        border: Border.all(color: AppColors.success.withValues(alpha: 0.3)),
                       ),
                       child: Text(
                         controller.formatCurrency(appointment.requestedWage),
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: Colors.green,
+                          color: AppColors.success,
                           fontSize: 12,
                         ),
                       ),
@@ -118,14 +120,14 @@ class AppointmentListTile extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: const [
                     Text(
-                      'Tap for details',
+                      AppStrings.tapForDetails,
                       style: TextStyle(
                         fontSize: 12,
-                        color: Colors.blue,
+                        color: AppColors.primary,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    Icon(Icons.chevron_right, size: 16, color: Colors.blue),
+                    Icon(Icons.chevron_right, size: 16, color: AppColors.primary),
                   ],
                 ),
             ],
@@ -136,19 +138,17 @@ class AppointmentListTile extends StatelessWidget {
   }
 
   Widget _buildRoleIndicator(BuildContext context) {
-    final bool isCustomer = true;
-    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: isCustomer ? Colors.blue.withOpacity(0.1) : Colors.orange.withOpacity(0.1),
+        color: AppColors.primary.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Text(
-        isCustomer ? 'You booked' : 'For you',
+      child: const Text(
+        AppStrings.youBooked,
         style: TextStyle(
           fontSize: 10,
-          color: isCustomer ? Colors.blue : Colors.orange,
+          color: AppColors.primary,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -158,19 +158,19 @@ class AppointmentListTile extends StatelessWidget {
   Color _getStatusColor(String status) {
     switch (status) {
       case 'pending':
-        return Colors.orange;
+        return AppColors.warning;
       case 'accepted':
-        return Colors.blue;
+        return AppColors.primary;
       case 'confirmed':
-        return Colors.green;
+        return AppColors.success;
       case 'completed':
-        return Colors.teal;
+        return AppColors.info;
       case 'cancelled':
-        return Colors.red;
+        return AppColors.error;
       case 'rejected':
-        return Colors.grey;
+        return AppColors.greyMedium;
       default:
-        return Colors.grey;
+        return AppColors.greyMedium;
     }
   }
 }

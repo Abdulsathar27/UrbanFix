@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/user_controller.dart';
 import 'package:provider/provider.dart';
 
@@ -17,7 +18,7 @@ class SearchBarWidget extends StatelessWidget {
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
-          hintText: "Search services...",
+          hintText: AppStrings.searchServices,
           prefixIcon: const Icon(Icons.search),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),

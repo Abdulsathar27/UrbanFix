@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/data/models/notification_model.dart';
 import 'package:frontend/data/controller/notification_controller.dart';
 
@@ -36,11 +37,9 @@ class NotificationCard extends StatelessWidget {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-            vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         child: Row(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
             /// ================= ICON CONTAINER
@@ -49,8 +48,7 @@ class NotificationCard extends StatelessWidget {
               width: 56,
               decoration: BoxDecoration(
                 color: _getBackgroundColor(),
-                borderRadius:
-                    BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: Icon(
                 _getIcon(),
@@ -63,24 +61,21 @@ class NotificationCard extends StatelessWidget {
             /// ================= TEXT SECTION
             Expanded(
               child: Column(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     notification.title,
                     style: const TextStyle(
                       fontSize: 17,
-                      fontWeight:
-                          FontWeight.w600,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     notification.body,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
-                      color:
-                          Colors.grey.shade600,
+                      color: AppColors.greyDark,
                     ),
                   ),
                 ],
@@ -90,14 +85,11 @@ class NotificationCard extends StatelessWidget {
             /// ================= UNREAD DOT
             if (!notification.isRead)
               Container(
-                margin:
-                    const EdgeInsets.only(
-                        top: 6),
+                margin: const EdgeInsets.only(top: 6),
                 height: 10,
                 width: 10,
-                decoration:
-                    const BoxDecoration(
-                  color: Colors.blue,
+                decoration: const BoxDecoration(
+                  color: AppColors.primary,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -125,10 +117,10 @@ class NotificationCard extends StatelessWidget {
   }
 
   Color _getBackgroundColor() {
-    return Colors.grey.shade200;
+    return AppColors.greyLight;
   }
 
   Color _getIconColor() {
-    return Colors.blue;
+    return AppColors.primary;
   }
 }

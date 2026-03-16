@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
 import '../../../../data/models/notification_model.dart';
 
 class NotificationTile extends StatelessWidget {
@@ -10,15 +11,12 @@ class NotificationTile extends StatelessWidget {
     required this.notification, required this.onTap,
   });
 
- 
-
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
       child: Row(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
 
           /// ================= ICON
@@ -26,13 +24,12 @@ class NotificationTile extends StatelessWidget {
             height: 56,
             width: 56,
             decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius:
-                  BorderRadius.circular(16),
+              color: AppColors.greyLight,
+              borderRadius: BorderRadius.circular(16),
             ),
             child: const Icon(
               Icons.notifications,
-              color: Colors.blue,
+              color: AppColors.primary,
             ),
           ),
 
@@ -41,22 +38,20 @@ class NotificationTile extends StatelessWidget {
           /// ================= TEXT CONTENT
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   notification.title,
                   style: const TextStyle(
                     fontSize: 18,
-                    fontWeight:
-                        FontWeight.w600,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   notification.body,
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
+                  style: const TextStyle(
+                    color: AppColors.greyDark,
                   ),
                 ),
               ],
@@ -66,12 +61,11 @@ class NotificationTile extends StatelessWidget {
           /// ================= UNREAD DOT
           if (!notification.isRead)
             Container(
-              margin:
-                  const EdgeInsets.only(top: 8),
+              margin: const EdgeInsets.only(top: 8),
               height: 10,
               width: 10,
               decoration: const BoxDecoration(
-                color: Colors.blue,
+                color: AppColors.primary,
                 shape: BoxShape.circle,
               ),
             ),

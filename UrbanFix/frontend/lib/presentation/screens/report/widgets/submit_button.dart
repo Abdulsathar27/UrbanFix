@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 
 class SubmitButton extends StatelessWidget {
   const SubmitButton({super.key});
@@ -10,7 +12,7 @@ class SubmitButton extends StatelessWidget {
       height: 58,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF2E5BFF),
+          backgroundColor: AppColors.primary,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(18),
           ),
@@ -18,7 +20,7 @@ class SubmitButton extends StatelessWidget {
         ),
         onPressed: () {},
         child: const Text(
-          "Submit Report  ➜",
+          AppStrings.submitReportButton,
           style: TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,

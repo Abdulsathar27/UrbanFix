@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/chat_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -14,8 +16,8 @@ class ChatHeader extends StatelessWidget {
 
         // Display participant count or a placeholder until chat loads
         final title = chat != null
-            ? 'Chat (${chat.participantIds.length} participants)'
-            : 'Loading...';
+            ? '${AppStrings.chats} (${chat.participantIds.length} ${AppStrings.participants})'
+            : AppStrings.loading;
 
         return Container(
           padding: const EdgeInsets.only(
@@ -24,10 +26,9 @@ class ChatHeader extends StatelessWidget {
             right: 16,
             bottom: 16,
           ),
-          color: Colors.white,
+          color: AppColors.white,
           child: Row(
             children: [
-              // FIX: icon wrapped in Icon() widget
               IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new_rounded),
                 onPressed: () => context.go('/chats'),
@@ -57,13 +58,13 @@ class ChatHeader extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(width: 6),
-                        const Icon(Icons.verified, color: Colors.blue, size: 18),
+                        const Icon(Icons.verified, color: AppColors.info, size: 18),
                       ],
                     ),
                     const SizedBox(height: 4),
                     const Text(
-                      'Online',
-                      style: TextStyle(color: Colors.green, fontSize: 12),
+                      AppStrings.online,
+                      style: TextStyle(color: AppColors.success, fontSize: 12),
                     ),
                   ],
                 ),

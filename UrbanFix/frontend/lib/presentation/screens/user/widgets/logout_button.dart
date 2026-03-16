@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/user_controller.dart';
 import 'package:provider/provider.dart';
 
@@ -14,8 +16,8 @@ class LogoutButton extends StatelessWidget {
           height: 55,
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: controller.isLoading ? Colors.grey.shade300 : Colors.red,
-              foregroundColor: Colors.white,
+              backgroundColor: controller.isLoading ? AppColors.greyLight : AppColors.error,
+              foregroundColor: AppColors.white,
               elevation: 2,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -30,14 +32,14 @@ class LogoutButton extends StatelessWidget {
                     width: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      color: Colors.white,
+                      color: AppColors.white,
                     ),
                   )
                 : const Icon(Icons.logout),
             label: controller.isLoading
-                ? const Text('Logging out...')
+                ? const Text(AppStrings.loggingOut)
                 : const Text(
-                    'Logout',
+                    AppStrings.logout,
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
 
 class MessageBubble extends StatelessWidget {
   final String message;
@@ -28,7 +29,7 @@ class MessageBubble extends StatelessWidget {
               maxWidth: MediaQuery.of(context).size.width * 0.75,
             ),
             decoration: BoxDecoration(
-              color: isMine ? const Color(0xFF2D6CDF) : Colors.white,
+              color: isMine ? AppColors.primary : AppColors.white,
               // FIX: Proper chat-bubble shape — rounded on all corners
               // except the corner closest to the sender
               borderRadius: BorderRadius.only(
@@ -39,7 +40,7 @@ class MessageBubble extends StatelessWidget {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.06),
+                  color: AppColors.lightTextPrimary.withValues(alpha: 0.06),
                   blurRadius: 6,
                   offset: const Offset(0, 2),
                 ),
@@ -48,7 +49,7 @@ class MessageBubble extends StatelessWidget {
             child: Text(
               message,
               style: TextStyle(
-                color: isMine ? Colors.white : Colors.black87,
+                color: isMine ? AppColors.white : AppColors.lightTextSecondary,
                 fontSize: 15,
                 height: 1.4,
               ),
@@ -66,7 +67,7 @@ class MessageBubble extends StatelessWidget {
               time,
               style: const TextStyle(
                 fontSize: 11,
-                color: Colors.grey,
+                color: AppColors.greyMedium,
               ),
             ),
           ),
