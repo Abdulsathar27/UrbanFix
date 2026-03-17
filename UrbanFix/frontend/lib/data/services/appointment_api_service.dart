@@ -11,7 +11,16 @@ class AppointmentApiService {
     try {
       final response = await _dio.post(
         '${ApiConstants.baseUrl}/appointments',
-        data: appointment.toJson(),
+        data: {
+          'workerId': appointment.workerId,
+          'jobId': appointment.jobId,
+          'workTitle': appointment.workTitle,
+          'date': appointment.date,
+          'time': appointment.time,
+          'requestedWage': appointment.requestedWage,
+          if (appointment.description != null)
+            'description': appointment.description,
+        },
       );
 
       return AppointmentModel.fromJson(

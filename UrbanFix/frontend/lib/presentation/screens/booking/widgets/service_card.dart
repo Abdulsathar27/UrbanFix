@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 
 class ServiceCard extends StatelessWidget {
   final String workTitle;
@@ -33,7 +35,7 @@ class ServiceCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.white,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
@@ -42,10 +44,10 @@ class ServiceCard extends StatelessWidget {
               height: 50,
               width: 50,
               decoration: BoxDecoration(
-                color: const Color(0xFFE8F0FF),
+                color: AppColors.primaryLight,
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(_getIconForService(workTitle), color: Colors.blue),
+              child: Icon(_getIconForService(workTitle), color: AppColors.primary),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -61,8 +63,8 @@ class ServiceCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    description ?? "Professional service",
-                    style: const TextStyle(color: Colors.grey),
+                    description ?? AppStrings.professionalService,
+                    style: const TextStyle(color: AppColors.greyMedium),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -77,12 +79,12 @@ class ServiceCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.blue,
+                    color: AppColors.primary,
                   ),
                 ),
                 const Text(
-                  "Fixed rate",
-                  style: TextStyle(color: Colors.grey),
+                  AppStrings.fixedRate,
+                  style: TextStyle(color: AppColors.greyMedium),
                 ),
               ],
             ),

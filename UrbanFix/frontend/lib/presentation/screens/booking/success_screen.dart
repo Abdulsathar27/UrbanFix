@@ -79,7 +79,7 @@ class SuccessScreen extends StatelessWidget {
 
               TextButton(
                 onPressed: () {
-                  context.goNamed("booking");
+                  context.goNamed("my_appointments");
                 },
                 child: const Text(
                   "View My Appointments",

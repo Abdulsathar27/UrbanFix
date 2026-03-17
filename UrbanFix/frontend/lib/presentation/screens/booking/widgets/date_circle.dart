@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
 
 class DateCircle extends StatelessWidget {
   const DateCircle({
@@ -23,13 +24,13 @@ class DateCircle extends StatelessWidget {
         width: 40,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: selected ? Colors.blue : Colors.transparent,
+          color: selected ? AppColors.primary : AppColors.transparent,
           shape: BoxShape.circle,
         ),
         child: Text(
           day,
           style: TextStyle(
-            color: selected ? Colors.white : Colors.black,
+            color: selected ? AppColors.white : AppColors.lightTextPrimary,
             fontWeight: FontWeight.w600,
           ),
         ),

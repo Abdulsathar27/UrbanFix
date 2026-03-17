@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/data/controller/appointment_controller.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 
 class CategorySelectionScreen extends StatelessWidget {
@@ -9,98 +13,98 @@ class CategorySelectionScreen extends StatelessWidget {
       'name': 'General Service',
       'icon': '⚙️',
       'description': 'General services',
-      'color': Color(0xFF6C757D),
+      'color': AppColors.categoryGeneralService,
     },
     {
       'name': 'Construction',
       'icon': '🏗️',
       'description': 'Construction work',
-      'color': Color(0xFFFFC107),
+      'color': AppColors.categoryConstruction,
     },
     {
       'name': 'Electrical',
       'icon': '⚡',
       'description': 'Electrical repairs',
-      'color': Color(0xFFFFB800),
+      'color': AppColors.categoryElectrical,
     },
     {
       'name': 'Plumbing',
       'icon': '🔧',
       'description': 'Plumbing repairs',
-      'color': Color(0xFF0066FF),
+      'color': AppColors.categoryPlumbing,
     },
     {
       'name': 'Carpentry',
       'icon': '🪛',
       'description': 'Carpentry work',
-      'color': Color(0xFF8B4513),
+      'color': AppColors.categoryCarpentry,
     },
     {
       'name': 'Painting',
       'icon': '🎨',
       'description': 'Painting services',
-      'color': Color(0xFFEE82EE),
+      'color': AppColors.categoryPainting,
     },
     {
       'name': 'Repair & Maintenance',
       'icon': '🔨',
       'description': 'Repairs & maintenance',
-      'color': Color(0xFF4CAF50),
+      'color': AppColors.success,
     },
     {
       'name': 'Cleaning',
       'icon': '🧹',
       'description': 'Cleaning services',
-      'color': Color(0xFF00CC88),
+      'color': AppColors.categoryCleaning,
     },
     {
       'name': 'Sales & Delivery',
       'icon': '📦',
       'description': 'Sales & delivery',
-      'color': Color(0xFF2196F3),
+      'color': AppColors.info,
     },
     {
       'name': 'Healthcare Support',
       'icon': '🏥',
       'description': 'Healthcare support',
-      'color': Color(0xFFE91E63),
+      'color': AppColors.categoryHealthcare,
     },
     {
       'name': 'Cooking',
       'icon': '👨‍🍳',
       'description': 'Cooking services',
-      'color': Color(0xFFFF6F00),
+      'color': AppColors.categoryCooking,
     },
     {
       'name': 'Gardening',
       'icon': '🌱',
       'description': 'Gardening services',
-      'color': Color(0xFF4CAF50),
+      'color': AppColors.success,
     },
     {
       'name': 'Other',
       'icon': '✨',
       'description': 'Other services',
-      'color': Color(0xFF9C27B0),
+      'color': AppColors.categoryOther,
     },
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FA),
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.transparent,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.lightTextPrimary),
           onPressed: () => context.pop(),
         ),
         title: const Text(
-          'Select Service',
+          AppStrings.selectService,
           style: TextStyle(
-            color: Colors.black,
+            color: AppColors.lightTextPrimary,
             fontSize: 20,
             fontWeight: FontWeight.w600,
           ),
@@ -115,7 +119,7 @@ class CategorySelectionScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'What service do you need?',
+                  AppStrings.whatServiceDoYouNeed,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.w600,
                         fontSize: 22,
@@ -123,9 +127,9 @@ class CategorySelectionScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Choose a category to view available workers',
+                  AppStrings.chooseCategoryToViewWorkers,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[600],
+                        color: AppColors.greyDark,
                       ),
                 ),
               ],
@@ -151,11 +155,13 @@ class CategorySelectionScreen extends StatelessWidget {
                   description: category['description'],
                   color: category['color'],
                   onTap: () {
-                    context.goNamed(
-                      'bookings',
-                      extra: {
-                        'category': category['name'],
-                      },
+                    // Save category in controller, then push job selection
+                    context
+                        .read<AppointmentController>()
+                        .category = category['name'] as String;
+                    context.pushNamed(
+                      'select-job',
+                      extra: category['name'] as String,
                     );
                   },
                 );
@@ -208,11 +214,11 @@ class _CategoryCardState extends State<CategoryCard> {
         scale: isPressed ? 0.95 : 1.0,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.white,
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.08),
+                color: AppColors.lightTextPrimary.withValues(alpha: 0.08),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -225,7 +231,7 @@ class _CategoryCardState extends State<CategoryCard> {
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: widget.color.withOpacity(0.15),
+                  color: widget.color.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Center(
@@ -241,7 +247,7 @@ class _CategoryCardState extends State<CategoryCard> {
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
-                  color: Colors.black,
+                  color: AppColors.lightTextPrimary,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -253,7 +259,7 @@ class _CategoryCardState extends State<CategoryCard> {
                   widget.description,
                   style: const TextStyle(
                     fontSize: 11,
-                    color: Colors.grey,
+                    color: AppColors.greyMedium,
                   ),
                   textAlign: TextAlign.center,
                   maxLines: 2,

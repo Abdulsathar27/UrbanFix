@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/appointment_controller.dart';
 import 'package:provider/provider.dart';
 
@@ -13,16 +15,16 @@ class LocationSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              "Customer Details",
+              AppStrings.customerDetails,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.white,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey[300]!),
+                border: Border.all(color: AppColors.greyLight),
               ),
               child: Column(
                 children: [
@@ -31,9 +33,9 @@ class LocationSection extends StatelessWidget {
                     onChanged: (value) {
                       appointmentController.customerName = value;
                     },
-                    label: "Full Name",
+                    label: AppStrings.labelName,
                     icon: Icons.person,
-                    hint: "Enter your name",
+                    hint: AppStrings.hintFullName,
                   ),
                   const SizedBox(height: 12),
 
@@ -42,9 +44,9 @@ class LocationSection extends StatelessWidget {
                     onChanged: (value) {
                       appointmentController.customerPhone = value;
                     },
-                    label: "Phone",
+                    label: AppStrings.labelPhone,
                     icon: Icons.phone,
-                    hint: "10-digit number",
+                    hint: AppStrings.hintPhoneNumber,
                     keyboardType: TextInputType.phone,
                   ),
                   const SizedBox(height: 12),
@@ -54,9 +56,9 @@ class LocationSection extends StatelessWidget {
                     onChanged: (value) {
                       appointmentController.customerAddress = value;
                     },
-                    label: "Address",
+                    label: AppStrings.labelAddress,
                     icon: Icons.location_on,
-                    hint: "Street address",
+                    hint: AppStrings.hintAddress,
                     maxLines: 2,
                   ),
                 ],
@@ -84,7 +86,7 @@ class LocationSection extends StatelessWidget {
           style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: Colors.black87,
+            color: AppColors.lightTextSecondary,
           ),
         ),
         const SizedBox(height: 4),
@@ -94,18 +96,18 @@ class LocationSection extends StatelessWidget {
           maxLines: maxLines,
           decoration: InputDecoration(
             hintText: hint,
-            prefixIcon: Icon(icon, size: 18, color: Colors.grey[600]),
+            prefixIcon: Icon(icon, size: 18, color: AppColors.greyDark),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+              borderSide: const BorderSide(color: AppColors.greyLight),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
               borderSide: const BorderSide(
-                color: Color(0xFF0066FF),
+                color: AppColors.primary,
                 width: 2,
               ),
             ),

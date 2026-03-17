@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
 
 class TimeChip extends StatelessWidget {
   const TimeChip(
@@ -24,24 +25,20 @@ class TimeChip extends StatelessWidget {
         padding:
             const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         decoration: BoxDecoration(
-          color: selected
-              ? const Color(0xFFE8F0FF)
-              : Colors.white,
+          color: selected ? AppColors.primaryLight : AppColors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: selected
-                ? Colors.blue
-                : Colors.grey.shade300,
+            color: selected ? AppColors.primary : AppColors.greyLight,
           ),
         ),
         child: Text(
           time,
           style: TextStyle(
             color: disabled
-                ? Colors.grey
+                ? AppColors.greyMedium
                 : selected
-                    ? Colors.blue
-                    : Colors.black,
+                    ? AppColors.primary
+                    : AppColors.lightTextPrimary,
             fontWeight: FontWeight.w600,
           ),
         ),

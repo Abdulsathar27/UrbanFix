@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/appointment_controller.dart';
 import 'package:frontend/presentation/screens/booking/widgets/bottom_confirm_section.dart';
 import 'package:frontend/presentation/screens/booking/widgets/date_section.dart';
@@ -20,24 +22,24 @@ class BookingScreen extends StatelessWidget {
 
       final controller = context.read<AppointmentController>();
 
-      // ✅ Use a local variable to avoid promotion issue
+      
       final categoryValue = category;
 
-      // ✅ Only set category if it's NOT null
+     
       if (categoryValue != null && categoryValue.isNotEmpty) {
         controller.category = categoryValue;
       }
     });
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FA),
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.transparent,
         centerTitle: true,
         title: const Text(
-          "Book Appointment",
-          style: TextStyle(color: Colors.black),
+          AppStrings.bookAppointment,
+          style: TextStyle(color: AppColors.lightTextPrimary),
         ),
       ),
       body: Column(
@@ -51,59 +53,22 @@ class BookingScreen extends StatelessWidget {
                   // ===== SERVICE CARD =====
                   Consumer<AppointmentController>(
                     builder: (context, controller, _) => ServiceCard(
-                      workTitle: controller.workTitle ?? 'Select a job',
+                      workTitle: controller.workTitle ?? AppStrings.selectAJob,
                       requestedWage: controller.requestedWage ?? 0.0,
-                      description:
-                          controller.description ?? 'Tap to choose a service',
-                      onTap: () async {
-                        // ✅ Get current category from controller
-                        final currentCategoryValue = controller.category;
-
-                        // ✅ Check if category is null or empty
-                        if (currentCategoryValue == null ||
-                            currentCategoryValue.isEmpty) {
-                          // Show error and navigate to category selection
-                          if (context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                  'Please select a service category first',
-                                ),
-                                backgroundColor: Colors.orange,
-                              ),
-                            );
-
-                            // Navigate to category selection
-                            await context.pushNamed('select-category');
-                          }
-                          return;
-                        }
-
-                        // ✅ Now we know currentCategoryValue is NOT null
-                        // Navigate to select job with the category
-                        final selectedJob = await context
-                            .pushNamed<Map<String, dynamic>>(
-                              'select-job',
-                              extra: currentCategoryValue, // ✅ Safe to use
-                            );
-
-                        // ✅ Update service details if user selected a job
-                        if (selectedJob != null && context.mounted) {
-                          context
-                              .read<AppointmentController>()
-                              .setServiceDetails(
-                                jobId: selectedJob['jobId'] as String,
-                                workerId: selectedJob['workerId'] as String,
-                                category:
-                                    selectedJob['category'] as String? ??
-                                    currentCategoryValue,
-                                workTitle: selectedJob['workTitle'] as String,
-                                requestedWage:
-                                    (selectedJob['requestedWage'] as num)
-                                        .toDouble(),
-                                description:
-                                    selectedJob['description'] as String?,
-                              );
+                      description: controller.description ??
+                          AppStrings.tapToChooseService,
+                      onTap: () {
+                        final currentCategory = controller.category;
+                        if (currentCategory == null ||
+                            currentCategory.isEmpty) {
+                          // No category yet — go pick one (which chains to job selection)
+                          context.pushNamed('select-category');
+                        } else {
+                          // Category already set — go straight to job selection
+                          context.pushNamed(
+                            'select-job',
+                            extra: currentCategory,
+                          );
                         }
                       },
                     ),

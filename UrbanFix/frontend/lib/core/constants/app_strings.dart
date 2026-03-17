@@ -72,12 +72,36 @@ class AppStrings {
   static const String youBooked = "You booked";
   static const String detailsFor = "Details for ";
   static const String loadingAppointments = "Loading your appointments...";
+  static const String selectAJob = "Select a job";
+  static const String customerDetails = "Customer Details";
+  static const String labelName = "Name";
+  static const String labelPhone = "Phone";
+  static const String labelAddress = "Address";
+  static const String hintFullName = "Your full name";
+  static const String hintPhoneNumber = "10-digit number";
+  static const String hintAddress = "Street address";
+  static const String selectService = "Select Service";
+  static const String whatServiceDoYouNeed = "What service do you need?";
+  static const String chooseCategoryToViewWorkers = "Choose a category to view available workers";
+  static const String selectTime = "Select Time";
+  static const String selectDate = "Select Date";
+  static const String tapToChooseService = "Tap to choose a service";
+  static const String selectCategoryFirst = "Please select a service category first";
+  static const String workerInfoMissing = "Worker information is missing. Please try another job";
+  static const String confirmAppointment = "Confirm Appointment";
+  static const String estimatedTotal = "Estimated Total";
 
   // ===== Job =====
   static const String jobs = "Jobs";
   static const String jobDetails = "Job Details";
   static const String noJobsFound = "No jobs available";
   static const String noJobs = "No jobs";
+  static const String errorLoadingJobs = "Error loading jobs";
+  static const String cannotSelectJob = "Cannot select this job";
+  static const String refresh = "Refresh";
+  static const String labelWorker = "Worker";
+  static const String professionalService = "Professional service";
+  static const String fixedRate = "Fixed rate";
 
   // ===== Chat =====
   static const String chats = "Chats";

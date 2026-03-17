@@ -73,7 +73,9 @@ class AppRouter {
             pageBuilder: (context, state) => NoTransitionPage(
               child: BookingScreen(
                 // ✅ Get category from extras if passed
-                category: (state.extra as Map<String, dynamic>?)?['category'] as String?,
+                category:
+                    (state.extra as Map<String, dynamic>?)?['category']
+                        as String?,
               ),
             ),
           ),
@@ -148,8 +150,8 @@ class AppRouter {
         builder: (context, state) => const EditProfileScreen(),
       ),
       GoRoute(
+        path: '/appointment-success',
         name: 'appointment_success',
-        path: '/success',
         builder: (context, state) => const SuccessScreen(),
       ),
       GoRoute(

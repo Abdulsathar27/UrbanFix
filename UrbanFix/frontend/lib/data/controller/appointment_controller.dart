@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:frontend/data/models/appointment_model.dart';
 import 'package:frontend/data/services/appointment_api_service.dart';
-import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 /// Appointment Controller
@@ -23,6 +22,7 @@ class AppointmentController extends ChangeNotifier {
   // STATE
   // ============================================================
   bool _isLoading = false;
+  bool _isConfirming = false;
   String? _errorMessage;
   bool _isInitialized = false;
 
@@ -121,6 +121,7 @@ class AppointmentController extends ChangeNotifier {
       UnmodifiableListView(_receivedAppointments);
   
   bool get isLoading => _isLoading;
+  bool get isConfirming => _isConfirming;
   String? get errorMessage => _errorMessage;
   bool get isInitialized => _isInitialized;
 
@@ -353,40 +354,48 @@ class AppointmentController extends ChangeNotifier {
       return false;
     }
 
-    // ✅ Build appointment model and create
-    final appointment = AppointmentModel(
-      id: '',
-      userId: '',
-      workerId: _workerId!,
-      jobId: _jobId!,
-      workTitle: _workTitle!,
-      date: _formatDate(_selectedDate),
-      time: _selectedTimeSlot,
-      requestedWage: _requestedWage!,
-      description: _description,
-      status: 'pending',
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-    final isCreated = await createAppointment(appointment);
+    _isConfirming = true;
+    notifyListeners();
 
-    if (!context.mounted) return false;
+    try {
+      // NOTE: 'id' and 'userId' are intentionally empty here.
+      // The API service sends only the required fields (worker, job, workTitle,
+      // date, time, requestedWage, description). The backend sets 'user'
+      // automatically from the JWT token — never send it from the client.
+      final appointment = AppointmentModel(
+        id: '',
+        userId: '',
+        workerId: _workerId!,
+        jobId: _jobId!,
+        workTitle: _workTitle!,
+        date: _formatDate(_selectedDate),
+        time: _selectedTimeSlot,
+        requestedWage: _requestedWage!,
+        description: _description,
+        status: 'pending',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
 
-    if (isCreated) {
-      // ✅ Navigate to success screen
-      context.goNamed('appointment_success');
-      return true;
-    } else {
-      // ✅ Show error message
-      if (context.mounted) {
+      final isCreated = await createAppointment(appointment);
+
+      if (!context.mounted) return false;
+
+      if (isCreated) {
+        return true;
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMessage ?? 'Failed to create appointment'),
             backgroundColor: Colors.red,
           ),
         );
+        return false;
       }
-      return false;
+    } finally {
+      // Always reset — even if context.mounted was false or an error was thrown
+      _isConfirming = false;
+      notifyListeners();
     }
   }
 
@@ -587,4 +596,6 @@ class AppointmentController extends ChangeNotifier {
   void dispose() {
     super.dispose();
   }
+
+
 }

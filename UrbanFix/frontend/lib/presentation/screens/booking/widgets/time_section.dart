@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/presentation/screens/booking/widgets/time_chip.dart';
 
 class TimeSection extends StatelessWidget {
@@ -20,7 +21,7 @@ class TimeSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("Select Time",
+        const Text(AppStrings.selectTime,
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 18)),

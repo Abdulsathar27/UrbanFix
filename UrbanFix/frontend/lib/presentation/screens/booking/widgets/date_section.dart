@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
 
 class DateSection extends StatelessWidget {
   const DateSection({
@@ -18,16 +20,16 @@ class DateSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          "Select Date",
+          AppStrings.selectDate,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
         const SizedBox(height: 12),
         Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.white,
             borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey[300]!),
+            border: Border.all(color: AppColors.greyLight),
           ),
           child: GridView.builder(
             shrinkWrap: true,
@@ -47,7 +49,7 @@ class DateSection extends StatelessWidget {
                 onTap: () => onDateSelected(date),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: isSelected ? const Color(0xFF0066FF) : Colors.grey[100],
+                    color: isSelected ? AppColors.primary : AppColors.greyBackground,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(
@@ -58,7 +60,7 @@ class DateSection extends StatelessWidget {
                           _getDayName(date),
                           style: TextStyle(
                             fontSize: 10,
-                            color: isSelected ? Colors.white : Colors.grey[600],
+                            color: isSelected ? AppColors.white : AppColors.greyDark,
                           ),
                         ),
                         Text(
@@ -66,7 +68,7 @@ class DateSection extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
-                            color: isSelected ? Colors.white : Colors.black,
+                            color: isSelected ? AppColors.white : AppColors.lightTextPrimary,
                           ),
                         ),
                       ],

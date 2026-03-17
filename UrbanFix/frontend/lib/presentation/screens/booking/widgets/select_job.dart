@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/data/controller/appointment_controller.dart';
 import 'package:frontend/data/controller/job_controller.dart';
 import 'package:frontend/data/models/job_model.dart';
 import 'package:go_router/go_router.dart';
@@ -30,19 +33,19 @@ class SelectJobScreen extends StatelessWidget {
     });
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF7F8FA),
+      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.transparent,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.lightTextPrimary),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Select a $category Job',
           style: const TextStyle(
-            color: Colors.black,
+            color: AppColors.lightTextPrimary,
             fontSize: 20,
             fontWeight: FontWeight.w600,
           ),
@@ -66,11 +69,11 @@ class SelectJobScreen extends StatelessWidget {
                   Icon(
                     Icons.error_outline,
                     size: 48,
-                    color: Colors.red[400],
+                    color: AppColors.error,
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    controller.errorMessage ?? 'Error loading jobs',
+                    controller.errorMessage ?? AppStrings.errorLoadingJobs,
                     textAlign: TextAlign.center,
                     style: const TextStyle(fontSize: 16),
                   ),
@@ -81,7 +84,7 @@ class SelectJobScreen extends StatelessWidget {
                       controller.filterJobsByCategory(category);
                     },
                     icon: const Icon(Icons.refresh),
-                    label: const Text('Retry'),
+                    label: const Text(AppStrings.retry),
                   ),
                 ],
               ),
@@ -97,7 +100,7 @@ class SelectJobScreen extends StatelessWidget {
                   Icon(
                     Icons.work_outline,
                     size: 48,
-                    color: Colors.grey[400],
+                    color: AppColors.greyMedium,
                   ),
                   const SizedBox(height: 16),
                   Text(
@@ -105,7 +108,7 @@ class SelectJobScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 16,
-                      color: Colors.grey,
+                      color: AppColors.greyMedium,
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -114,7 +117,7 @@ class SelectJobScreen extends StatelessWidget {
                       controller.filterJobsByCategory(category);
                     },
                     icon: const Icon(Icons.refresh),
-                    label: const Text('Refresh'),
+                    label: const Text(AppStrings.refresh),
                   ),
                 ],
               ),
@@ -130,24 +133,44 @@ class SelectJobScreen extends StatelessWidget {
               return JobCard(
                 job: job,
                 onTap: () {
-                  // ✅ Validate job before selection
+                  // Validate job before selection
                   if (!controller.validateJobSelection(job)) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
                         content: Text(
-                          controller.errorMessage ?? 'Cannot select this job',
+                          controller.errorMessage ?? AppStrings.cannotSelectJob,
                         ),
-                        backgroundColor: Colors.red,
+                        backgroundColor: AppColors.error,
                       ),
                     );
                     return;
                   }
 
-                  // ✅ Prepare job data
                   final jobData = controller.prepareJobForBooking(job);
+                  final workerId = jobData['workerId'] as String? ?? '';
 
-                  // ✅ Return to previous screen with job data
-                  context.pop(jobData);
+                  if (workerId.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(AppStrings.workerInfoMissing),
+                        backgroundColor: AppColors.error,
+                      ),
+                    );
+                    return;
+                  }
+
+                  // Save service details in controller
+                  context.read<AppointmentController>().setServiceDetails(
+                    jobId: jobData['jobId'] as String,
+                    workerId: workerId,
+                    category: jobData['category'] as String,
+                    workTitle: jobData['workTitle'] as String,
+                    requestedWage: jobData['requestedWage'] as double,
+                    description: jobData['description'] as String?,
+                  );
+
+                  // Navigate directly to booking screen
+                  context.goNamed('bookings');
                 },
               );
             },
@@ -208,7 +231,7 @@ class JobCard extends StatelessWidget {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF0066FF).withOpacity(0.1),
+                      color: AppColors.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -216,7 +239,7 @@ class JobCard extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF0066FF),
+                        color: AppColors.primary,
                       ),
                     ),
                   ),
@@ -229,7 +252,7 @@ class JobCard extends StatelessWidget {
                 job.description,
                 style: const TextStyle(
                   fontSize: 13,
-                  color: Colors.grey,
+                  color: AppColors.greyMedium,
                 ),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -239,18 +262,18 @@ class JobCard extends StatelessWidget {
               // ✅ Skills and location
               Row(
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.location_on,
                     size: 14,
-                    color: Colors.grey[600],
+                    color: AppColors.greyDark,
                   ),
                   const SizedBox(width: 4),
                   Expanded(
                     child: Text(
                       job.location,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 12,
-                        color: Colors.grey[600],
+                        color: AppColors.greyDark,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -279,7 +302,7 @@ class JobCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            job.user!['name'] ?? 'Worker',
+                            job.user!['name'] ?? AppStrings.labelWorker,
                             style: const TextStyle(
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
@@ -289,7 +312,7 @@ class JobCard extends StatelessWidget {
                             job.user!['profession'] ?? job.category,
                             style: const TextStyle(
                               fontSize: 12,
-                              color: Colors.grey,
+                              color: AppColors.greyMedium,
                             ),
                           ),
                         ],
@@ -302,7 +325,7 @@ class JobCard extends StatelessWidget {
                           const Icon(
                             Icons.star_rounded,
                             size: 14,
-                            color: Color(0xFFFFB800),
+                            color: AppColors.categoryElectrical,
                           ),
                           const SizedBox(width: 4),
                           Text(

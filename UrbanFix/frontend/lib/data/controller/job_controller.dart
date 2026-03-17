@@ -194,12 +194,17 @@ class JobController extends ChangeNotifier {
   // CORE LOGIC: Prepare job for booking
   // ============================================================
   Map<String, dynamic> prepareJobForBooking(JobModel job) {
+    // Extract workerId from populated user object
+    final workerId = job.user?['_id']?.toString() ??
+        job.user?['id']?.toString() ??
+        '';
+
     return {
       'jobId': job.id,
-      'workerId': job.user?['_id'] ?? job.user?['id'],  // Get worker ID from user
+      'workerId': workerId,
       'category': job.category,
       'workTitle': job.title,
-      'requestedWage': double.tryParse(job.wage) ?? 0.0,  // wage is string in backend
+      'requestedWage': double.tryParse(job.wage) ?? 0.0,
       'description': job.description,
     };
   }
