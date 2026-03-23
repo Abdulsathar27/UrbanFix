@@ -38,18 +38,15 @@ class DioClient {
           return handler.next(response);
         },
         onError: (DioException error, handler) {
-          // Global error handling
+         
 
           if (error.response?.statusCode == 401) {
-            // TODO: Handle unauthorized (auto logout later)
           }
 
           return handler.next(error);
         },
       ),
     );
-
-    // Logging interceptor (Only for development)
     _dio.interceptors.add(
       LogInterceptor(
         requestBody: true,

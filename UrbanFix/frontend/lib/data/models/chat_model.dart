@@ -19,9 +19,6 @@ class ChatModel {
     this.updatedAt,
   });
 
-  // ==========================
-  // From JSON
-  // ==========================
   factory ChatModel.fromJson(Map<String, dynamic> json) {
     return ChatModel(
       id: json['_id'] ?? '',
@@ -43,9 +40,6 @@ class ChatModel {
     );
   }
 
-  // ==========================
-  // To JSON
-  // ==========================
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
@@ -59,9 +53,6 @@ class ChatModel {
     };
   }
 
-  // ==========================
-  // Copy With
-  // ==========================
   ChatModel copyWith({
     String? id,
     String? jobId,

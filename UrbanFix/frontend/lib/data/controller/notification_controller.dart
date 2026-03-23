@@ -9,10 +9,6 @@ class NotificationController extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
   bool _hasFetched = false;
-
-  // ==========================
-  // Getters
-  // ==========================
   List<NotificationModel> get notifications => _notifications;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
@@ -20,9 +16,7 @@ class NotificationController extends ChangeNotifier {
 
   int get unreadCount => _notifications.where((n) => !n.isRead).length;
 
-  // ==========================
-  // Private Helpers
-  // ==========================
+
   void _setLoading(bool value) {
     _isLoading = value;
 
@@ -39,9 +33,6 @@ class NotificationController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ==========================
-  // Fetch Notifications
-  // ==========================
   Future<void> fetchNotifications() async {
     if (_hasFetched) return;
     try {
@@ -62,9 +53,7 @@ class NotificationController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Mark Single As Read
-  // ==========================
+
   Future<void> markAsRead(String notificationId) async {
     try {
       await notificationApiService.markAsRead(notificationId);
@@ -78,9 +67,7 @@ class NotificationController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Mark All As Read
-  // ==========================
+
   Future<void> markAllAsRead() async {
     try {
       await notificationApiService.markAllAsRead();
@@ -93,9 +80,7 @@ class NotificationController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Delete Notification
-  // ==========================
+
   Future<void> deleteNotification(String notificationId) async {
     try {
       await notificationApiService.deleteNotification(notificationId);
@@ -108,14 +93,10 @@ class NotificationController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Clear Notifications
-  // ==========================
+
   void clearNotifications() {
     _notifications = [];
     _hasFetched = false;
-
-    /// ✅ Reset fetch state
     notifyListeners();
   }
 }

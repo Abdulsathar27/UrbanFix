@@ -6,10 +6,6 @@ import 'dio_client.dart';
 
 class MessageApiService {
   final Dio _dio = DioClient().dio;
-
-  // ==========================================================
-  // Get Messages By Chat ID
-  // ==========================================================
   Future<List<MessageModel>> getMessages(
       String chatId) async {
     try {
@@ -30,9 +26,7 @@ class MessageApiService {
     }
   }
 
-  // ==========================================================
-  // Send Message
-  // ==========================================================
+
   Future<List<MessageModel>> sendMessage(String chatId,String receiverId,String message,String type) async {
     try {
       final response = await _dio.post("${ApiConstants.sendMessage}/sendMessage",
@@ -54,9 +48,7 @@ class MessageApiService {
     }
   }
 
-  // ==========================================================
-  // Mark Message As Seen
-  // ==========================================================
+ 
   Future<List<MessageModel>> markMessageAsSeen(
       String messageId) async {
     try {
@@ -73,9 +65,7 @@ class MessageApiService {
     }
   }
 
-  // ==========================================================
-  // Delete Message
-  // ==========================================================
+  
   Future<List<MessageModel>> deleteMessage(
       String messageId) async {
     try {

@@ -8,21 +8,18 @@ class JobModel {
   final List<String> skills;
   final String wage;
   final String phone;
-  
-  // User (job creator)
+
   final Map<String, dynamic>? user;
-  
-  // Location geometry
+
   final Map<String, dynamic>? locationGeo;
-  
-  // Additional fields
+
   final List<String>? images;
   final bool isBlocked;
   final String? blockedReason;
   final double averageRating;
   final int reviewCount;
   final List<Map<String, dynamic>> reviews;
-  
+
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -72,8 +69,10 @@ class JobModel {
       reviewCount: json['reviewCount'] ?? 0,
       reviews: json['reviews'] != null
           ? List<Map<String, dynamic>>.from(
-              (json['reviews'] as List<dynamic>)
-                  .map((r) => r as Map<String, dynamic>))
+              (json['reviews'] as List<dynamic>).map(
+                (r) => r as Map<String, dynamic>,
+              ),
+            )
           : [],
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'] as String)

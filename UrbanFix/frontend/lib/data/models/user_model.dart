@@ -7,7 +7,7 @@ class UserModel {
   final String? role;
   final DateTime? createdAt;
   final DateTime? updatedAt;
-  final String? address; // Optional: for location display
+  final String? address; 
 
   UserModel({
     required this.id,
@@ -21,9 +21,7 @@ class UserModel {
     this.address,
   });
 
-  // ==========================
-  // From JSON
-  // ==========================
+  
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
       id: json['_id'] ?? '',
@@ -38,7 +36,7 @@ class UserModel {
       updatedAt: json['updatedAt'] != null
           ? DateTime.parse(json['updatedAt'])
           : null,
-      address: json['address'], // Optional field
+      address: json['address'], 
     );
   }
 
@@ -46,9 +44,7 @@ class UserModel {
 
   
 
-  // ==========================
-  // To JSON
-  // ==========================
+  
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
@@ -63,9 +59,7 @@ class UserModel {
     };
   }
 
-  // ==========================
-  // Copy With
-  // ==========================
+  
   UserModel copyWith({
     String? id,
     String? name,

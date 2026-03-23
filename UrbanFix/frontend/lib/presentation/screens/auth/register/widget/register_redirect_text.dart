@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisterRedirectText extends StatelessWidget {
   const RegisterRedirectText({super.key});
@@ -12,7 +13,7 @@ class RegisterRedirectText extends StatelessWidget {
         const Text("Already have an account? "),
         GestureDetector(
           onTap: () {
-            Navigator.pop(context);
+            context.goNamed('login');
           },
           child: const Text(
             "Login",

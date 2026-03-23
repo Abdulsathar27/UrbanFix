@@ -17,10 +17,6 @@ class NotificationScreen extends StatelessWidget {
         backgroundColor: AppColors.white,
         foregroundColor: AppColors.lightTextPrimary,
         elevation: 1,
-        // leading: IconButton(
-        //   icon: const Icon(Icons.arrow_back_ios),
-        //   onPressed: () => context.goNamed('home'),
-        // ),
       ),
       backgroundColor: AppColors.lightBackground,
       body: SafeArea(

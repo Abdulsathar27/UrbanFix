@@ -6,7 +6,7 @@ import 'package:frontend/data/models/appointment_model.dart';
 import 'package:frontend/data/models/service_model.dart';
 import 'package:frontend/data/models/user_model.dart';
 import 'package:frontend/data/services/user_api_service.dart';
-import 'package:go_router/go_router.dart';
+import 'package:frontend/routes/app_routes.dart';
 
 class UserController extends ChangeNotifier {
   UserApiService userApiService = UserApiService();
@@ -151,19 +151,16 @@ class UserController extends ChangeNotifier {
   // ==========================
   // Logout
   // ==========================
- Future<void> logout() async {
+  Future<void> logout() async {
     try {
       _setLoading(true);
-      await userApiService.logout();          // your API call
-      clearState(clearCurrentUser: true);     // your internal state clearing
+      await userApiService.logout();
     } catch (e) {
-      final errorMsg = _extractErrorMessage(e);
-      _setError(errorMsg);
-      // Rethrow so the UI can react (show snackbar, etc.)
+      _setError(_extractErrorMessage(e));
       rethrow;
     } finally {
       _setLoading(false);
-      // Clear tokens regardless? This is a design choice.
+      clearState(clearCurrentUser: true);
       TokenStore.clear();
     }
   }
@@ -193,24 +190,13 @@ class UserController extends ChangeNotifier {
 
   if (shouldLogout != true) return;
 
-  // 2. Perform logout via controller
+  // 2. Perform logout (token + state are always cleared in finally)
   try {
     await controller.logout();
-    // 3. If success, navigate to login
-    if (context.mounted) {
-      context.goNamed('/login');
-    }
-  } catch (e) {
-    // 4. On error, show snackbar (error already set in controller)
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Logout failed: $e'),
-          backgroundColor: Colors.red,
-        ),
-      );
-    }
+  } catch (_) {
+    // API error — token and state are already cleared, proceed to login
   }
+  AppRouter.router.go('/login');
 }
 
   // ==========================

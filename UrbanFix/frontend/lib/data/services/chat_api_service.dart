@@ -7,10 +7,6 @@ import 'dio_client.dart';
 
 class ChatApiService {
   final Dio _dio = DioClient().dio;
-
-  // ==========================================================
-  // Get All Chats
-  // ==========================================================
   Future<List<ChatModel>> getChats() async {
     try {
       final response = await _dio.get(ApiConstants.chats);
@@ -22,17 +18,9 @@ class ChatApiService {
       throw Exception('Failed to fetch chats: ${e.message}');
     }
   }
-
-  // ==========================================================
-  // Get Chat By ID
-  // FIX: API likely returns a single object, not a list.
-  // Wrapped in a list to maintain controller compatibility.
-  // ==========================================================
   Future<List<ChatModel>> getChatById(String chatId) async {
     try {
       final response = await _dio.get('${ApiConstants.chats}/$chatId');
-
-      // Handle both single object and list responses
       if (response.data is List) {
         final List<dynamic> data = response.data as List<dynamic>;
         return data
@@ -45,10 +33,6 @@ class ChatApiService {
       throw Exception('Failed to fetch chat: ${e.message}');
     }
   }
-
-  // ==========================================================
-  // Create Chat
-  // ==========================================================
   Future<List<ChatModel>> createChat(
       String jobId, List<String> participantIds) async {
     try {
@@ -64,10 +48,6 @@ class ChatApiService {
       throw Exception('Failed to create chat: ${e.message}');
     }
   }
-
-  // ==========================================================
-  // Mark Chat As Read
-  // ==========================================================
   Future<void> markChatAsRead(String chatId) async {
     try {
       await _dio.put('${ApiConstants.chats}/$chatId/read');
@@ -76,9 +56,7 @@ class ChatApiService {
     }
   }
 
-  // ==========================================================
-  // Delete Chat
-  // ==========================================================
+ 
   Future<void> deleteChat(String chatId) async {
     try {
       await _dio.delete('${ApiConstants.chats}/$chatId');
@@ -87,11 +65,7 @@ class ChatApiService {
     }
   }
 
-  // ==========================================================
-  // Send Message
-  // FIX: Returns MessageModel, not ChatModel — sending a message
-  // produces a message response, not a chat response.
-  // ==========================================================
+  
   Future<MessageModel> sendMessage(String chatId, String message) async {
     try {
       final response = await _dio.post(

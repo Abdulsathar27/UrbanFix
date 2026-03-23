@@ -1,15 +1,15 @@
 class ReportModel {
   final String id;
-  final String reporterId; // User who created the report
-  final String? reportedUserId; // Optional: if reporting a user
-  final String? jobId; // Optional: if reporting a job
-  final String? chatId; // Optional: if reporting a chat/message
+  final String reporterId; 
+  final String? reportedUserId; 
+  final String? jobId;
+  final String? chatId; 
 
-  final String reason; // spam, abuse, fake job, etc.
-  final String? description; // additional explanation
+  final String reason; 
+  final String? description; 
 
   final String status; 
-  // pending, reviewed, resolved, rejected
+
 
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -27,9 +27,7 @@ class ReportModel {
     this.updatedAt,
   });
 
-  // ==========================
-  // From JSON
-  // ==========================
+ 
   factory ReportModel.fromJson(Map<String, dynamic> json) {
     return ReportModel(
       id: json['_id'] ?? '',
@@ -49,9 +47,7 @@ class ReportModel {
     );
   }
 
-  // ==========================
-  // To JSON
-  // ==========================
+ 
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
@@ -67,9 +63,7 @@ class ReportModel {
     };
   }
 
-  // ==========================
-  // Copy With
-  // ==========================
+  
   ReportModel copyWith({
     String? id,
     String? reporterId,

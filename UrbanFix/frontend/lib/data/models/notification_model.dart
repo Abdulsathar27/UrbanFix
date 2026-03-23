@@ -1,13 +1,13 @@
 class NotificationModel {
   final String id;
-  final String userId; // Who receives the notification
+  final String userId; 
   final String title;
   final String body;
   final String type; 
-  // job_update, appointment_update, chat_message, system
+ 
 
   final String? referenceId; 
-  // jobId / appointmentId / chatId depending on type
+  
 
   final bool isRead;
   final DateTime? createdAt;
@@ -25,9 +25,7 @@ class NotificationModel {
     this.updatedAt,
   });
 
-  // ==========================
-  // From JSON
-  // ==========================
+  
   factory NotificationModel.fromJson(Map<String, dynamic> json) {
     return NotificationModel(
       id: json['_id'] ?? '',
@@ -46,9 +44,7 @@ class NotificationModel {
     );
   }
 
-  // ==========================
-  // To JSON
-  // ==========================
+  
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
@@ -63,9 +59,7 @@ class NotificationModel {
     };
   }
 
-  // ==========================
-  // Copy With
-  // ==========================
+  
   NotificationModel copyWith({
     String? id,
     String? userId,

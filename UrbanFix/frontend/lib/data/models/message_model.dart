@@ -4,7 +4,7 @@ class MessageModel {
   final String senderId;
   final String? receiverId;
   final String message;
-  final String type; // text, image, file
+  final String type; 
   final bool isSeen;
   final DateTime? createdAt;
   final DateTime? updatedAt;
@@ -21,9 +21,7 @@ class MessageModel {
     this.updatedAt,
   });
 
-  // ==========================
-  // From JSON
-  // ==========================
+  
   factory MessageModel.fromJson(Map<String, dynamic> json) {
     return MessageModel(
       id: json['_id'] ?? '',
@@ -42,9 +40,7 @@ class MessageModel {
     );
   }
 
-  // ==========================
-  // To JSON
-  // ==========================
+ 
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
@@ -59,9 +55,7 @@ class MessageModel {
     };
   }
 
-  // ==========================
-  // Copy With
-  // ==========================
+ 
   MessageModel copyWith({
     String? id,
     String? chatId,

@@ -6,7 +6,7 @@ import 'dio_client.dart';
 class JobApiService {
   final Dio _dio = DioClient().dio;
 
-  // ✅ GET ALL JOBS - Matches backend /api/jobs GET
+ 
   Future<Map<String, dynamic>> getJobs({
     int page = 1,
     int limit = 10,
@@ -32,7 +32,7 @@ class JobApiService {
     }
   }
 
-  // ✅ GET JOB BY ID - Matches backend /api/jobs/:id GET
+  
   Future<JobModel> getJobById(String jobId) async {
     try {
       final response = await _dio.get(
@@ -45,7 +45,7 @@ class JobApiService {
     }
   }
 
-  // ✅ GET LATEST JOBS - Matches backend /api/jobs/latest GET
+ 
   Future<Map<String, dynamic>> getLatestJobs({
     int page = 1,
     int limit = 10,
@@ -65,7 +65,7 @@ class JobApiService {
     }
   }
 
-  // ✅ GET JOBS BY USER - Matches backend /api/jobs/user/:userId GET
+  
   Future<List<JobModel>> getJobsByUser(String userId) async {
     try {
       final response = await _dio.get(
@@ -81,7 +81,7 @@ class JobApiService {
     }
   }
 
-  // ✅ GET NEARBY JOBS - Matches backend /api/jobs/nearby GET
+  
   Future<Map<String, dynamic>> getNearbyJobs({
     required double lat,
     required double lng,
@@ -103,7 +103,7 @@ class JobApiService {
     }
   }
 
-  // ✅ CREATE JOB - Matches backend /api/jobs POST
+  
   Future<JobModel> createJob({
     required String title,
     required String description,
@@ -143,7 +143,7 @@ class JobApiService {
     }
   }
 
-  // ✅ UPDATE JOB - Matches backend /api/jobs/:id PUT
+  
   Future<JobModel> updateJob({
     required String jobId,
     String? title,
@@ -178,7 +178,7 @@ class JobApiService {
     }
   }
 
-  // ✅ DELETE JOB - Matches backend /api/jobs/:id DELETE
+  
   Future<void> deleteJob(String jobId) async {
     try {
       await _dio.delete('${ApiConstants.baseUrl}/jobs/$jobId');
@@ -187,7 +187,7 @@ class JobApiService {
     }
   }
 
-  // ✅ ADD REVIEW - Matches backend /api/jobs/:id/reviews POST
+  
   Future<void> addReview({
     required String jobId,
     required int rating,
@@ -206,7 +206,6 @@ class JobApiService {
     }
   }
 
-  // ✅ GET REVIEWS - Matches backend /api/jobs/:id/reviews GET
   Future<List<Map<String, dynamic>>> getReviews(String jobId) async {
     try {
       final response = await _dio.get(

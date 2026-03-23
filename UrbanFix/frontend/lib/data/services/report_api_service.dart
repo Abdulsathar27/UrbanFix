@@ -6,9 +6,6 @@ import 'dio_client.dart';
 
 class ReportApiService {
   final Dio _dio = DioClient().dio;
-  // ==========================
-  // Get All Reports
-  // ==========================
   Future<List<ReportModel>> getReports() async {
     try {
       final response = await _dio.get(ApiConstants.reports);
@@ -31,9 +28,7 @@ class ReportApiService {
     }
   }
 
-  // ==========================
-  // Get Report By ID
-  // ==========================
+  
   Future<List<ReportModel>> getReportById(String reportId) async {
     try {
       final response = await _dio.get("${ApiConstants.reports}/$reportId");
@@ -55,9 +50,6 @@ class ReportApiService {
     }
   }
 
-  // ==========================
-  // Create Report
-  // ==========================
   Future<List<ReportModel>> createReport(String reason, String? description, String? reportedUserId, String? jobId, String? chatId) async {
     try {
       final response = await _dio.post('${ApiConstants.reports}/create', data: {
@@ -86,9 +78,7 @@ class ReportApiService {
     }
   }
 
-  // ==========================
-  // Update Report Status
-  // ==========================
+  
   Future<List<ReportModel>> updateReportStatus(String reportId, String status) async {
     try {
       final response = await _dio.put("${ApiConstants.reports}/$reportId/status", data: {"status": status});
@@ -111,9 +101,7 @@ class ReportApiService {
     }
   }
 
-  // ==========================
-  // Delete Report
-  // ==========================
+ 
   Future<List<ReportModel>> deleteReport(String reportId) async {
     try {
       final response = await _dio.delete("${ApiConstants.reports}/$reportId");

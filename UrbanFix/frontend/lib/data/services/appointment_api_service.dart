@@ -5,8 +5,6 @@ import 'dio_client.dart';
 
 class AppointmentApiService {
   final Dio _dio = DioClient().dio;
-
-  // ✅ CREATE APPOINTMENT - Matches backend POST /api/appointments
   Future<AppointmentModel> createAppointment(AppointmentModel appointment) async {
     try {
       final response = await _dio.post(
@@ -30,8 +28,6 @@ class AppointmentApiService {
       throw Exception("Failed to create appointment: ${e.message}");
     }
   }
-
-  // ✅ GET SENT APPOINTMENTS - Matches backend GET /api/appointments/sent
   Future<List<AppointmentModel>> getSentAppointments() async {
     try {
       final response = await _dio.get(
@@ -46,8 +42,6 @@ class AppointmentApiService {
       throw Exception("Failed to fetch sent appointments: ${e.message}");
     }
   }
-
-  // ✅ GET RECEIVED APPOINTMENTS - Matches backend GET /api/appointments/received
   Future<List<AppointmentModel>> getReceivedAppointments() async {
     try {
       final response = await _dio.get(
@@ -63,8 +57,6 @@ class AppointmentApiService {
           "Failed to fetch received appointments: ${e.message}");
     }
   }
-
-  // ✅ UPDATE APPOINTMENT STATUS - Matches backend PATCH /api/appointments/:id/status
   Future<AppointmentModel> updateStatus(
     AppointmentModel appointment, {
     String? reason,
@@ -87,8 +79,6 @@ class AppointmentApiService {
       throw Exception("Failed to update appointment status: ${e.message}");
     }
   }
-
-  // ✅ CANCEL APPOINTMENT - Matches backend PATCH /api/appointments/:id/cancel
   Future<void> cancelAppointment({
     required String appointmentId,
     required String reason,
@@ -104,8 +94,6 @@ class AppointmentApiService {
       throw Exception("Failed to cancel appointment: ${e.message}");
     }
   }
-
-  // ✅ DELETE APPOINTMENT - Matches backend DELETE /api/appointments/:id
   Future<void> deleteAppointment(String appointmentId) async {
     try {
       await _dio.delete(
@@ -115,8 +103,6 @@ class AppointmentApiService {
       throw Exception("Failed to delete appointment: ${e.message}");
     }
   }
-
-  // ✅ GET WORKER ACCEPTED SLOTS - Matches backend GET /api/appointments/worker/:workerId/accepted
   Future<List<Map<String, String>>> getWorkerAcceptedSlots(
     String workerId,
   ) async {
@@ -131,7 +117,7 @@ class AppointmentApiService {
     }
   }
 
-  // ✅ GET CHAT PERMISSION - Matches backend GET /api/appointments/:appointmentId/chat-permission
+  
   Future<Map<String, dynamic>> getChatPermission(String appointmentId) async {
     try {
       final response = await _dio.get(
