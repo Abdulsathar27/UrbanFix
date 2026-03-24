@@ -9,37 +9,49 @@ class TimeChip extends StatelessWidget {
     this.disabled = false,
     super.key,
   });
+
   final String time;
   final bool selected;
   final bool disabled;
   final VoidCallback onTap;
 
- 
-
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: disabled ? null : onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding:
-            const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 160),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
         decoration: BoxDecoration(
-          color: selected ? AppColors.primaryLight : AppColors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: selected ? AppColors.primary : AppColors.greyLight,
-          ),
+          color: disabled
+              ? AppColors.greyBackground
+              : selected
+                  ? AppColors.primary
+                  : AppColors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: selected && !disabled
+              ? [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.25),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3),
+                  ),
+                ]
+              : null,
+          border: disabled || selected
+              ? null
+              : Border.all(color: AppColors.greyLight),
         ),
         child: Text(
           time,
           style: TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
             color: disabled
                 ? AppColors.greyMedium
                 : selected
-                    ? AppColors.primary
+                    ? AppColors.white
                     : AppColors.lightTextPrimary,
-            fontWeight: FontWeight.w600,
           ),
         ),
       ),

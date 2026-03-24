@@ -81,7 +81,7 @@ class UserApiService {
 }
   Future<List<UserModel>> getProfile() async {
   try {
-    final response = await _dio.get('${ApiConstants.userProfile}/profile');
+    final response = await _dio.get(ApiConstants.userProfile);
     final data = response.data;
     List<UserModel> users = [];
     if (data is Map<String, dynamic>) {
@@ -115,7 +115,7 @@ class UserApiService {
   Future<List<UserModel>> updateProfile(String name, String phone) async {
   try {
     final response = await _dio.put(
-      '${ApiConstants.updateProfile}/update',
+      ApiConstants.updateProfile,
       data: {
         "name": name,
         "phone": phone

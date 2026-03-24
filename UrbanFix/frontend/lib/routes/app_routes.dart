@@ -6,7 +6,7 @@ import 'package:frontend/presentation/screens/auth/login/login_screen.dart';
 import 'package:frontend/presentation/screens/auth/otp/otp_screen.dart';
 import 'package:frontend/presentation/screens/auth/register/register_screen.dart';
 import 'package:frontend/presentation/screens/booking/booking_screen.dart';
-import 'package:frontend/presentation/screens/booking/success_screen.dart';
+import 'package:frontend/presentation/screens/success/success_screen.dart';
 import 'package:frontend/presentation/screens/booking/widgets/select_job.dart';
 import 'package:frontend/presentation/screens/booking/widgets/category_selection_screen.dart'; // ✅ ADD THIS
 import 'package:frontend/presentation/screens/chat/chat_list_screen.dart';

@@ -10,74 +10,79 @@ class LocationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<AppointmentController>(
-      builder: (context, appointmentController, _) {
+      builder: (context, controller, _) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              AppStrings.customerDetails,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            Row(
+              children: const [
+                Icon(Icons.person_pin_circle_rounded,
+                    size: 18, color: AppColors.primary),
+                SizedBox(width: 6),
+                Text(
+                  AppStrings.customerDetails,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    color: AppColors.lightTextPrimary,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.white,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.greyLight),
-              ),
-              child: Column(
-                children: [
-                  // Name Field
-                  _buildField(
-                    onChanged: (value) {
-                      appointmentController.customerName = value;
-                    },
-                    label: AppStrings.labelName,
-                    icon: Icons.person,
-                    hint: AppStrings.hintFullName,
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Phone Field
-                  _buildField(
-                    onChanged: (value) {
-                      appointmentController.customerPhone = value;
-                    },
-                    label: AppStrings.labelPhone,
-                    icon: Icons.phone,
-                    hint: AppStrings.hintPhoneNumber,
-                    keyboardType: TextInputType.phone,
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Address Field
-                  _buildField(
-                    onChanged: (value) {
-                      appointmentController.customerAddress = value;
-                    },
-                    label: AppStrings.labelAddress,
-                    icon: Icons.location_on,
-                    hint: AppStrings.hintAddress,
-                    maxLines: 2,
-                  ),
-                ],
-              ),
+            _Field(
+              label: AppStrings.labelName,
+              hint: AppStrings.hintFullName,
+              icon: Icons.person_outline_rounded,
+              onChanged: (v) => controller.customerName = v,
+              textInputAction: TextInputAction.next,
+            ),
+            const SizedBox(height: 12),
+            _Field(
+              label: AppStrings.labelPhone,
+              hint: AppStrings.hintPhoneNumber,
+              icon: Icons.phone_outlined,
+              onChanged: (v) => controller.customerPhone = v,
+              keyboardType: TextInputType.phone,
+              textInputAction: TextInputAction.next,
+            ),
+            const SizedBox(height: 12),
+            _Field(
+              label: AppStrings.labelAddress,
+              hint: AppStrings.hintAddress,
+              icon: Icons.location_on_outlined,
+              onChanged: (v) => controller.customerAddress = v,
+              maxLines: 2,
+              textInputAction: TextInputAction.done,
             ),
           ],
         );
       },
     );
   }
+}
 
-  Widget _buildField({
-    required Function(String) onChanged,
-    required String label,
-    required IconData icon,
-    required String hint,
-    TextInputType keyboardType = TextInputType.text,
-    int maxLines = 1,
-  }) {
+class _Field extends StatelessWidget {
+  final String label;
+  final String hint;
+  final IconData icon;
+  final ValueChanged<String> onChanged;
+  final TextInputType keyboardType;
+  final TextInputAction textInputAction;
+  final int maxLines;
+
+  const _Field({
+    required this.label,
+    required this.hint,
+    required this.icon,
+    required this.onChanged,
+    this.keyboardType = TextInputType.text,
+    this.textInputAction = TextInputAction.next,
+    this.maxLines = 1,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -86,34 +91,42 @@ class LocationSection extends StatelessWidget {
           style: const TextStyle(
             fontSize: 12,
             fontWeight: FontWeight.w600,
-            color: AppColors.lightTextSecondary,
+            color: AppColors.greyDark,
+            letterSpacing: 0.3,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 6),
         TextField(
           onChanged: onChanged,
           keyboardType: keyboardType,
+          textInputAction: textInputAction,
           maxLines: maxLines,
+          style: const TextStyle(fontSize: 14),
           decoration: InputDecoration(
             hintText: hint,
-            prefixIcon: Icon(icon, size: 18, color: AppColors.greyDark),
+            hintStyle: const TextStyle(
+              color: AppColors.greyMedium,
+              fontSize: 13,
+            ),
+            prefixIcon: Icon(icon, size: 18, color: AppColors.primary),
+            filled: true,
+            fillColor: AppColors.inputFill,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 12,
+            ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: AppColors.greyLight),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(
-                color: AppColors.primary,
-                width: 2,
-              ),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 10,
+              borderRadius: BorderRadius.circular(10),
+              borderSide:
+                  const BorderSide(color: AppColors.primary, width: 1.5),
             ),
           ),
         ),

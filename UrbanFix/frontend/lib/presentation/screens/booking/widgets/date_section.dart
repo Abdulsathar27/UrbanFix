@@ -14,77 +14,134 @@ class DateSection extends StatelessWidget {
   final DateTime selectedDate;
   final ValueChanged<DateTime> onDateSelected;
 
+  static const _days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  static const _months = [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          AppStrings.selectDate,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        _SectionHeader(
+          icon: Icons.calendar_month_rounded,
+          label: AppStrings.selectDate,
         ),
         const SizedBox(height: 12),
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: AppColors.greyLight),
-          ),
-          child: GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 7,
-              childAspectRatio: 1.0,
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-            ),
+        SizedBox(
+          height: 72,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 2),
             itemCount: availableDates.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (context, index) {
               final date = availableDates[index];
               final isSelected = DateUtils.isSameDay(date, selectedDate);
+              final isToday = DateUtils.isSameDay(date, DateTime.now());
 
               return GestureDetector(
                 onTap: () => onDateSelected(date),
-                child: Container(
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  width: 52,
                   decoration: BoxDecoration(
-                    color: isSelected ? AppColors.primary : AppColors.greyBackground,
-                    borderRadius: BorderRadius.circular(8),
+                    color: isSelected ? AppColors.primary : AppColors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: isSelected
+                        ? [
+                            BoxShadow(
+                              color: AppColors.primary.withValues(alpha: 0.28),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ]
+                        : null,
                   ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          _getDayName(date),
-                          style: TextStyle(
-                            fontSize: 10,
-                            color: isSelected ? AppColors.white : AppColors.greyDark,
-                          ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        _days[date.weekday % 7],
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          color: isSelected
+                              ? AppColors.white.withValues(alpha: 0.8)
+                              : AppColors.greyMedium,
                         ),
-                        Text(
-                          date.day.toString(),
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
-                            color: isSelected ? AppColors.white : AppColors.lightTextPrimary,
-                          ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        date.day.toString(),
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: isSelected
+                              ? AppColors.white
+                              : AppColors.lightTextPrimary,
                         ),
-                      ],
-                    ),
+                      ),
+                      const SizedBox(height: 3),
+                      // Today dot
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 180),
+                        width: 4,
+                        height: 4,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: isToday
+                              ? (isSelected
+                                  ? AppColors.white
+                                  : AppColors.primary)
+                              : Colors.transparent,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               );
             },
           ),
         ),
+        const SizedBox(height: 6),
+        // Month label — shows month of selected date
+        Text(
+          '${_months[selectedDate.month - 1]} ${selectedDate.year}',
+          style: const TextStyle(
+            fontSize: 12,
+            color: AppColors.greyMedium,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ],
     );
   }
+}
 
-  String _getDayName(DateTime date) {
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    return days[date.weekday % 7];
+class _SectionHeader extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const _SectionHeader({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Icon(icon, size: 18, color: AppColors.primary),
+        const SizedBox(width: 6),
+        Text(
+          label,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 15,
+            color: AppColors.lightTextPrimary,
+          ),
+        ),
+      ],
+    );
   }
 }

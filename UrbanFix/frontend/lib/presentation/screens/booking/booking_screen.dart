@@ -6,6 +6,7 @@ import 'package:frontend/presentation/screens/booking/widgets/bottom_confirm_sec
 import 'package:frontend/presentation/screens/booking/widgets/date_section.dart';
 import 'package:frontend/presentation/screens/booking/widgets/location_section.dart';
 import 'package:frontend/presentation/screens/booking/widgets/service_card.dart';
+import 'package:frontend/presentation/screens/booking/widgets/step_label.dart';
 import 'package:frontend/presentation/screens/booking/widgets/time_section.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -17,65 +18,60 @@ class BookingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Future.microtask(() {
-      if (!context.mounted) return;
-
-      final controller = context.read<AppointmentController>();
-
-      
-      final categoryValue = category;
-
-     
-      if (categoryValue != null && categoryValue.isNotEmpty) {
-        controller.category = categoryValue;
-      }
-    });
+    final ctrl = context.read<AppointmentController>();
+    if (category != null && category!.isNotEmpty && ctrl.category != category) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (context.mounted) {
+          context.read<AppointmentController>().category = category!;
+        }
+      });
+    }
 
     return Scaffold(
       backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.transparent,
-        centerTitle: true,
+        scrolledUnderElevation: 0,
+        backgroundColor: AppColors.lightBackground,
         title: const Text(
           AppStrings.bookAppointment,
-          style: TextStyle(color: AppColors.lightTextPrimary),
+          style: TextStyle(
+            color: AppColors.lightTextPrimary,
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
+        centerTitle: true,
       ),
       body: Column(
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // ===== SERVICE CARD =====
+                  StepLabel(number: '1', label: AppStrings.selectService),
+                  const SizedBox(height: 10),
                   Consumer<AppointmentController>(
                     builder: (context, controller, _) => ServiceCard(
                       workTitle: controller.workTitle ?? AppStrings.selectAJob,
                       requestedWage: controller.requestedWage ?? 0.0,
-                      description: controller.description ??
-                          AppStrings.tapToChooseService,
+                      description: controller.description,
                       onTap: () {
-                        final currentCategory = controller.category;
-                        if (currentCategory == null ||
-                            currentCategory.isEmpty) {
-                          // No category yet — go pick one (which chains to job selection)
+                        final cat = controller.category;
+                        if (cat == null || cat.isEmpty) {
                           context.pushNamed('select-category');
                         } else {
-                          // Category already set — go straight to job selection
-                          context.pushNamed(
-                            'select-job',
-                            extra: currentCategory,
-                          );
+                          context.pushNamed('select-job', extra: cat);
                         }
                       },
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 28),
 
-                  // ===== DATE SECTION =====
+                  StepLabel(number: '2', label: AppStrings.selectDate),
+                  const SizedBox(height: 10),
                   Consumer<AppointmentController>(
                     builder: (context, controller, _) => DateSection(
                       availableDates: controller.availableDates,
@@ -83,9 +79,10 @@ class BookingScreen extends StatelessWidget {
                       onDateSelected: controller.selectDate,
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 28),
 
-                  // ===== TIME SECTION =====
+                  StepLabel(number: '3', label: AppStrings.selectTime),
+                  const SizedBox(height: 10),
                   Consumer<AppointmentController>(
                     builder: (context, controller, _) => TimeSection(
                       timeSlots: controller.availableTimeSlots,
@@ -94,17 +91,17 @@ class BookingScreen extends StatelessWidget {
                       onTimeSelected: controller.selectTimeSlot,
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 28),
 
-                  // ===== LOCATION SECTION =====
-                  LocationSection(
-                  ),
+                  StepLabel(number: '4', label: AppStrings.customerDetails),
+                  const SizedBox(height: 10),
+                  const LocationSection(),
+                  const SizedBox(height: 8),
                 ],
               ),
             ),
           ),
 
-          // ===== BOTTOM CONFIRM BUTTON =====
           Consumer<AppointmentController>(
             builder: (context, controller, _) =>
                 BottomSection(totalAmount: controller.estimatedTotal),

@@ -8,42 +8,42 @@ import 'package:frontend/presentation/screens/chat/widgets/chat_input_bar.dart';
 import 'package:frontend/presentation/screens/chat/widgets/chat_messages.dart';
 import 'package:frontend/presentation/screens/chat/widgets/chat_safety_banner.dart';
 
-class ChatScreen extends StatefulWidget {
+class ChatScreen extends StatelessWidget {
   final String chatId;
 
   const ChatScreen({super.key, required this.chatId});
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
-}
-
-class _ChatScreenState extends State<ChatScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ChatController>().fetchChatById(widget.chatId);
-    });
-  }
-
-  @override
-  void dispose() {
-    context.read<ChatController>().clearMessages();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.lightBackground,
-      body: Consumer<ChatController>(
-        builder: (context, controller, child) {
-          if (controller.isLoading && controller.selectedChat == null) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (controller.errorMessage != null &&
-              controller.selectedChat == null) {
-            return Center(
+    return Consumer<ChatController>(
+      builder: (context, controller, _) {
+        // Trigger fetch after the current frame when:
+        //   • this chat isn't already loaded, AND
+        //   • a request isn't already in-flight, AND
+        //   • there is no pending error (user must tap Retry explicitly)
+        // fetchChatById clears stale state internally, so no dispose hook needed.
+        if (controller.selectedChat?.id != chatId &&
+            !controller.isLoading &&
+            controller.errorMessage == null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (context.mounted) {
+              context.read<ChatController>().fetchChatById(chatId);
+            }
+          });
+        }
+
+        if (controller.isLoading && controller.selectedChat == null) {
+          return const Scaffold(
+            backgroundColor: AppColors.lightBackground,
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        if (controller.errorMessage != null &&
+            controller.selectedChat == null) {
+          return Scaffold(
+            backgroundColor: AppColors.lightBackground,
+            body: Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -55,24 +55,27 @@ class _ChatScreenState extends State<ChatScreen> {
                   const SizedBox(height: 12),
                   ElevatedButton(
                     onPressed: () =>
-                        controller.fetchChatById(widget.chatId),
+                        context.read<ChatController>().fetchChatById(chatId),
                     child: const Text(AppStrings.retry),
                   ),
                 ],
               ),
-            );
-          }
+            ),
+          );
+        }
 
-          return const Column(
+        return const Scaffold(
+          backgroundColor: AppColors.lightBackground,
+          body: Column(
             children: [
               ChatHeader(),
               Expanded(child: ChatMessages()),
               ChatSafetyBanner(),
               ChatInputBar(),
             ],
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

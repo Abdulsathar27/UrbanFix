@@ -16,12 +16,24 @@ class UserController extends ChangeNotifier {
   // ==========================
   UserModel? _currentUser;
   bool _isLoading = false;
+  bool _editProfileReady = false;
   String? _errorMessage;
 
   UserModel? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
+  bool get editProfileReady => _editProfileReady;
   String? get errorMessage => _errorMessage;
   bool get isLoggedIn => _currentUser != null;
+
+  /// Populates nameController & phoneController from the current user.
+  /// Must be called once when entering EditProfileScreen — not on every rebuild.
+  void prepareEditProfile() {
+    if (_currentUser == null) return;
+    nameController.text = _currentUser!.name;
+    phoneController.text = _currentUser!.phone ?? '';
+    _editProfileReady = true;
+    // No notifyListeners — TextEditingController handles its own UI updates.
+  }
 
   // ==========================
   // Form Controllers
@@ -139,6 +151,7 @@ class UserController extends ChangeNotifier {
       final updatedUser = await userApiService.updateProfile(name, phone);
 
       _currentUser = updatedUser.first;
+      _editProfileReady = false; // repopulate with fresh data on next visit
       return true;
     } catch (e) {
       _setError(_extractErrorMessage(e));
@@ -322,6 +335,7 @@ class UserController extends ChangeNotifier {
     }
 
     _errorMessage = null;
+    _editProfileReady = false;
 
     emailController.clear();
     emailloginController.clear();

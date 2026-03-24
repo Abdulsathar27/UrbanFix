@@ -12,7 +12,8 @@ class ChatController extends ChangeNotifier {
   List<MessageModel> _messages = [];
   ChatModel? _selectedChat;
   bool _isLoading = false;
-  bool _isSending = false; 
+  bool _isSending = false;
+  bool _chatsFetched = false;
   String? _errorMessage;
 
   // ==========================
@@ -23,6 +24,7 @@ class ChatController extends ChangeNotifier {
   List<MessageModel> get messages => _messages;
   bool get isLoading => _isLoading;
   bool get isSending => _isSending;
+  bool get chatsFetched => _chatsFetched;
   String? get errorMessage => _errorMessage;
 
   // ==========================
@@ -48,11 +50,13 @@ class ChatController extends ChangeNotifier {
   // ==========================
   Future<void> fetchChats() async {
     try {
+      _chatsFetched = true; // mark before request so guard doesn't re-trigger
       _setLoading(true);
       _setError(null);
       _chats = await _chatApiService.getChats();
       notifyListeners();
     } catch (e) {
+      _chatsFetched = false; // allow retry on error
       _setError(e.toString());
     } finally {
       _setLoading(false);
@@ -65,6 +69,9 @@ class ChatController extends ChangeNotifier {
   // ==========================
   Future<void> fetchChatById(String chatId) async {
     try {
+      // Clear previous chat state immediately so stale data is never shown
+      _selectedChat = null;
+      _messages = [];
       _setLoading(true);
       _setError(null);
 

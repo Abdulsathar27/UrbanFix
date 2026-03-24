@@ -55,7 +55,9 @@ class LoginForm extends StatelessWidget {
                 validator: Validators.validateEmail,
                 decoration: InputDecoration(
                   hintText: AppStrings.emailOrPhoneNumber,
-                  prefixIcon: const Icon(Icons.person),
+                  prefixIcon: const Icon(Icons.email_outlined, color: AppColors.primary),
+                  filled: true,
+                  fillColor: AppColors.inputFill,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8.0),
                     borderSide: const BorderSide(color: AppColors.greyMedium),
@@ -93,7 +95,9 @@ class LoginForm extends StatelessWidget {
                 validator: Validators.validatePassword,
                 decoration: InputDecoration(
                   hintText: AppStrings.enterPassword,
-                  prefixIcon: const Icon(Icons.lock),
+                  prefixIcon: const Icon(Icons.lock_outline, color: AppColors.primary),
+                  filled: true,
+                  fillColor: AppColors.inputFill,
                   suffixIcon: IconButton(
                     icon: Icon(
                       controller.isPasswordVisible

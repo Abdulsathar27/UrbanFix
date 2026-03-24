@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/presentation/screens/booking/widgets/time_chip.dart';
 
@@ -21,15 +22,25 @@ class TimeSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(AppStrings.selectTime,
-            style: TextStyle(
+        Row(
+          children: const [
+            Icon(Icons.schedule_rounded, size: 18, color: AppColors.primary),
+            SizedBox(width: 6),
+            Text(
+              AppStrings.selectTime,
+              style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 18)),
+                fontSize: 15,
+                color: AppColors.lightTextPrimary,
+              ),
+            ),
+          ],
+        ),
         const SizedBox(height: 12),
         Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: timeSlots.map((String slot) {
+          spacing: 10,
+          runSpacing: 10,
+          children: timeSlots.map((slot) {
             return TimeChip(
               slot,
               selected: slot == selectedTimeSlot,
@@ -37,10 +48,8 @@ class TimeSection extends StatelessWidget {
               onTap: () => onTimeSelected(slot),
             );
           }).toList(),
-        )
+        ),
       ],
     );
   }
 }
-
-
