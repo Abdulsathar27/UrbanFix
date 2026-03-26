@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/chat_controller.dart';
+import 'package:frontend/data/controller/user_controller.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/presentation/screens/chat/widgets/chat_header.dart';
 import 'package:frontend/presentation/screens/chat/widgets/chat_input_bar.dart';
@@ -9,25 +10,27 @@ import 'package:frontend/presentation/screens/chat/widgets/chat_messages.dart';
 import 'package:frontend/presentation/screens/chat/widgets/chat_safety_banner.dart';
 
 class ChatScreen extends StatelessWidget {
+  /// The string chatId in "userId1_userId2" format.
   final String chatId;
 
   const ChatScreen({super.key, required this.chatId});
 
   @override
   Widget build(BuildContext context) {
+    final currentUserId =
+        context.read<UserController>().currentUser?.id ?? '';
+
     return Consumer<ChatController>(
       builder: (context, controller, _) {
-        // Trigger fetch after the current frame when:
-        //   • this chat isn't already loaded, AND
-        //   • a request isn't already in-flight, AND
-        //   • there is no pending error (user must tap Retry explicitly)
-        // fetchChatById clears stale state internally, so no dispose hook needed.
-        if (controller.selectedChat?.id != chatId &&
+        // Open the chat once (when not already loaded or loading)
+        if (controller.selectedChat?.chatStringId != chatId &&
             !controller.isLoading &&
             controller.errorMessage == null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (context.mounted) {
-              context.read<ChatController>().fetchChatById(chatId);
+              context
+                  .read<ChatController>()
+                  .openChat(chatId, currentUserId);
             }
           });
         }
@@ -54,8 +57,9 @@ class ChatScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   ElevatedButton(
-                    onPressed: () =>
-                        context.read<ChatController>().fetchChatById(chatId),
+                    onPressed: () => context
+                        .read<ChatController>()
+                        .openChat(chatId, currentUserId),
                     child: const Text(AppStrings.retry),
                   ),
                 ],
@@ -64,14 +68,14 @@ class ChatScreen extends StatelessWidget {
           );
         }
 
-        return const Scaffold(
+        return Scaffold(
           backgroundColor: AppColors.lightBackground,
           body: Column(
             children: [
-              ChatHeader(),
-              Expanded(child: ChatMessages()),
-              ChatSafetyBanner(),
-              ChatInputBar(),
+              const ChatHeader(),
+              const Expanded(child: ChatMessages()),
+              const ChatSafetyBanner(),
+              ChatInputBar(chatStringId: chatId),
             ],
           ),
         );

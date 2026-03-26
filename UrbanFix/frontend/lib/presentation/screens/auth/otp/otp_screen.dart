@@ -121,7 +121,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     onPressed: controller.isOtpComplete
                         ? () async {
                             final messenger = ScaffoldMessenger.of(context);
-                            final navigator = Navigator.of(context);
+                            final router = GoRouter.of(context);
 
                             if (email.isEmpty) {
                               messenger.showSnackBar(
@@ -146,7 +146,7 @@ class _OtpScreenState extends State<OtpScreen> {
                             if (!mounted) return;
 
                             if (success) {
-                              context.goNamed('home');
+                              router.goNamed('home');
                             } else {
                               final message =
                                   controller.errorMessage ??

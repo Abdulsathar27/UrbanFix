@@ -50,6 +50,9 @@ class _SplashScreenState extends State<SplashScreen>
     if (!mounted) return;
 
     final userController = context.read<UserController>();
+    await userController.initFromStorage();
+
+    if (!mounted) return;
 
     if (userController.isLoggedIn) {
       context.goNamed('home');
@@ -90,7 +93,7 @@ class _SplashScreenState extends State<SplashScreen>
                   child: Container(
                     padding: const EdgeInsets.all(28),
                     decoration: BoxDecoration(
-                      color: AppColors.white.withOpacity(0.1),
+                      color: AppColors.white.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(
                         AppConstants.cardBorderRadius,
                       ),

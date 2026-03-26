@@ -7,25 +7,19 @@ import 'package:frontend/data/services/report_api_service.dart';
 class ReportController extends ChangeNotifier {
   ReportApiService reportApiService = ReportApiService();
 
-  // ==========================
-  // State
-  // ==========================
+  
   List<ReportModel> _reports = [];
   ReportModel? _selectedReport;
   bool _isLoading = false;
   String? _errorMessage;
 
-  // ==========================
-  // Getters
-  // ==========================
+  
   List<ReportModel> get reports => _reports;
   ReportModel? get selectedReport => _selectedReport;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  // ==========================
-  // Private Helpers
-  // ==========================
+ 
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
@@ -52,9 +46,7 @@ class ReportController extends ChangeNotifier {
     return text;
   }
 
-  // ==========================
-  // Fetch All Reports
-  // ==========================
+  
   Future<void> fetchReports() async {
     try {
       _setLoading(true);
@@ -69,9 +61,7 @@ class ReportController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Fetch Report By ID
-  // ==========================
+ 
   Future<void> fetchReportById(String reportId) async {
     try {
       _setLoading(true);
@@ -87,9 +77,7 @@ class ReportController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Create Report
-  // ==========================
+  
   Future<bool> createReport({
     required String reason,
     String? description,
@@ -119,9 +107,7 @@ class ReportController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Update Report Status
-  // ==========================
+  
   Future<bool> updateReportStatus({
     required String reportId,
     required String status,
@@ -150,9 +136,7 @@ class ReportController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Delete Report
-  // ==========================
+ 
   Future<bool> deleteReport(String reportId) async {
     try {
       _setLoading(true);
@@ -171,9 +155,7 @@ class ReportController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Clear Error
-  // ==========================
+ 
   void clearError() {
     _errorMessage = null;
     notifyListeners();

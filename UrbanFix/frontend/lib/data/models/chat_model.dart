@@ -1,7 +1,8 @@
 class ChatModel {
-  final String id;
-  final String jobId;
+  final String id;              // MongoDB _id
+  final String chatStringId;    // "userId1_userId2" — used for all API/socket calls
   final List<String> participantIds;
+  final Map<String, String> participantNames; // id → name
   final String? lastMessage;
   final DateTime? lastMessageTime;
   final int unreadCount;
@@ -10,8 +11,9 @@ class ChatModel {
 
   ChatModel({
     required this.id,
-    required this.jobId,
+    required this.chatStringId,
     required this.participantIds,
+    this.participantNames = const {},
     this.lastMessage,
     this.lastMessageTime,
     required this.unreadCount,
@@ -19,32 +21,67 @@ class ChatModel {
     this.updatedAt,
   });
 
-  factory ChatModel.fromJson(Map<String, dynamic> json) {
+  /// Creates a minimal ChatModel from just a string chatId (no server data needed).
+  factory ChatModel.fromStringId(String chatStringId) {
     return ChatModel(
-      id: json['_id'] ?? '',
-      jobId: json['jobId'] ?? '',
-      participantIds: json['participantIds'] != null
-          ? List<String>.from(json['participantIds'])
-          : [],
-      lastMessage: json['lastMessage'],
-      lastMessageTime: json['lastMessageTime'] != null
-          ? DateTime.tryParse(json['lastMessageTime'])
-          : null,
-      unreadCount: json['unreadCount'] ?? 0,
-      createdAt: json['createdAt'] != null
-          ? DateTime.tryParse(json['createdAt'])
-          : null,
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.tryParse(json['updatedAt'])
-          : null,
+      id: '',
+      chatStringId: chatStringId,
+      participantIds: chatStringId.split('_'),
+      unreadCount: 0,
+    );
+  }
+
+  factory ChatModel.fromJson(Map<String, dynamic> json) {
+    // Extract participantIds and names from populated members array
+    final membersList = json['members'] as List? ?? [];
+    final participantIds = <String>[];
+    final participantNames = <String, String>{};
+
+    for (final member in membersList) {
+      if (member is Map<String, dynamic>) {
+        final memberId = member['_id']?.toString() ?? '';
+        final memberName = member['name']?.toString() ?? '';
+        if (memberId.isNotEmpty) {
+          participantIds.add(memberId);
+          if (memberName.isNotEmpty) participantNames[memberId] = memberName;
+        }
+      } else {
+        final id = member.toString();
+        if (id.isNotEmpty) participantIds.add(id);
+      }
+    }
+
+    // Extract lastMessage text and time from populated lastMessage object
+    String? lastMessageText;
+    DateTime? lastMessageTime;
+    final lm = json['lastMessage'];
+    if (lm is Map<String, dynamic>) {
+      lastMessageText = lm['text']?.toString();
+      if (lm['createdAt'] != null) {
+        lastMessageTime = DateTime.tryParse(lm['createdAt'].toString());
+      }
+    } else if (lm is String) {
+      lastMessageText = lm;
+    }
+
+    return ChatModel(
+      id: json['_id']?.toString() ?? '',
+      chatStringId: json['chatId'] ?? '',
+      participantIds: participantIds,
+      participantNames: participantNames,
+      lastMessage: lastMessageText,
+      lastMessageTime: lastMessageTime,
+      unreadCount: 0,
+      createdAt: json['createdAt'] != null ? DateTime.tryParse(json['createdAt'].toString()) : null,
+      updatedAt: json['updatedAt'] != null ? DateTime.tryParse(json['updatedAt'].toString()) : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       '_id': id,
-      'jobId': jobId,
-      'participantIds': participantIds,
+      'chatId': chatStringId,
+      'members': participantIds,
       'lastMessage': lastMessage,
       'lastMessageTime': lastMessageTime?.toIso8601String(),
       'unreadCount': unreadCount,
@@ -55,8 +92,9 @@ class ChatModel {
 
   ChatModel copyWith({
     String? id,
-    String? jobId,
+    String? chatStringId,
     List<String>? participantIds,
+    Map<String, String>? participantNames,
     String? lastMessage,
     DateTime? lastMessageTime,
     int? unreadCount,
@@ -65,8 +103,9 @@ class ChatModel {
   }) {
     return ChatModel(
       id: id ?? this.id,
-      jobId: jobId ?? this.jobId,
+      chatStringId: chatStringId ?? this.chatStringId,
       participantIds: participantIds ?? this.participantIds,
+      participantNames: participantNames ?? this.participantNames,
       lastMessage: lastMessage ?? this.lastMessage,
       lastMessageTime: lastMessageTime ?? this.lastMessageTime,
       unreadCount: unreadCount ?? this.unreadCount,

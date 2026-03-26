@@ -8,7 +8,7 @@ class MessageModel {
   final bool isSeen;
   final DateTime? createdAt;
   final DateTime? updatedAt;
-
+  
   MessageModel({
     required this.id,
     required this.chatId,
@@ -24,13 +24,13 @@ class MessageModel {
   
   factory MessageModel.fromJson(Map<String, dynamic> json) {
     return MessageModel(
-      id: json['_id'] ?? '',
+      id: json['_id']?.toString() ?? '',
       chatId: json['chatId'] ?? '',
-      senderId: json['senderId'] ?? '',
-      receiverId: json['receiverId'],
-      message: json['message'] ?? '',
-      type: json['type'] ?? 'text',
-      isSeen: json['isSeen'] ?? false,
+      senderId: json['sender']?.toString() ?? '',   // backend field: sender
+      receiverId: null,
+      message: json['text'] ?? json['message'] ?? '', // backend field: text
+      type: 'text',
+      isSeen: json['seen'] ?? json['isSeen'] ?? false, // backend field: seen
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'])
           : null,

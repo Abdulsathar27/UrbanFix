@@ -1,5 +1,6 @@
 class ApiConstants {
   static const String devBaseUrl = "http://10.0.2.2:5000/api";
+  static const String socketUrl  = "http://10.0.2.2:5000";
 
   static const String prodBaseUrl = "https://api.urbanfix.com/api";
 

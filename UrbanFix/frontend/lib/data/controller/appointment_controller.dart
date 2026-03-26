@@ -4,31 +4,18 @@ import 'package:frontend/data/models/appointment_model.dart';
 import 'package:frontend/data/services/appointment_api_service.dart';
 import 'package:intl/intl.dart';
 
-/// Appointment Controller
-/// 
-/// Manages appointment booking flow and appointment list management
-/// State: Selected service details, date/time selection, appointments list
-/// Methods: Create, fetch, update, cancel appointments
+
 class AppointmentController extends ChangeNotifier {
   final AppointmentApiService _appointmentApiService;
 
-  // ============================================================
-  // LISTS
-  // ============================================================
   final List<AppointmentModel> _sentAppointments = [];
   final List<AppointmentModel> _receivedAppointments = [];
 
-  // ============================================================
-  // STATE
-  // ============================================================
   bool _isLoading = false;
   bool _isConfirming = false;
   String? _errorMessage;
   bool _isInitialized = false;
 
-  // ============================================================
-  // SELECTED SERVICE DETAILS (from booking flow)
-  // ============================================================
   String? _jobId;
   String? _workerId;
   String? _workTitle;
@@ -36,20 +23,13 @@ class AppointmentController extends ChangeNotifier {
   String? _description;
   String? _category;
 
-  // ============================================================
-  // CUSTOMER DETAILS (from location section)
-  // ============================================================
   String _customerName = '';
   String _customerPhone = '';
   String _customerAddress = '';
 
-  // ============================================================
-  // DATE/TIME SELECTION
-  // ============================================================
   DateTime _selectedDate = DateUtils.dateOnly(DateTime.now());
   String _selectedTimeSlot = _defaultTimeSlots.first;
 
-  // Time slots (7 AM - 8 PM as per backend validation)
   static const List<String> _defaultTimeSlots = [
     '09:00 AM',
     '10:30 AM',
@@ -60,9 +40,6 @@ class AppointmentController extends ChangeNotifier {
   ];
   Set<String> _disabledTimeSlots = {};
 
-  // ============================================================
-  // CONSTRUCTOR WITH DEPENDENCY INJECTION
-  // ============================================================
   AppointmentController({AppointmentApiService? appointmentApiService})
     : _appointmentApiService =
           appointmentApiService ?? AppointmentApiService() {
@@ -78,9 +55,6 @@ class AppointmentController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ============================================================
-  // PUBLIC GETTERS - SERVICE & CUSTOMER DETAILS
-  // ============================================================
   String? get jobId => _jobId;
   String? get workerId => _workerId;
   String? get workTitle => _workTitle;
@@ -112,9 +86,6 @@ class AppointmentController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ============================================================
-  // PUBLIC GETTERS - APPOINTMENTS & STATE
-  // ============================================================
   List<AppointmentModel> get sentAppointments =>
       UnmodifiableListView(_sentAppointments);
   List<AppointmentModel> get receivedAppointments =>
@@ -137,11 +108,6 @@ class AppointmentController extends ChangeNotifier {
 
   double get estimatedTotal => _requestedWage ?? 0.0;
 
-  // ============================================================
-  // FILTERED LISTS
-  // ============================================================
-  
-  /// Upcoming appointments (pending, accepted, confirmed)
   List<AppointmentModel> get upcomingAppointments {
     final now = DateTime.now();
     final allAppointments = [..._sentAppointments, ..._receivedAppointments];
@@ -159,7 +125,6 @@ class AppointmentController extends ChangeNotifier {
     }).toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
-  /// Past appointments (completed, cancelled, rejected)
   List<AppointmentModel> get pastAppointments {
     final allAppointments = [..._sentAppointments, ..._receivedAppointments];
     
@@ -170,12 +135,8 @@ class AppointmentController extends ChangeNotifier {
     }).toList()..sort((a, b) => b.createdAt.compareTo(a.createdAt));
   }
 
-  /// Upcoming appointment count for profile card
   int get upcomingCount => upcomingAppointments.length;
 
-  // ============================================================
-  // FORMATTING HELPERS
-  // ============================================================
   
   String formatDate(String date) {
     try {
@@ -229,9 +190,6 @@ class AppointmentController extends ChangeNotifier {
     return 'Customer';
   }
 
-  // ============================================================
-  // CORE LOGIC: Set Service Details
-  // ============================================================
   void setServiceDetails({
     required String jobId,
     required String workerId,
@@ -246,12 +204,10 @@ class AppointmentController extends ChangeNotifier {
     _requestedWage = requestedWage;
     _description = description;
     
-    // ✅ Only set category if provided (don't overwrite with null)
     if (category != null) {
       _category = category;
     }
     
-    // ✅ Fetch disabled time slots for this worker
     _fetchDisabledSlots(workerId);
     notifyListeners();
   }
@@ -271,7 +227,6 @@ class AppointmentController extends ChangeNotifier {
     final selectedDateStr = _formatDate(_selectedDate);
     final disabled = <String>{};
     
-    // ✅ Add slots that are booked for this date
     for (var slot in slots) {
       if (slot['date'] == selectedDateStr && slot['time'] != null) {
         disabled.add(slot['time']!);
@@ -280,7 +235,6 @@ class AppointmentController extends ChangeNotifier {
     
     _disabledTimeSlots = disabled;
     
-    // ✅ If selected slot is now disabled, pick first available
     if (_disabledTimeSlots.contains(_selectedTimeSlot)) {
       _selectedTimeSlot = _defaultTimeSlots.firstWhere(
         (slot) => !_disabledTimeSlots.contains(slot),
@@ -291,9 +245,6 @@ class AppointmentController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ============================================================
-  // CORE LOGIC: Date/Time Selection
-  // ============================================================
   
   void selectDate(DateTime date) {
     final normalizedDate = DateUtils.dateOnly(date);
@@ -301,7 +252,6 @@ class AppointmentController extends ChangeNotifier {
     
     _selectedDate = normalizedDate;
     
-    // ✅ Fetch new disabled slots for this date
     if (_workerId != null) {
       _fetchDisabledSlots(_workerId!);
     }
@@ -310,7 +260,6 @@ class AppointmentController extends ChangeNotifier {
   }
 
   void selectTimeSlot(String timeSlot) {
-    // ✅ Don't allow selecting disabled slots
     if (_disabledTimeSlots.contains(timeSlot)) return;
     if (_selectedTimeSlot == timeSlot) return;
     
@@ -322,14 +271,11 @@ class AppointmentController extends ChangeNotifier {
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   }
 
-  // ============================================================
-  // CORE LOGIC: Confirm Appointment
-  // ============================================================
+
   
   Future<bool> confirmAppointment(BuildContext context) async {
     clearError();
 
-    // ✅ Validate all required fields
     if (_jobId == null ||
         _workerId == null ||
         _workTitle == null ||
@@ -340,7 +286,7 @@ class AppointmentController extends ChangeNotifier {
       return false;
     }
 
-    // ✅ Validate customer details
+   
     if (_customerName.trim().isEmpty) {
       _setError("Please enter your name");
       return false;
@@ -358,10 +304,6 @@ class AppointmentController extends ChangeNotifier {
     notifyListeners();
 
     try {
-      // NOTE: 'id' and 'userId' are intentionally empty here.
-      // The API service sends only the required fields (worker, job, workTitle,
-      // date, time, requestedWage, description). The backend sets 'user'
-      // automatically from the JWT token — never send it from the client.
       final appointment = AppointmentModel(
         id: '',
         userId: '',
@@ -393,15 +335,11 @@ class AppointmentController extends ChangeNotifier {
         return false;
       }
     } finally {
-      // Always reset — even if context.mounted was false or an error was thrown
       _isConfirming = false;
       notifyListeners();
     }
   }
 
-  // ============================================================
-  // CORE LOGIC: Create Appointment
-  // ============================================================
   
   Future<bool> createAppointment(AppointmentModel appointment) async {
     try {
@@ -425,9 +363,6 @@ class AppointmentController extends ChangeNotifier {
     }
   }
 
-  // ============================================================
-  // CORE LOGIC: Fetch Appointments
-  // ============================================================
   
   Future<void> fetchSentAppointments() async {
     try {
@@ -472,9 +407,6 @@ class AppointmentController extends ChangeNotifier {
     ]);
   }
 
-  // ============================================================
-  // CORE LOGIC: Update/Cancel Appointments
-  // ============================================================
   
   Future<void> updateStatus({
     required AppointmentModel appointment,
@@ -545,9 +477,6 @@ class AppointmentController extends ChangeNotifier {
     }
   }
 
-  // ============================================================
-  // PRIVATE HELPERS
-  // ============================================================
   
   void _setLoading(bool value) {
     if (_isLoading == value) return;
@@ -564,9 +493,6 @@ class AppointmentController extends ChangeNotifier {
     _setError(null);
   }
 
-  // ============================================================
-  // TAB MANAGEMENT (for appointments screen)
-  // ============================================================
   
   int _index = 0;
   int get index => _index;
@@ -587,15 +513,5 @@ class AppointmentController extends ChangeNotifier {
       await refreshAppointments();
     }
   }
-
-  // ============================================================
-  // CLEANUP
-  // ============================================================
-  
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
 
 }

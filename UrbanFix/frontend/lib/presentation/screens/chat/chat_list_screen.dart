@@ -2,11 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/chat_controller.dart';
+import 'package:frontend/data/controller/user_controller.dart';
+import 'package:frontend/data/models/chat_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ChatListScreen extends StatelessWidget {
   const ChatListScreen({super.key});
+
+  /// Returns the other person's name by filtering out the current user's ID.
+  String _getDisplayName(BuildContext context, ChatModel chat) {
+    final currentUserId =
+        context.read<UserController>().currentUser?.id ?? '';
+
+    // Prefer a resolved name from participantNames map
+    for (final entry in chat.participantNames.entries) {
+      if (entry.key != currentUserId) return entry.value;
+    }
+
+    // Fallback: show the other participant's ID (truncated)
+    final otherId =
+        chat.participantIds.firstWhere((id) => id != currentUserId,
+            orElse: () => chat.participantIds.isNotEmpty
+                ? chat.participantIds.first
+                : '');
+    return otherId.isNotEmpty ? AppStrings.unknown : AppStrings.unknown;
+  }
 
   static String _formatTime(DateTime time) {
     final now = DateTime.now();
@@ -28,9 +49,6 @@ class ChatListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ChatController>(
       builder: (context, controller, _) {
-        // Trigger fetch after the current frame when chats have never been
-        // loaded and no request is already in-flight.
-        // _chatsFetched is reset to false on error, so Retry works naturally.
         if (!controller.chatsFetched && !controller.isLoading) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (context.mounted) {
@@ -101,9 +119,7 @@ class ChatListScreen extends StatelessWidget {
       separatorBuilder: (_, __) => const Divider(height: 1),
       itemBuilder: (context, index) {
         final chat = controller.chats[index];
-        final displayName = chat.participantIds.isNotEmpty
-            ? chat.participantIds.first
-            : AppStrings.unknown;
+        final displayName = _getDisplayName(context, chat);
         final lastMessage = chat.lastMessage ?? AppStrings.noMessagesYet;
         final time = chat.lastMessageTime != null
             ? _formatTime(chat.lastMessageTime!)
@@ -113,9 +129,7 @@ class ChatListScreen extends StatelessWidget {
           leading: CircleAvatar(
             backgroundColor: AppColors.primary.withValues(alpha: 0.15),
             child: Text(
-              displayName.isNotEmpty
-                  ? displayName[0].toUpperCase()
-                  : '?',
+              displayName.isNotEmpty ? displayName[0].toUpperCase() : '?',
               style: const TextStyle(
                 color: AppColors.primary,
                 fontWeight: FontWeight.bold,
@@ -134,8 +148,8 @@ class ChatListScreen extends StatelessWidget {
           ),
           trailing: chat.unreadCount > 0
               ? Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: AppColors.primary,
                     borderRadius: BorderRadius.circular(999),
@@ -155,10 +169,9 @@ class ChatListScreen extends StatelessWidget {
                       color: AppColors.greyMedium, fontSize: 12),
                 ),
           onTap: () {
-            controller.setSelectedChat(chat);
             context.pushNamed(
               'chatDetails',
-              pathParameters: {'chatId': chat.id},
+              pathParameters: {'chatId': chat.chatStringId},
             );
           },
         );

@@ -17,8 +17,6 @@ class LightTheme {
       onError: AppColors.lightTextPrimary,
       surface: Colors.white,
       onSurface: AppColors.lightTextSecondary,
-      background: AppColors.lightBackground,
-      onBackground: AppColors.lightTextSecondary,
     ),
 
     scaffoldBackgroundColor: const Color(0xFFF5F6FA),

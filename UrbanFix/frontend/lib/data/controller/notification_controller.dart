@@ -34,7 +34,7 @@ class NotificationController extends ChangeNotifier {
   }
 
   Future<void> fetchNotifications() async {
-    if (_hasFetched) return;
+    if (_isLoading) return;
     try {
       _setLoading(true);
       _setError(null);

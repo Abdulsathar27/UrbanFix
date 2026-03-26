@@ -5,21 +5,17 @@ import 'package:frontend/data/services/job_api_service.dart';
 class JobController extends ChangeNotifier {
   final JobApiService _jobApiService = JobApiService();
 
-  // ============================================================
-  // STATE VARIABLES
-  // ============================================================
-  List<JobModel> _allJobs = [];           // All jobs from API
-  List<JobModel> _filteredJobs = [];      // Filtered by category
+ 
+  List<JobModel> _allJobs = [];           
+  List<JobModel> _filteredJobs = [];      
   JobModel? _selectedJob;
   
   bool _isLoading = false;
   String? _errorMessage;
   
-  String? _currentCategory;               // Track current filter
+  String? _currentCategory;            
 
-  // ============================================================
-  // GETTERS - UI reads these
-  // ============================================================
+ 
   List<JobModel> get jobs => _allJobs;
   List<JobModel> get filteredJobs => _filteredJobs;
   JobModel? get selectedJob => _selectedJob;
@@ -27,10 +23,6 @@ class JobController extends ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   String? get currentCategory => _currentCategory;
-
-  // ============================================================
-  // PRIVATE HELPERS
-  // ============================================================
   void _setLoading(bool value) {
     if (_isLoading == value) return;
     _isLoading = value;
@@ -47,15 +39,13 @@ class JobController extends ChangeNotifier {
     _setError(null);
   }
 
-  // ============================================================
-  // CORE LOGIC: Fetch all jobs from API
-  // ============================================================
+  
   Future<void> fetchJobs() async {
     try {
       _setLoading(true);
       _setError(null);
       
-      // Backend returns: { jobs: [...], currentPage, totalPages, totalJobs }
+     
       final response = await _jobApiService.getJobs();
       
       final List<dynamic> jobsData = response['jobs'] ?? [];
@@ -63,7 +53,7 @@ class JobController extends ChangeNotifier {
           .map((job) => JobModel.fromJson(job as Map<String, dynamic>))
           .toList();
       
-      // If we had a category selected, re-filter
+     
       if (_currentCategory != null) {
         _filterByCategory(_currentCategory!);
       }
@@ -76,17 +66,14 @@ class JobController extends ChangeNotifier {
     }
   }
 
-  // ============================================================
-  // CORE LOGIC: Filter jobs by category
-  // ============================================================
+  
   void filterJobsByCategory(String category) {
     _currentCategory = category;
     _filterByCategory(category);
   }
 
   void _filterByCategory(String category) {
-    // Backend category is case-sensitive
-    // Match exactly: "Electrical", "Plumbing", "General Service", etc.
+    
     _filteredJobs = _allJobs
         .where((job) =>
             job.category.trim().toLowerCase() ==
@@ -96,9 +83,7 @@ class JobController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ============================================================
-  // CORE LOGIC: Get job details
-  // ============================================================
+ 
   Future<void> fetchJobById(String jobId) async {
     try {
       _setLoading(true);
@@ -115,9 +100,7 @@ class JobController extends ChangeNotifier {
     }
   }
 
-  // ============================================================
-  // CORE LOGIC: Get latest jobs with pagination
-  // ============================================================
+  
   Future<Map<String, dynamic>> fetchLatestJobs({
     int page = 1,
     int limit = 10,
@@ -146,9 +129,7 @@ class JobController extends ChangeNotifier {
     }
   }
 
-  // ============================================================
-  // CORE LOGIC: Get nearby jobs
-  // ============================================================
+ 
   Future<void> fetchNearbyJobs({
     required double lat,
     required double lng,
@@ -177,9 +158,7 @@ class JobController extends ChangeNotifier {
     }
   }
 
-  // ============================================================
-  // CORE LOGIC: Validate job before selection
-  // ============================================================
+ 
   bool validateJobSelection(JobModel job) {
     if (job.isBlocked) {
       _setError('This job is blocked');
@@ -190,11 +169,9 @@ class JobController extends ChangeNotifier {
     return true;
   }
 
-  // ============================================================
-  // CORE LOGIC: Prepare job for booking
-  // ============================================================
+  
   Map<String, dynamic> prepareJobForBooking(JobModel job) {
-    // Extract workerId from populated user object
+   
     final workerId = job.user?['_id']?.toString() ??
         job.user?['id']?.toString() ??
         '';
@@ -209,17 +186,13 @@ class JobController extends ChangeNotifier {
     };
   }
 
-  // ============================================================
-  // UTILITY: Clear selected job
-  // ============================================================
+  
   void clearSelectedJob() {
     _selectedJob = null;
     notifyListeners();
   }
 
-  // ============================================================
-  // UTILITY: Reset controller state
-  // ============================================================
+  
   void reset() {
     _allJobs = [];
     _filteredJobs = [];

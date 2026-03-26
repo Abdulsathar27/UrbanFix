@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/appointment_controller.dart';
+import 'package:frontend/data/controller/chat_controller.dart';
+import 'package:frontend/data/controller/user_controller.dart';
 import 'package:frontend/data/models/appointment_model.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class AppointmentListTile extends StatelessWidget {
   final AppointmentModel appointment;
@@ -114,20 +118,37 @@ class AppointmentListTile extends StatelessWidget {
                     ),
                 ],
               ),
-              if (isUpcoming) const SizedBox(height: 4),
+              if (isUpcoming) const SizedBox(height: 8),
               if (isUpcoming)
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: const [
-                    Text(
-                      AppStrings.tapForDetails,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: AppColors.primary,
-                        fontWeight: FontWeight.w500,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Row(
+                      children: [
+                        Text(
+                          AppStrings.tapForDetails,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        Icon(Icons.chevron_right, size: 16, color: AppColors.primary),
+                      ],
+                    ),
+                    OutlinedButton.icon(
+                      onPressed: () => _openChat(context),
+                      icon: const Icon(Icons.chat_bubble_outline, size: 14),
+                      label: const Text('Chat'),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.primary,
+                        side: const BorderSide(color: AppColors.primary),
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
                       ),
                     ),
-                    Icon(Icons.chevron_right, size: 16, color: AppColors.primary),
                   ],
                 ),
             ],
@@ -135,6 +156,18 @@ class AppointmentListTile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _openChat(BuildContext context) {
+    final currentUserId =
+        context.read<UserController>().currentUser?.id ?? '';
+    if (currentUserId.isEmpty || appointment.workerId.isEmpty) return;
+
+    final chatStringId = ChatController.buildChatStringId(
+      currentUserId,
+      appointment.workerId,
+    );
+    context.pushNamed('chatDetails', pathParameters: {'chatId': chatStringId});
   }
 
   Widget _buildRoleIndicator(BuildContext context) {

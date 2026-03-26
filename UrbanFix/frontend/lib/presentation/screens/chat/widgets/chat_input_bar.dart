@@ -2,108 +2,186 @@ import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/chat_controller.dart';
+import 'package:frontend/data/controller/user_controller.dart';
 import 'package:provider/provider.dart';
 
-class ChatInputBar extends StatefulWidget {
-  const ChatInputBar({super.key});
+class ChatInputBar extends StatelessWidget {
+  final String chatStringId;
 
-  @override
-  State<ChatInputBar> createState() => _ChatInputBarState();
-}
-
-// FIX: ChatInputBar must be StatefulWidget.
-// Placing TextEditingController inside build() of a StatelessWidget
-// creates a NEW controller on every rebuild — the text field resets
-// every time the Consumer above rebuilds (e.g. after each message).
-class _ChatInputBarState extends State<ChatInputBar> {
-  final TextEditingController _messageController = TextEditingController();
-
-  @override
-  void dispose() {
-    _messageController.dispose(); // FIX: always dispose controllers
-    super.dispose();
-  }
-
-  Future<void> _onSend(ChatController controller) async {
-    final text = _messageController.text.trim();
-    if (text.isEmpty) return;
-
-    final chat = controller.selectedChat;
-    if (chat == null) return;
-
-    _messageController.clear(); // Clear immediately for snappy UX
-
-    await controller.sendMessage(
-      chatId: chat.id,
-      message: text,
-    );
-  }
+  const ChatInputBar({super.key, required this.chatStringId});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ChatController>(
-      builder: (context, controller, child) {
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-          color: AppColors.white,
-          child: Row(
-            children: [
-              // Attachment button
-              const Icon(Icons.add, color: AppColors.greyMedium),
-              const SizedBox(width: 10),
+    final currentUserId =
+        context.read<UserController>().currentUser?.id ?? '';
 
-              // Input field
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: AppColors.greyLight,
-                    borderRadius: BorderRadius.circular(30),
-                  ),
+    return Consumer<ChatController>(
+      builder: (context, controller, _) {
+        return SafeArea(
+          top: false,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.07),
+                  blurRadius: 16,
+                  offset: const Offset(0, -3),
+                ),
+              ],
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                // ── Attachment icon ────────────────────────────────
+                _IconBtn(
+                  icon: Icons.attach_file_rounded,
+                  onTap: () {},
+                ),
+                const SizedBox(width: 8),
+
+                // ── Input field ────────────────────────────────────
+                Expanded(
                   child: TextField(
-                    controller: _messageController,
+                    controller: controller.messageInputController,
                     textCapitalization: TextCapitalization.sentences,
                     minLines: 1,
-                    maxLines: 4, // FIX: allow multiline input
-                    decoration: const InputDecoration(
-                      hintText: AppStrings.typeMessage,
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(vertical: 12),
+                    maxLines: 5,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      color: AppColors.lightTextPrimary,
+                      height: 1.4,
                     ),
-                    onSubmitted: (_) => _onSend(controller),
+                    decoration: InputDecoration(
+                      hintText: AppStrings.typeMessage,
+                      hintStyle: const TextStyle(
+                        color: AppColors.greyMedium,
+                        fontSize: 15,
+                      ),
+                      filled: true,
+                      fillColor: AppColors.inputFill,
+                      isDense: true,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 12,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(28),
+                        borderSide: const BorderSide(
+                          color: AppColors.greyLight,
+                          width: 1.2,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(28),
+                        borderSide: const BorderSide(
+                          color: AppColors.primary,
+                          width: 1.8,
+                        ),
+                      ),
+                      suffixIcon: Padding(
+                        padding: const EdgeInsets.only(right: 4),
+                        child: Icon(
+                          Icons.emoji_emotions_outlined,
+                          color: AppColors.greyMedium,
+                          size: 22,
+                        ),
+                      ),
+                    ),
+                    onSubmitted: (_) => controller.submitMessage(
+                      chatStringId: chatStringId,
+                      senderId: currentUserId,
+                    ),
                   ),
                 ),
-              ),
 
-              const SizedBox(width: 10),
+                const SizedBox(width: 8),
 
-              // Send button — shows spinner while sending
-              GestureDetector(
-                onTap: controller.isSending ? null : () => _onSend(controller),
-                child: Container(
-                  height: 48,
-                  width: 48,
+                // ── Send / loading button ──────────────────────────
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeInOut,
+                  height: 46,
+                  width: 46,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: controller.isSending
-                        ? AppColors.greyMedium
-                        : AppColors.primary,
-                  ),
-                  child: controller.isSending
-                      ? const Padding(
-                          padding: EdgeInsets.all(12),
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: AppColors.white,
+                    gradient: controller.isSending
+                        ? null
+                        : const LinearGradient(
+                            colors: [
+                              Color(0xFF4F7EFF),
+                              AppColors.primary,
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
                           ),
-                        )
-                      : const Icon(Icons.send_rounded, color: AppColors.white),
+                    color:
+                        controller.isSending ? AppColors.greyLight : null,
+                    boxShadow: controller.isSending
+                        ? []
+                        : [
+                            BoxShadow(
+                              color: AppColors.primary.withValues(alpha: 0.4),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(23),
+                      onTap: controller.isSending
+                          ? null
+                          : () => controller.submitMessage(
+                                chatStringId: chatStringId,
+                                senderId: currentUserId,
+                              ),
+                      child: controller.isSending
+                          ? const Padding(
+                              padding: EdgeInsets.all(11),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: AppColors.greyMedium,
+                              ),
+                            )
+                          : const Icon(
+                              Icons.send_rounded,
+                              color: AppColors.white,
+                              size: 20,
+                            ),
+                    ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
+    );
+  }
+}
+
+class _IconBtn extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _IconBtn({required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 40,
+        width: 40,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppColors.inputFill,
+        ),
+        child: Icon(icon, color: AppColors.greyDark, size: 20),
+      ),
     );
   }
 }

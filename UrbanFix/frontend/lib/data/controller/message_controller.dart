@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:frontend/data/models/message_model.dart';
 import 'package:frontend/data/services/message_api_service.dart';
 
@@ -10,16 +9,10 @@ class MessageController extends ChangeNotifier {
   bool _isLoading = false;
   String? _errorMessage;
 
-  // ==========================
-  // Getters
-  // ==========================
   List<MessageModel> get messages => _messages;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
 
-  // ==========================
-  // Private Helpers
-  // ==========================
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
@@ -35,24 +28,15 @@ class MessageController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ==========================
-  // Fetch Messages For Chat
-  // ==========================
-  Future<void> fetchMessages(String chatId) async {
+  Future<void> fetchMessages(String chatStringId) async {
     try {
       _setLoading(true);
       _setError(null);
-
-      final data = await messageApiService.getMessages(chatId);
-
-      // Sort messages by time (oldest first)
-      data.sort(
-        (a, b) => (a.createdAt ?? DateTime.now()).compareTo(
-          b.createdAt ?? DateTime.now(),
-        ),
-      );
-
+      final data = await messageApiService.getMessages(chatStringId);
+      data.sort((a, b) =>
+          (a.createdAt ?? DateTime.now()).compareTo(b.createdAt ?? DateTime.now()));
       _messages = data;
+      notifyListeners();
     } catch (e) {
       _setError(e.toString());
     } finally {
@@ -60,66 +44,6 @@ class MessageController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Send Message
-  // ==========================
-  Future<void> sendMessage({
-    required String chatId,
-    required String receiverId,
-    required String message,
-    String type = "text",
-  }) async {
-    try {
-      final newMessage = await messageApiService.sendMessage(
-       chatId,
-         receiverId,
-         message,
-       type,
-      );
-
-      _messages.add(newMessage.first);
-      notifyListeners();
-    } catch (e) {
-      _setError(e.toString());
-    }
-  }
-
-  // ==========================
-  // Mark Message As Seen
-  // ==========================
-  Future<void> markMessageAsSeen(String messageId) async {
-    try {
-      await messageApiService.markMessageAsSeen(messageId);
-
-      final index = _messages.indexWhere((message) => message.id == messageId);
-
-      if (index != -1) {
-        _messages[index] = _messages[index].copyWith(isSeen: true);
-        notifyListeners();
-      }
-    } catch (e) {
-      _setError(e.toString());
-    }
-  }
-
-  // ==========================
-  // Delete Message
-  // ==========================
-  Future<void> deleteMessage(String messageId) async {
-    try {
-      await messageApiService.deleteMessage(messageId);
-
-      _messages.removeWhere((message) => message.id == messageId);
-
-      notifyListeners();
-    } catch (e) {
-      _setError(e.toString());
-    }
-  }
-
-  // ==========================
-  // Clear Messages
-  // ==========================
   void clearMessages() {
     _messages = [];
     notifyListeners();

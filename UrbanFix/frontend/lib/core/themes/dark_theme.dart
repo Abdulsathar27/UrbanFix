@@ -17,8 +17,6 @@ class DarkTheme {
       onError: Colors.black,
       surface: AppColors.darkSurface,
       onSurface: AppColors.darkTextPrimary,
-      background: AppColors.darkBackground,
-      onBackground: AppColors.darkTextPrimary,
     ),
 
     scaffoldBackgroundColor: const Color(0xFF121212),

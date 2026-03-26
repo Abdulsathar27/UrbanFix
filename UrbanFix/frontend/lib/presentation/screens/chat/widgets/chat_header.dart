@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/chat_controller.dart';
+import 'package:frontend/data/controller/user_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -13,11 +14,20 @@ class ChatHeader extends StatelessWidget {
     return Consumer<ChatController>(
       builder: (context, controller, child) {
         final chat = controller.selectedChat;
+        final currentUserId =
+            context.read<UserController>().currentUser?.id ?? '';
 
-        // Display participant count or a placeholder until chat loads
-        final title = chat != null
-            ? '${AppStrings.chats} (${chat.participantIds.length} ${AppStrings.participants})'
-            : AppStrings.loading;
+        String title = AppStrings.loading;
+        if (chat != null) {
+          // Show the other participant's name from the populated members map
+          title = chat.participantNames.entries
+              .firstWhere(
+                (e) => e.key != currentUserId,
+                orElse: () => const MapEntry('', AppStrings.unknown),
+              )
+              .value;
+          if (title.isEmpty) title = AppStrings.unknown;
+        }
 
         return Container(
           padding: const EdgeInsets.only(
@@ -31,57 +41,34 @@ class ChatHeader extends StatelessWidget {
             children: [
               IconButton(
                 icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                onPressed: () => context.go('/chats'),
+                onPressed: () {
+                  controller.clearMessages();
+                  context.go('/chats');
+                },
               ),
-
               const CircleAvatar(
                 radius: 22,
-                backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=3'),
+                backgroundColor: AppColors.greyLight,
+                child: Icon(Icons.person, color: AppColors.primary),
               ),
-
               const SizedBox(width: 12),
-
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Flexible(
-                          child: Text(
-                            title,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 6),
-                        const Icon(Icons.verified, color: AppColors.info, size: 18),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    const Text(
-                      AppStrings.online,
-                      style: TextStyle(color: AppColors.success, fontSize: 12),
-                    ),
-                  ],
+                child: Text(
+                  title,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
                 ),
               ),
-
               IconButton(
                 icon: const Icon(Icons.call_outlined),
-                onPressed: () {
-                  // TODO: implement call
-                },
+                onPressed: () {},
               ),
-
               IconButton(
                 icon: const Icon(Icons.more_vert),
-                onPressed: () {
-                  // TODO: implement options menu
-                },
+                onPressed: () {},
               ),
             ],
           ),

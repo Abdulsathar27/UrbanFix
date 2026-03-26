@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/core/utils/token_store.dart';
@@ -7,13 +8,12 @@ import 'package:frontend/data/models/service_model.dart';
 import 'package:frontend/data/models/user_model.dart';
 import 'package:frontend/data/services/user_api_service.dart';
 import 'package:frontend/routes/app_routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserController extends ChangeNotifier {
   UserApiService userApiService = UserApiService();
 
-  // ==========================
-  // State
-  // ==========================
+  
   UserModel? _currentUser;
   bool _isLoading = false;
   bool _editProfileReady = false;
@@ -25,19 +25,16 @@ class UserController extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
   bool get isLoggedIn => _currentUser != null;
 
-  /// Populates nameController & phoneController from the current user.
-  /// Must be called once when entering EditProfileScreen — not on every rebuild.
+  
   void prepareEditProfile() {
     if (_currentUser == null) return;
     nameController.text = _currentUser!.name;
     phoneController.text = _currentUser!.phone ?? '';
     _editProfileReady = true;
-    // No notifyListeners — TextEditingController handles its own UI updates.
+   
   }
 
-  // ==========================
-  // Form Controllers
-  // ==========================
+ 
   final emailController = TextEditingController();
   final emailloginController = TextEditingController();
   final passwordController = TextEditingController();
@@ -47,9 +44,34 @@ class UserController extends ChangeNotifier {
   final confirmPasswordController = TextEditingController();
   final TextEditingController searchController = TextEditingController();
 
-  // ==========================
-  // Private Helpers
-  // ==========================
+  
+  // ─── SharedPreferences persistence ───────────────────────────────────────
+
+  static const String _userKey = 'current_user';
+
+  /// Call once at app startup (from SplashScreen) to restore session.
+  Future<void> initFromStorage() async {
+    await TokenStore.loadToken();
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString(_userKey);
+    if (userJson != null) {
+      _currentUser = UserModel.fromJson(jsonDecode(userJson) as Map<String, dynamic>);
+      notifyListeners();
+    }
+  }
+
+  Future<void> _saveUserToStorage(UserModel user) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_userKey, jsonEncode(user.toJson()));
+  }
+
+  Future<void> _clearUserFromStorage() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_userKey);
+  }
+
+  // ──────────────────────────────────────────────────────────────────────────
+
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
@@ -76,9 +98,7 @@ class UserController extends ChangeNotifier {
     return text;
   }
 
-  // ==========================
-  // Login
-  // ==========================
+ 
   Future<bool> login({required String email, required String password}) async {
     try {
       _setLoading(true);
@@ -87,6 +107,7 @@ class UserController extends ChangeNotifier {
       final user = await userApiService.login( email, password);
 
       _currentUser = user.first;
+      await _saveUserToStorage(user.first);
       return true;
     } catch (e) {
       _setError(_extractErrorMessage(e));
@@ -96,9 +117,7 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Register
-  // ==========================
+ 
   Future<bool> register({
     required String name,
     required String email,
@@ -120,9 +139,7 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Fetch Profile
-  // ==========================
+ 
   Future<void> fetchProfile() async {
     try {
       _setLoading(true);
@@ -137,9 +154,7 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Update Profile
-  // ==========================
+
   Future<bool> updateProfile({
     required String name,
     required String phone,
@@ -151,7 +166,7 @@ class UserController extends ChangeNotifier {
       final updatedUser = await userApiService.updateProfile(name, phone);
 
       _currentUser = updatedUser.first;
-      _editProfileReady = false; // repopulate with fresh data on next visit
+      _editProfileReady = false; 
       return true;
     } catch (e) {
       _setError(_extractErrorMessage(e));
@@ -161,9 +176,7 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Logout
-  // ==========================
+  
   Future<void> logout() async {
     try {
       _setLoading(true);
@@ -174,11 +187,12 @@ class UserController extends ChangeNotifier {
     } finally {
       _setLoading(false);
       clearState(clearCurrentUser: true);
-      TokenStore.clear();
+      await TokenStore.clear();
+      await _clearUserFromStorage();
     }
   }
   Future<void> handleLogout(BuildContext context, UserController controller) async {
-  // 1. Show confirmation dialog
+  
   final shouldLogout = await showDialog<bool>(
     context: context,
     builder: (ctx) => AlertDialog(
@@ -203,18 +217,16 @@ class UserController extends ChangeNotifier {
 
   if (shouldLogout != true) return;
 
-  // 2. Perform logout (token + state are always cleared in finally)
+ 
   try {
     await controller.logout();
   } catch (_) {
-    // API error — token and state are already cleared, proceed to login
+   
   }
   AppRouter.router.go('/login');
 }
 
-  // ==========================
-  // OTP
-  // ==========================
+ 
   final List<TextEditingController> otpControllers = List.generate(
     6,
     (_) => TextEditingController(),
@@ -251,10 +263,11 @@ class UserController extends ChangeNotifier {
 
       final response = await userApiService.verifyOtp(email, otp);
 
-      // Extract user from response
+      
       final user = UserModel.fromJson(response['user']);
 
       _currentUser = user;
+      await _saveUserToStorage(user);
 
       return true;
     } catch (e) {
@@ -276,9 +289,7 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // UI State Toggles
-  // ==========================
+ 
   bool isPasswordVisible = false;
   bool isRegisterPasswordVisible = false;
   bool isConfirmPasswordVisible = false;
@@ -304,9 +315,7 @@ class UserController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ==========================
-  // Dispose
-  // ==========================
+  
   @override
   void dispose() {
     emailController.dispose();
@@ -316,7 +325,7 @@ class UserController extends ChangeNotifier {
     nameController.dispose();
     phoneController.dispose();
     confirmPasswordController.dispose();
-    searchController.dispose(); // ✅ FIXED: Now properly disposed
+    searchController.dispose(); 
 
     for (var c in otpControllers) {
       c.dispose();
@@ -344,7 +353,7 @@ class UserController extends ChangeNotifier {
     nameController.clear();
     phoneController.clear();
     confirmPasswordController.clear();
-    searchController.clear(); // ✅ ADDED: Clear search controller
+    searchController.clear(); 
 
     isPasswordVisible = false;
     isRegisterPasswordVisible = false;
@@ -361,26 +370,24 @@ class UserController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ==========================
-  // Registration Form Validation
-  // =========================
+  
   Future<bool> submitRegistration() async {
-    // Clear previous error
+    
     _setError(null);
 
-    // Validate terms
+   
     if (!agreeTerms) {
       _setError("Please accept terms");
       return false;
     }
 
-    // Validate password match
+   
     if (passwordController.text != confirmPasswordController.text) {
       _setError("Passwords do not match");
       return false;
     }
 
-    // Validate empty fields
+   
     if (nameController.text.trim().isEmpty ||
         emailController.text.trim().isEmpty ||
         phoneController.text.trim().isEmpty ||
@@ -409,16 +416,14 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  // ==========================
-  // Login Form Validation
-  // ==========================
+  
   Future<bool> submitLogin() async {
     _setError(null);
 
     final email = emailloginController.text.trim();
     final password = passwordLoginController.text.trim();
 
-    // Basic validation
+
     if (email.isEmpty || password.isEmpty) {
       _setError("Email and password are required");
       return false;
@@ -430,6 +435,7 @@ class UserController extends ChangeNotifier {
       final user = await userApiService.login(email, password);
 
       _currentUser = user.first;
+      await _saveUserToStorage(user.first);
 
       clearState();
       return true;
@@ -441,9 +447,7 @@ class UserController extends ChangeNotifier {
     }
   }
 
-  // =============================
-  // APPOINTMENT & NAVIGATION
-  // =============================
+
   AppointmentModel? _currentAppointment;
   int _currentIndex = 0;
   bool _isChatFloating = false;
@@ -455,7 +459,7 @@ class UserController extends ChangeNotifier {
  
   void changeTab(int index) {
     _currentIndex = index;
-    _isChatFloating = false; // Close floating chat when changing tabs
+    _isChatFloating = false;
     notifyListeners();
   }
 
@@ -519,12 +523,9 @@ class UserController extends ChangeNotifier {
     ),
   ];
 
-  // You can remove the old services list if it was just strings
-  // final List<String> services = [...]; // delete or comment out
-
-  // Optional: a method to select a service (if needed)
+  
+  
   void selectService(Service service) {
-    // maybe store selected service, or just use navigation directly
   }
 
    

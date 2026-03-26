@@ -79,7 +79,8 @@ class EditProfileScreen extends StatelessWidget {
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios_new_rounded,
                   color: AppColors.lightTextPrimary),
-              onPressed: () => context.pop(),
+              onPressed: () =>
+                  context.canPop() ? context.pop() : context.go('/profile'),
             ),
             title: const Text(
               AppStrings.editProfile,
