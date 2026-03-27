@@ -21,42 +21,51 @@ class HomeScreen extends StatelessWidget {
         return Scaffold(
           floatingActionButton: const FloatingChatButton(),
           body: SafeArea(
-            child: Column(
-              children: [
-                const HomeHeader(),
-                SearchBarWidget(controller: controller.searchController),
-                const ServicesHeader(
-                  title: "Our Services",
-                
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(child: const HomeHeader()),
+                SliverToBoxAdapter(
+                  child: SearchBarWidget(
+                      controller: controller.searchController),
                 ),
-                Expanded(
-                  child: GridView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    itemCount: services.length,
+
+                // Recent booking section — always visible
+                SliverToBoxAdapter(
+                  child: RecentBookingCard(
+                    appointment: controller.currentAppointment,
+                  ),
+                ),
+
+                SliverToBoxAdapter(
+                  child: const ServicesHeader(title: "Our Services"),
+                ),
+
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                  sliver: SliverGrid(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final service = services[index];
+                        return ServiceCard(
+                          title: service.name,
+                          icon: service.icon,
+                          iconColor: service.color,
+                          onTap: () {
+                            context.go('/service-details', extra: service);
+                          },
+                        );
+                      },
+                      childCount: services.length,
+                    ),
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          mainAxisSpacing: 12,
-                          crossAxisSpacing: 12,
-                          childAspectRatio: 0.9,
-                        ),
-                    itemBuilder: (context, index) {
-                      final service = services[index];
-                      return ServiceCard(
-                        title: service.name,
-                        icon: service.icon,
-                        iconColor: service.color,
-                        onTap: () {
-                          context.go('/service-details', extra: service);
-                        },
-                      );
-                    },
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 12,
+                      crossAxisSpacing: 12,
+                      childAspectRatio: 0.9,
+                    ),
                   ),
                 ),
-                if (controller.currentAppointment != null)
-                  RecentBookingCard(
-                    appointment: controller.currentAppointment!,
-                  ),
               ],
             ),
           ),

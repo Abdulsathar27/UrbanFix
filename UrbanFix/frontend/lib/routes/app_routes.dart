@@ -15,6 +15,8 @@ import 'package:frontend/presentation/screens/home/home_screen.dart';
 import 'package:frontend/presentation/screens/home/widget/main_navigation_screen.dart';
 import 'package:frontend/presentation/screens/home/widget/service_details_page.dart';
 import 'package:frontend/presentation/screens/notification/notification_screen.dart';
+import 'package:frontend/presentation/screens/notification/notification_detail_screen.dart';
+import 'package:frontend/data/models/notification_model.dart';
 import 'package:frontend/presentation/screens/report/report_issue_screen.dart';
 import 'package:frontend/presentation/screens/splash/splash_screen.dart';
 import 'package:frontend/presentation/screens/user/profile_screen.dart';
@@ -158,6 +160,14 @@ class AppRouter {
         path: '/report',
         name: 'report',
         builder: (context, state) => const ReportIssueScreen(),
+      ),
+      GoRoute(
+        path: '/notification-detail',
+        name: 'notificationDetail',
+        builder: (context, state) {
+          final notification = state.extra as NotificationModel;
+          return NotificationDetailScreen(notification: notification);
+        },
       ),
     ],
   );

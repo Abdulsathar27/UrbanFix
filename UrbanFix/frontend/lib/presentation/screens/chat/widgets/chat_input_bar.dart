@@ -12,8 +12,7 @@ class ChatInputBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentUserId =
-        context.read<UserController>().currentUser?.id ?? '';
+    final currentUserId = context.read<UserController>().currentUser?.id ?? '';
 
     return Consumer<ChatController>(
       builder: (context, controller, _) {
@@ -34,14 +33,6 @@ class ChatInputBar extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                // ── Attachment icon ────────────────────────────────
-                _IconBtn(
-                  icon: Icons.attach_file_rounded,
-                  onTap: () {},
-                ),
-                const SizedBox(width: 8),
-
-                // ── Input field ────────────────────────────────────
                 Expanded(
                   child: TextField(
                     controller: controller.messageInputController,
@@ -109,15 +100,11 @@ class ChatInputBar extends StatelessWidget {
                     gradient: controller.isSending
                         ? null
                         : const LinearGradient(
-                            colors: [
-                              Color(0xFF4F7EFF),
-                              AppColors.primary,
-                            ],
+                            colors: [Color(0xFF4F7EFF), AppColors.primary],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
-                    color:
-                        controller.isSending ? AppColors.greyLight : null,
+                    color: controller.isSending ? AppColors.greyLight : null,
                     boxShadow: controller.isSending
                         ? []
                         : [
@@ -135,9 +122,9 @@ class ChatInputBar extends StatelessWidget {
                       onTap: controller.isSending
                           ? null
                           : () => controller.submitMessage(
-                                chatStringId: chatStringId,
-                                senderId: currentUserId,
-                              ),
+                              chatStringId: chatStringId,
+                              senderId: currentUserId,
+                            ),
                       child: controller.isSending
                           ? const Padding(
                               padding: EdgeInsets.all(11),
@@ -159,29 +146,6 @@ class ChatInputBar extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _IconBtn extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _IconBtn({required this.icon, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        height: 40,
-        width: 40,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: AppColors.inputFill,
-        ),
-        child: Icon(icon, color: AppColors.greyDark, size: 20),
-      ),
     );
   }
 }

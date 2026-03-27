@@ -6,6 +6,7 @@ import 'data/controller/chat_controller.dart';
 import 'data/controller/job_controller.dart';
 import 'data/controller/message_controller.dart';
 import 'data/controller/notification_controller.dart';
+import 'data/controller/location_controller.dart';
 import 'data/controller/report_controller.dart';
 import 'data/controller/theme_controller.dart';
 import 'data/controller/user_controller.dart';
@@ -36,6 +37,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => MessageController()),
         ChangeNotifierProvider(create: (_) => NotificationController()),
         ChangeNotifierProvider(create: (_) => ReportController()),
+        ChangeNotifierProvider(create: (_) => LocationController()),
       ],
       child: Consumer<ThemeController>(
         builder: (context, themeProvider, _) {

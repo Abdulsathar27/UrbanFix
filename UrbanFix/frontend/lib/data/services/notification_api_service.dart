@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import '../../core/constants/api_constants.dart';
 import '../models/notification_model.dart';
@@ -10,6 +12,7 @@ class NotificationApiService {
     try {
       final response = await _dio.get(ApiConstants.notifications);
       final List<dynamic> data = response.data as List<dynamic>;
+      log('$response what is the issue ');
 
       return data
           .map(

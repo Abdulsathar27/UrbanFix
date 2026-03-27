@@ -26,15 +26,8 @@ class NotificationCard extends StatelessWidget {
           controller.markAsRead(notification.id);
         }
 
-        /// ✅ Navigate if reference exists
-        if (notification.referenceId != null) {
-          context.pushNamed(
-            'jobDetails',
-            pathParameters: {
-              'id': notification.referenceId.toString(),
-            },
-          );
-        }
+        /// ✅ Navigate based on notification type
+        _navigateForNotification(context);
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16),
@@ -122,5 +115,9 @@ class NotificationCard extends StatelessWidget {
 
   Color _getIconColor() {
     return AppColors.primary;
+  }
+
+  void _navigateForNotification(BuildContext context) {
+    context.pushNamed('notificationDetail', extra: notification);
   }
 }
