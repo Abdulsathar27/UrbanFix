@@ -32,7 +32,7 @@ class NotificationApiService {
       );
       return NotificationModel.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      print("Option 1 failed: ${e.message}");
+      log("Option 1 failed: ${e.message}");
       return await _markAsReadOption2(notificationId);
     }
   }
@@ -45,7 +45,7 @@ class NotificationApiService {
       );
       return NotificationModel.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      print("Option 2 failed: ${e.message}");
+      log("Option 2 failed: ${e.message}");
       // If Option 2 fails, try Option 3
       return await _markAsReadOption3(notificationId);
     }
@@ -59,7 +59,7 @@ class NotificationApiService {
       );
       return NotificationModel.fromJson(response.data as Map<String, dynamic>);
     } on DioException catch (e) {
-      print("Option 3 failed: ${e.message}");
+      log("Option 3 failed: ${e.message}");
       return await _markAsReadOption4(notificationId);
     }
   }

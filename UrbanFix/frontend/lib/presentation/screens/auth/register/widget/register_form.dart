@@ -18,22 +18,23 @@ class RegisterForm extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   Future<void> _submit(BuildContext context) async {
-  final controller = context.read<UserController>();
+    final controller = context.read<UserController>();
 
-  final success = await controller.submitRegistration();
+    final success = await controller.submitRegistration();
 
-  if (!success) {
-    Helpers.showError(
-      context,
-      controller.errorMessage ?? "Registration failed",
-    );
+    if (!context.mounted) return;
+
+    if (!success) {
+      Helpers.showError(
+        context,
+        controller.errorMessage ?? "Registration failed",
+      );
+      return;
+    }
+
+    context.goNamed('home');
     return;
   }
-  
-
-  context.goNamed('home');
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -44,25 +45,18 @@ class RegisterForm extends StatelessWidget {
             key: _formKey,
             child: Column(
               children: [
-
                 /// Name
-                RegisterNameField(
-                  controller: controller.nameController,
-                ),
+                RegisterNameField(controller: controller.nameController),
 
                 const SizedBox(height: 16),
 
                 /// Email
-                RegisterEmailField(
-                  controller: controller.emailController,
-                ),
+                RegisterEmailField(controller: controller.emailController),
 
                 const SizedBox(height: 16),
 
                 /// Phone
-                RegisterPhoneField(
-                  controller: controller.phoneController,
-                ),
+                RegisterPhoneField(controller: controller.phoneController),
 
                 const SizedBox(height: 16),
 

@@ -22,6 +22,8 @@ class LoginForm extends StatelessWidget {
 
     final success = await controller.submitLogin();
 
+    if (!context.mounted) return;
+
     if (success) {
       // User already verified
       context.goNamed('home');
