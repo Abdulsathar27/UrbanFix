@@ -30,7 +30,7 @@ class DateCircle extends StatelessWidget {
         child: Text(
           day,
           style: TextStyle(
-            color: selected ? AppColors.white : AppColors.lightTextPrimary,
+            color: selected ? AppColors.white : Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w600,
           ),
         ),

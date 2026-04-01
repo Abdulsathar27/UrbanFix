@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
 
 class DaySeparator extends StatelessWidget {
@@ -24,20 +23,40 @@ class DaySeparator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-      decoration: BoxDecoration(
-        color: AppColors.greyLight,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        _getLabel(),
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 12,
-          color: AppColors.greyDark,
+    return Row(
+      children: [
+        Expanded(
+          child: Divider(
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.10),
+          ),
         ),
-      ),
+        const SizedBox(width: 10),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+          decoration: BoxDecoration(
+            color: Theme.of(context)
+                .colorScheme
+                .onSurface
+                .withValues(alpha: 0.06),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text(
+            _getLabel(),
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 11,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              letterSpacing: 0.3,
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: Divider(
+            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.10),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -12,8 +12,6 @@ class NotificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-      backgroundColor: AppColors.lightBackground,
       body: SafeArea(
         child: Consumer<NotificationController>(
           builder: (context, controller, _) {

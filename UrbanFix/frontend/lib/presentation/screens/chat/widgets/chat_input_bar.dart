@@ -21,7 +21,7 @@ class ChatInputBar extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color: Theme.of(context).colorScheme.surface,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.07),
@@ -39,9 +39,9 @@ class ChatInputBar extends StatelessWidget {
                     textCapitalization: TextCapitalization.sentences,
                     minLines: 1,
                     maxLines: 5,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 15,
-                      color: AppColors.lightTextPrimary,
+                      color: Theme.of(context).colorScheme.onSurface,
                       height: 1.4,
                     ),
                     decoration: InputDecoration(
@@ -51,7 +51,7 @@ class ChatInputBar extends StatelessWidget {
                         fontSize: 15,
                       ),
                       filled: true,
-                      fillColor: AppColors.inputFill,
+                      fillColor: Theme.of(context).inputDecorationTheme.fillColor,
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 18,

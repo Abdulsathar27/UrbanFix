@@ -1,123 +1,114 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:frontend/core/constants/app_colors.dart';
-import 'package:frontend/data/models/notification_model.dart';
 import 'package:frontend/data/controller/notification_controller.dart';
+import 'package:frontend/data/models/notification_model.dart';
+import 'package:frontend/core/utils/config.dart';
 
 class NotificationCard extends StatelessWidget {
   final NotificationModel notification;
 
-  const NotificationCard({
-    super.key,
-    required this.notification,
-  });
+  const NotificationCard({super.key, required this.notification});
 
   @override
   Widget build(BuildContext context) {
-    final controller =
-        context.read<NotificationController>();
+    final controller = context.read<NotificationController>();
+    final typeConfig = NotificationConfig.getTypeConfig(notification);
 
     return InkWell(
+      borderRadius: BorderRadius.circular(12),
       onTap: () {
-
-        /// ✅ Mark as read automatically
-        if (!notification.isRead) {
-          controller.markAsRead(notification.id);
-        }
-
-        /// ✅ Navigate based on notification type
-        _navigateForNotification(context);
+        if (!notification.isRead) controller.markAsRead(notification.id);
+        context.pushNamed('notificationDetail', extra: notification);
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 6),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
 
-            /// ================= ICON CONTAINER
+            /// ===== TYPE ICON
             Container(
-              height: 56,
-              width: 56,
+              height: 52,
+              width: 52,
               decoration: BoxDecoration(
-                color: _getBackgroundColor(),
-                borderRadius: BorderRadius.circular(16),
+                color: typeConfig.color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(14),
               ),
-              child: Icon(
-                _getIcon(),
-                color: _getIconColor(),
-              ),
+              child: Icon(typeConfig.icon, color: typeConfig.color, size: 24),
             ),
 
-            const SizedBox(width: 16),
+            const SizedBox(width: 14),
 
-            /// ================= TEXT SECTION
+            /// ===== TEXT + TIMESTAMP
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    notification.title,
-                    style: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          notification.title,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: notification.isRead
+                                ? FontWeight.w500
+                                : FontWeight.w700,
+                          ),
+                        ),
+                      ),
+
+                      /// ===== UNREAD DOT
+                      if (!notification.isRead)
+                        Container(
+                          margin: const EdgeInsets.only(left: 8, top: 5),
+                          height: 8,
+                          width: 8,
+                          decoration: const BoxDecoration(
+                            color: AppColors.primary,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                    ],
                   ),
-                  const SizedBox(height: 6),
+
+                  const SizedBox(height: 4),
+
                   Text(
                     notification.body,
                     style: const TextStyle(
-                      fontSize: 14,
-                      color: AppColors.greyDark,
-                    ),
+                        fontSize: 13, color: AppColors.greyDark),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
+
+                  if (notification.createdAt != null) ...[
+                    const SizedBox(height: 6),
+                    Text(
+                      _formatTime(notification.createdAt!),
+                      style: const TextStyle(
+                          fontSize: 11, color: AppColors.greyMedium),
+                    ),
+                  ],
                 ],
               ),
             ),
-
-            /// ================= UNREAD DOT
-            if (!notification.isRead)
-              Container(
-                margin: const EdgeInsets.only(top: 6),
-                height: 10,
-                width: 10,
-                decoration: const BoxDecoration(
-                  color: AppColors.primary,
-                  shape: BoxShape.circle,
-                ),
-              ),
           ],
         ),
       ),
     );
   }
 
-  /// ===== Icon Logic (Optional Advanced UI)
-  IconData _getIcon() {
-    final title = notification.title.toLowerCase();
-
-    if (title.contains("payment")) {
-      return Icons.check_circle;
-    } else if (title.contains("service")) {
-      return Icons.build;
-    } else if (title.contains("profile")) {
-      return Icons.person;
-    } else if (title.contains("offer")) {
-      return Icons.local_offer;
-    } else {
-      return Icons.notifications;
-    }
-  }
-
-  Color _getBackgroundColor() {
-    return AppColors.greyLight;
-  }
-
-  Color _getIconColor() {
-    return AppColors.primary;
-  }
-
-  void _navigateForNotification(BuildContext context) {
-    context.pushNamed('notificationDetail', extra: notification);
+  String _formatTime(DateTime dt) {
+    final diff = DateTime.now().difference(dt);
+    if (diff.inMinutes < 1) return 'Just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+    if (diff.inHours < 24) return '${diff.inHours}h ago';
+    if (diff.inDays < 7) return '${diff.inDays}d ago';
+    return DateFormat('MMM dd').format(dt);
   }
 }

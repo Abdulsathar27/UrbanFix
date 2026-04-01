@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class NotificationModel {
   final String id;
   final String userId; 
@@ -83,4 +85,23 @@ class NotificationModel {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+}
+
+class TypeConfig {
+  final IconData icon;
+  final Color color;
+  TypeConfig({required this.icon, required this.color});
+}
+
+class StatusConfig {
+  final String label;
+  final String subtitle;
+  final IconData icon;
+  final Color color;
+  StatusConfig({
+    required this.label,
+    required this.subtitle,
+    required this.icon,
+    required this.color,
+  });
 }

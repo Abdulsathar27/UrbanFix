@@ -45,11 +45,11 @@ class UserController extends ChangeNotifier {
   final TextEditingController searchController = TextEditingController();
 
   
-  // ─── SharedPreferences persistence ───────────────────────────────────────
+  
 
   static const String _userKey = 'current_user';
 
-  /// Call once at app startup (from SplashScreen) to restore session.
+  
   Future<void> initFromStorage() async {
     await TokenStore.loadToken();
     final prefs = await SharedPreferences.getInstance();
@@ -70,7 +70,7 @@ class UserController extends ChangeNotifier {
     await prefs.remove(_userKey);
   }
 
-  // ──────────────────────────────────────────────────────────────────────────
+  
 
   void _setLoading(bool value) {
     _isLoading = value;
@@ -522,11 +522,5 @@ class UserController extends ChangeNotifier {
       description: 'Packing, loading, transportation, and unloading.',
     ),
   ];
-
-  
-  
-  void selectService(Service service) {
-  }
-
    
 }

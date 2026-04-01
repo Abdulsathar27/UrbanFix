@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/data/controller/appointment_controller.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/data/controller/user_controller.dart';
@@ -18,6 +19,10 @@ class MainNavigationScreen extends StatelessWidget {
           bottomNavigationBar: BottomNavBar(
             currentIndex: controller.currentIndex,
             onTap: (index) {
+              // Reset booking state when switching away from the bookings tab
+              if (controller.currentIndex == 1 && index != 1) {
+                context.read<AppointmentController>().resetBooking();
+              }
               controller.changeTab(index);
               switch (index) {
                 case 0:

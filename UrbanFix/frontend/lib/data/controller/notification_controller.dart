@@ -55,30 +55,37 @@ class NotificationController extends ChangeNotifier {
 
 
   Future<void> markAsRead(String notificationId) async {
-    // Optimistic update — mark as read locally immediately
     final index = _notifications.indexWhere((n) => n.id == notificationId);
-    if (index != -1) {
-      _notifications[index] = _notifications[index].copyWith(isRead: true);
-      notifyListeners();
-    }
+    if (index == -1) return;
+
+    final original = _notifications[index];
+    _notifications[index] = original.copyWith(isRead: true);
+    notifyListeners();
+
     try {
       await notificationApiService.markAsRead(notificationId);
     } catch (_) {
-      // Silently ignore API failure — local update already applied
+      // Revert optimistic update if API call fails
+      _notifications[index] = original;
+      notifyListeners();
     }
   }
 
 
   Future<void> markAllAsRead() async {
-    // Optimistic update — mark all as read locally immediately
+    final originals = List<NotificationModel>.from(_notifications);
+
     _notifications = _notifications
         .map((n) => n.copyWith(isRead: true))
         .toList();
     notifyListeners();
+
     try {
       await notificationApiService.markAllAsRead();
     } catch (_) {
-      // Silently ignore API failure — local update already applied
+      // Revert optimistic update if API call fails
+      _notifications = originals;
+      notifyListeners();
     }
   }
 

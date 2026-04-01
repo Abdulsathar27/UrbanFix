@@ -40,7 +40,7 @@ class BottomNavBar extends StatelessWidget {
         margin: const EdgeInsets.fromLTRB(20, 0, 20, 14),
         height: 68,
         decoration: BoxDecoration(
-          color: isDark ? AppColors.darkSurface : Colors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(

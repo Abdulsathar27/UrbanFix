@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
 import 'package:frontend/data/controller/appointment_controller.dart';
 import 'package:frontend/presentation/screens/booking/widgets/bottom_confirm_section.dart';
@@ -28,15 +27,12 @@ class BookingScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
         elevation: 0,
         scrolledUnderElevation: 0,
-        backgroundColor: AppColors.lightBackground,
         title: const Text(
           AppStrings.bookAppointment,
           style: TextStyle(
-            color: AppColors.lightTextPrimary,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),

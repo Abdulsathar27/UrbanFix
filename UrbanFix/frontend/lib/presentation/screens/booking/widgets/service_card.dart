@@ -37,7 +37,7 @@ class ServiceCard extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.white,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           border: _isEmpty
               ? Border.all(
@@ -56,12 +56,12 @@ class ServiceCard extends StatelessWidget {
                   ),
                 ],
         ),
-        child: _isEmpty ? _emptyState() : _filledState(),
+        child: _isEmpty ? _emptyState(context) : _filledState(context),
       ),
     );
   }
 
-  Widget _emptyState() {
+  Widget _emptyState(BuildContext context) {
     return Row(
       children: [
         Container(
@@ -74,7 +74,7 @@ class ServiceCard extends StatelessWidget {
           child: const Icon(Icons.add_rounded, color: AppColors.primary),
         ),
         const SizedBox(width: 14),
-        const Expanded(
+        Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -83,11 +83,11 @@ class ServiceCard extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
-                  color: AppColors.lightTextPrimary,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
-              SizedBox(height: 2),
-              Text(
+              const SizedBox(height: 2),
+              const Text(
                 AppStrings.tapToChooseService,
                 style: TextStyle(
                   fontSize: 12,
@@ -102,7 +102,7 @@ class ServiceCard extends StatelessWidget {
     );
   }
 
-  Widget _filledState() {
+  Widget _filledState(BuildContext context) {
     return Row(
       children: [
         Container(

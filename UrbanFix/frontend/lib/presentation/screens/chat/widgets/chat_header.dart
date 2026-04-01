@@ -12,14 +12,13 @@ class ChatHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ChatController>(
-      builder: (context, controller, child) {
-        final chat = controller.selectedChat;
+      builder: (context, controller, _) {
         final currentUserId =
             context.read<UserController>().currentUser?.id ?? '';
+        final chat = controller.selectedChat;
 
         String title = AppStrings.loading;
         if (chat != null) {
-          // Show the other participant's name from the populated members map
           title = chat.participantNames.entries
               .firstWhere(
                 (e) => e.key != currentUserId,
@@ -29,48 +28,117 @@ class ChatHeader extends StatelessWidget {
           if (title.isEmpty) title = AppStrings.unknown;
         }
 
-        return Container(
-          padding: const EdgeInsets.only(
-            top: 50,
-            left: 4,
-            right: 16,
-            bottom: 16,
-          ),
-          color: AppColors.white,
-          child: Row(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                onPressed: () {
-                  controller.clearMessages();
-                  context.go('/chats');
-                },
-              ),
-              const CircleAvatar(
-                radius: 22,
-                backgroundColor: AppColors.greyLight,
-                child: Icon(Icons.person, color: AppColors.primary),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  title,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+        final initial =
+            title.isNotEmpty && title != AppStrings.loading ? title[0].toUpperCase() : '?';
+
+        return SafeArea(
+          bottom: false,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surface,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.06),
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                // ── Back button ──────────────────────────────────
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
+                  onPressed: () {
+                    controller.clearMessages();
+                    context.go('/chats');
+                  },
+                ),
+
+                // ── Avatar with online dot ───────────────────────
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    CircleAvatar(
+                      radius: 22,
+                      backgroundColor:
+                          AppColors.primary.withValues(alpha: 0.12),
+                      child: Text(
+                        initial,
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: AppColors.success,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Theme.of(context).colorScheme.surface,
+                            width: 2,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(width: 12),
+
+                // ── Name + status ────────────────────────────────
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        title,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      const Text(
+                        'Online',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: AppColors.success,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.call_outlined),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(Icons.more_vert),
-                onPressed: () {},
-              ),
-            ],
+
+                // ── Actions ──────────────────────────────────────
+                IconButton(
+                  icon: Icon(
+                    Icons.call_outlined,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.more_vert,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  onPressed: () {},
+                ),
+              ],
+            ),
           ),
         );
       },

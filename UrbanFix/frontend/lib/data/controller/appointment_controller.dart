@@ -203,11 +203,20 @@ class AppointmentController extends ChangeNotifier {
     _workTitle = workTitle;
     _requestedWage = requestedWage;
     _description = description;
-    
+
     if (category != null) {
       _category = category;
     }
+
     
+    _customerName = '';
+    _customerPhone = '';
+    _customerAddress = '';
+    _selectedDate = DateUtils.dateOnly(DateTime.now());
+    _selectedTimeSlot = _defaultTimeSlots.first;
+    _disabledTimeSlots = {};
+    _errorMessage = null;
+
     _fetchDisabledSlots(workerId);
     notifyListeners();
   }
@@ -324,6 +333,7 @@ class AppointmentController extends ChangeNotifier {
       if (!context.mounted) return false;
 
       if (isCreated) {
+        resetBooking();
         return true;
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -346,12 +356,12 @@ class AppointmentController extends ChangeNotifier {
       _setLoading(true);
       _setError(null);
 
-      // ✅ Call API to create appointment
+      
       final newAppointment = await _appointmentApiService.createAppointment(
         appointment,
       );
 
-      // ✅ Add to sent appointments list
+      
       _sentAppointments.insert(0, newAppointment);
       notifyListeners();
       return true;
@@ -491,6 +501,23 @@ class AppointmentController extends ChangeNotifier {
 
   void clearError() {
     _setError(null);
+  }
+
+  void resetBooking() {
+    _jobId = null;
+    _workerId = null;
+    _workTitle = null;
+    _requestedWage = null;
+    _description = null;
+    _category = null;
+    _customerName = '';
+    _customerPhone = '';
+    _customerAddress = '';
+    _selectedDate = DateUtils.dateOnly(DateTime.now());
+    _selectedTimeSlot = _defaultTimeSlots.first;
+    _disabledTimeSlots = {};
+    _errorMessage = null;
+    notifyListeners();
   }
 
   

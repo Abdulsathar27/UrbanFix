@@ -48,8 +48,7 @@ class ChatController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ─── Chats ────────────────────────────────────────────────────────────────
-
+ 
   Future<void> fetchChats() async {
     try {
       _chatsFetched = true;
@@ -65,21 +64,20 @@ class ChatController extends ChangeNotifier {
     }
   }
 
-  /// Derives a deterministic chatStringId from two user IDs.
+ 
   static String buildChatStringId(String userId1, String userId2) {
     final ids = [userId1, userId2]..sort();
     return ids.join('_');
   }
 
-  /// Opens a chat by its string chatId ("userId1_userId2").
-  /// Connects the socket, joins the room, and loads messages.
+  
   Future<void> openChat(String chatStringId, String currentUserId) async {
     try {
       _messages = [];
       _setLoading(true);
       _setError(null);
 
-      // Find chat metadata in loaded list or create minimal placeholder
+     
       final idx = _chats.indexWhere((c) => c.chatStringId == chatStringId);
       _selectedChat = idx != -1
           ? _chats[idx]
@@ -87,16 +85,23 @@ class ChatController extends ChangeNotifier {
 
       notifyListeners();
 
-      // Connect socket if not connected and join room
+      
       SocketService().connect(currentUserId);
       SocketService().joinChat(chatStringId, currentUserId);
 
-      // Listen for incoming real-time messages
+      
       SocketService().onReceiveMessage((data) {
         final msg = MessageModel.fromJson(data);
-        if (msg.chatId == chatStringId &&
-            !_messages.any((m) => m.id == msg.id && m.id.isNotEmpty)) {
-          _messages.insert(0, msg);
+        if (msg.chatId == chatStringId) {
+          // Replace matching temp message (id='') with the confirmed server message
+          final tempIdx = _messages.indexWhere(
+            (m) => m.id.isEmpty && m.senderId == msg.senderId && m.message == msg.message,
+          );
+          if (tempIdx != -1) {
+            _messages[tempIdx] = msg;
+          } else if (!_messages.any((m) => m.id == msg.id && m.id.isNotEmpty)) {
+            _messages.insert(0, msg);
+          }
           notifyListeners();
         }
       });
@@ -109,22 +114,22 @@ class ChatController extends ChangeNotifier {
     }
   }
 
-  // ─── Messages ─────────────────────────────────────────────────────────────
+ 
 
   Future<void> loadMessages(String chatStringId) async {
     try {
       final fetched = await _messageApiService.getMessages(chatStringId);
-      // Sort newest-first so ListView(reverse:true) shows newest at bottom
+      
       fetched.sort((a, b) =>
           (b.createdAt ?? DateTime.now()).compareTo(a.createdAt ?? DateTime.now()));
       _messages = fetched;
       notifyListeners();
     } catch (_) {
-      // Silent — messages just won't update; don't override a send error
+      
     }
   }
 
-  /// Sends a message via WebSocket. The `receiveMessage` event adds it to the list.
+  
   Future<void> sendMessage({
     required String chatStringId,
     required String message,
@@ -141,14 +146,36 @@ class ChatController extends ChangeNotifier {
         senderId: senderId,
       );
 
-      // Update local chat's lastMessage preview
+      // Add message immediately so it shows without waiting for socket echo
+      final tempMsg = MessageModel(
+        id: '',
+        chatId: chatStringId,
+        senderId: senderId,
+        message: message,
+        type: 'text',
+        isSeen: false,
+        createdAt: DateTime.now(),
+      );
+      _messages.insert(0, tempMsg);
+
+      // Update or add the chat in the list
       final index = _chats.indexWhere((c) => c.chatStringId == chatStringId);
       if (index != -1) {
         _chats[index] = _chats[index].copyWith(
           lastMessage: message,
           lastMessageTime: DateTime.now(),
         );
+      } else if (_selectedChat != null) {
+        // New chat — insert at top so it appears in the list immediately
+        _chats.insert(
+          0,
+          _selectedChat!.copyWith(
+            lastMessage: message,
+            lastMessageTime: DateTime.now(),
+          ),
+        );
       }
+
       if (_selectedChat?.chatStringId == chatStringId) {
         _selectedChat = _selectedChat!.copyWith(
           lastMessage: message,
@@ -164,7 +191,7 @@ class ChatController extends ChangeNotifier {
     }
   }
 
-  /// Called from UI — reads the shared input controller, clears it, then sends.
+ 
   Future<void> submitMessage({
     required String chatStringId,
     required String senderId,
@@ -176,7 +203,7 @@ class ChatController extends ChangeNotifier {
         chatStringId: chatStringId, message: text, senderId: senderId);
   }
 
-  // ─── Misc ─────────────────────────────────────────────────────────────────
+ 
 
   Future<void> deleteChat(String chatStringId) async {
     try {
@@ -200,6 +227,7 @@ class ChatController extends ChangeNotifier {
     }
     _messages = [];
     _selectedChat = null;
+    _chatsFetched = false;
     notifyListeners();
   }
 }

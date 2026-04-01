@@ -62,14 +62,14 @@ class ProfileScreen extends StatelessWidget {
                 ProfileMenuCard(
                   icon: Icons.location_on,
                   title: "Saved Addresses",
-                  onTap: () {},
+                  onTap: () => context.goNamed('savedAddresses'),
                 ),
                 const SizedBox(height: 15),
 
                 ProfileMenuCard(
                   icon: Icons.settings,
                   title: "Settings",
-                  onTap: () {},
+                  onTap: () => context.goNamed('settings'),
                 ),
                 const SizedBox(height: 40),
 

@@ -24,10 +24,10 @@ class TimeChip extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 10),
         decoration: BoxDecoration(
           color: disabled
-              ? AppColors.greyBackground
+              ? Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08)
               : selected
                   ? AppColors.primary
-                  : AppColors.white,
+                  : Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(10),
           boxShadow: selected && !disabled
               ? [
@@ -51,7 +51,7 @@ class TimeChip extends StatelessWidget {
                 ? AppColors.greyMedium
                 : selected
                     ? AppColors.white
-                    : AppColors.lightTextPrimary,
+                    : Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ),

@@ -38,9 +38,9 @@ class LoginBody extends StatelessWidget {
                     padding: const EdgeInsets.all(
                       AppConstants.defaultPadding,
                     ),
-                    decoration: const BoxDecoration(
-                      color: AppColors.cardBackground,
-                      borderRadius: BorderRadius.vertical(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(30),
                       ),
                     ),

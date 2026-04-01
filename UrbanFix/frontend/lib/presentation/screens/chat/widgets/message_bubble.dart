@@ -15,6 +15,8 @@ class MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Align(
       alignment: isMine ? Alignment.centerRight : Alignment.centerLeft,
       child: Column(
@@ -22,25 +24,43 @@ class MessageBubble extends StatelessWidget {
             isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
           Container(
-            margin: const EdgeInsets.symmetric(vertical: 4),
+            margin: const EdgeInsets.symmetric(vertical: 3),
             padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width * 0.75,
+              maxWidth: MediaQuery.of(context).size.width * 0.72,
             ),
             decoration: BoxDecoration(
-              color: isMine ? AppColors.primary : AppColors.white,
-              // FIX: Proper chat-bubble shape — rounded on all corners
-              // except the corner closest to the sender
+              // Mine: primary gradient; Theirs: surface with subtle border
+              gradient: isMine
+                  ? const LinearGradient(
+                      colors: [Color(0xFF4F7EFF), AppColors.primary],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : null,
+              color: isMine
+                  ? null
+                  : isDark
+                      ? Theme.of(context).colorScheme.surfaceContainerHighest
+                      : Theme.of(context).colorScheme.surface,
               borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(20),
-                topRight: const Radius.circular(20),
-                bottomLeft: Radius.circular(isMine ? 20 : 4),
-                bottomRight: Radius.circular(isMine ? 4 : 20),
+                topLeft: const Radius.circular(18),
+                topRight: const Radius.circular(18),
+                bottomLeft: Radius.circular(isMine ? 18 : 4),
+                bottomRight: Radius.circular(isMine ? 4 : 18),
               ),
+              border: isMine
+                  ? null
+                  : Border.all(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withValues(alpha: 0.08),
+                    ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.lightTextPrimary.withValues(alpha: 0.06),
+                  color: Colors.black.withValues(alpha: 0.06),
                   blurRadius: 6,
                   offset: const Offset(0, 2),
                 ),
@@ -49,18 +69,20 @@ class MessageBubble extends StatelessWidget {
             child: Text(
               message,
               style: TextStyle(
-                color: isMine ? AppColors.white : AppColors.lightTextSecondary,
+                color: isMine
+                    ? Colors.white
+                    : Theme.of(context).colorScheme.onSurface,
                 fontSize: 15,
                 height: 1.4,
               ),
             ),
           ),
 
-          // FIX: Time label sits just below the bubble
+          // Time label
           Padding(
             padding: EdgeInsets.only(
-              left: isMine ? 0 : 4,
-              right: isMine ? 4 : 0,
+              left: isMine ? 0 : 6,
+              right: isMine ? 6 : 0,
               bottom: 4,
             ),
             child: Text(

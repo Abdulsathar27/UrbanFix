@@ -31,10 +31,10 @@ class StepLabel extends StatelessWidget {
         const SizedBox(width: 8),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w600,
-            color: AppColors.greyDark,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
             letterSpacing: 0.2,
           ),
         ),

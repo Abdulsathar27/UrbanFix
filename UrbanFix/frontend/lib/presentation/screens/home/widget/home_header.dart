@@ -36,7 +36,7 @@ class HomeHeader extends StatelessWidget {
                         ),
                         child: CircleAvatar(
                           radius: 24,
-                          backgroundColor: AppColors.white,
+                          backgroundColor: Theme.of(context).colorScheme.surface,
                           child: Text(
                             user != null && user.name.isNotEmpty
                                 ? user.name[0].toUpperCase()

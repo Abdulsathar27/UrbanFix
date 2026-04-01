@@ -15,16 +15,16 @@ class LocationSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              children: const [
-                Icon(Icons.person_pin_circle_rounded,
+              children: [
+                const Icon(Icons.person_pin_circle_rounded,
                     size: 18, color: AppColors.primary),
-                SizedBox(width: 6),
+                const SizedBox(width: 6),
                 Text(
                   AppStrings.customerDetails,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 15,
-                    color: AppColors.lightTextPrimary,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ),
                 ),
               ],
@@ -110,7 +110,7 @@ class _Field extends StatelessWidget {
             ),
             prefixIcon: Icon(icon, size: 18, color: AppColors.primary),
             filled: true,
-            fillColor: AppColors.inputFill,
+            fillColor: Theme.of(context).inputDecorationTheme.fillColor,
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 14,
               vertical: 12,

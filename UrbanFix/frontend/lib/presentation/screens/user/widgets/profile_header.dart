@@ -37,7 +37,7 @@ class ProfileHeader extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.success,
                 shape: BoxShape.circle,
-                border: Border.all(color: AppColors.white, width: 3),
+                border: Border.all(color: Theme.of(context).colorScheme.surface, width: 3),
               ),
             ),
           ],

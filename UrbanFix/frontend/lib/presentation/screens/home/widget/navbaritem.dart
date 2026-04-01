@@ -58,7 +58,7 @@ class NavBarItem extends StatelessWidget {
                 size: 24,
                 color: isSelected
                     ? AppColors.primary
-                    : (isDark ? AppColors.greyMedium : const Color(0xFFAAAAAA)),
+                    : (isDark ? AppColors.greyMedium : AppColors.greyDark),
               ),
             ),
           ),
@@ -71,7 +71,7 @@ class NavBarItem extends StatelessWidget {
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w400,
               color: isSelected
                   ? AppColors.primary
-                  : (isDark ? AppColors.greyMedium : const Color(0xFFAAAAAA)),
+                  : (isDark ? AppColors.greyMedium : AppColors.greyDark),
               letterSpacing: 0.1,
             ),
             child: Text(item.label),

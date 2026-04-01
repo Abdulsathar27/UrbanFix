@@ -17,6 +17,8 @@ import 'package:frontend/presentation/screens/home/widget/service_details_page.d
 import 'package:frontend/presentation/screens/notification/notification_screen.dart';
 import 'package:frontend/presentation/screens/notification/notification_detail_screen.dart';
 import 'package:frontend/data/models/notification_model.dart';
+import 'package:frontend/presentation/screens/address/saved_addresses_screen.dart';
+import 'package:frontend/presentation/screens/setting/settings_screen.dart';
 import 'package:frontend/presentation/screens/report/report_issue_screen.dart';
 import 'package:frontend/presentation/screens/splash/splash_screen.dart';
 import 'package:frontend/presentation/screens/user/profile_screen.dart';
@@ -25,6 +27,9 @@ import 'package:go_router/go_router.dart';
 
 class AppRouter {
   static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
+  static final GlobalKey<NavigatorState> _shellNavigatorKey =
       GlobalKey<NavigatorState>();
 
   static final GoRouter router = GoRouter(
@@ -56,9 +61,9 @@ class AppRouter {
         builder: (context, state) => const OtpScreen(),
       ),
 
-      // ================= Main Navigation =================
+      // ================= Main Navigation (with bottom nav bar) =================
       ShellRoute(
-        navigatorKey: GlobalKey<NavigatorState>(),
+        navigatorKey: _shellNavigatorKey,
         builder: (context, state, child) {
           return MainNavigationScreen(key: state.pageKey, child: child);
         },
@@ -74,7 +79,6 @@ class AppRouter {
             name: 'bookings',
             pageBuilder: (context, state) => NoTransitionPage(
               child: BookingScreen(
-                // ✅ Get category from extras if passed
                 category:
                     (state.extra as Map<String, dynamic>?)?['category']
                         as String?,
@@ -84,7 +88,8 @@ class AppRouter {
           GoRoute(
             path: '/notifications',
             name: 'notifications',
-            builder: (context, state) => const NotificationScreen(),
+            pageBuilder: (context, state) =>
+                const NoTransitionPage(child: NotificationScreen()),
           ),
           GoRoute(
             path: '/chats',
@@ -92,7 +97,9 @@ class AppRouter {
             pageBuilder: (context, state) =>
                 const NoTransitionPage(child: ChatListScreen()),
             routes: [
+              // Full-screen chat detail — no bottom nav bar
               GoRoute(
+                parentNavigatorKey: navigatorKey,
                 path: 'details/:chatId',
                 name: 'chatDetails',
                 builder: (context, state) {
@@ -102,32 +109,32 @@ class AppRouter {
               ),
             ],
           ),
-          GoRoute(
-            path: '/profile',
-            name: 'profile',
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: ProfileScreen()),
-            routes: [
-              GoRoute(
-                path: 'my-appointments',
-                name: 'my_appointments',
-                builder: (context, state) =>
-                    MyAppointmentsScreen(controller: AppointmentController()),
-              ),
-            ],
-          ),
-          GoRoute(
-            path: '/service-details',
-            name: 'serviceDetails',
-            builder: (context, state) {
-              final service = state.extra as Service;
-              return ServiceDetailsPage(service: service);
-            },
-          ),
         ],
       ),
 
-      // ================= Full-screen routes (outside ShellRoute) =================
+      // ================= Full-screen routes (no bottom nav bar) =================
+
+      GoRoute(
+        path: '/profile',
+        name: 'profile',
+        builder: (context, state) => const ProfileScreen(),
+        routes: [
+          GoRoute(
+            path: 'my-appointments',
+            name: 'my_appointments',
+            builder: (context, state) =>
+                MyAppointmentsScreen(controller: AppointmentController()),
+          ),
+        ],
+      ),
+      GoRoute(
+        path: '/service-details',
+        name: 'serviceDetails',
+        builder: (context, state) {
+          final service = state.extra as Service;
+          return ServiceDetailsPage(service: service);
+        },
+      ),
 
       // ✅ ADD: Category Selection Screen
       GoRoute(
@@ -150,6 +157,16 @@ class AppRouter {
         path: '/edit-profile',
         name: 'editProfile',
         builder: (context, state) => const EditProfileScreen(),
+      ),
+      GoRoute(
+        path: '/saved-addresses',
+        name: 'savedAddresses',
+        builder: (context, state) => const SavedAddressesScreen(),
+      ),
+      GoRoute(
+        path: '/settings',
+        name: 'settings',
+        builder: (context, state) => const SettingsScreen(),
       ),
       GoRoute(
         path: '/appointment-success',

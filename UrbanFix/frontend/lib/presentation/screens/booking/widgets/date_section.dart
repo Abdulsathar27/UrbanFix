@@ -48,7 +48,7 @@ class DateSection extends StatelessWidget {
                   duration: const Duration(milliseconds: 180),
                   width: 52,
                   decoration: BoxDecoration(
-                    color: isSelected ? AppColors.primary : AppColors.white,
+                    color: isSelected ? AppColors.primary : Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: isSelected
                         ? [
@@ -81,7 +81,7 @@ class DateSection extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                           color: isSelected
                               ? AppColors.white
-                              : AppColors.lightTextPrimary,
+                              : Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                       const SizedBox(height: 3),
@@ -135,10 +135,10 @@ class _SectionHeader extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           label,
-          style: const TextStyle(
+          style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 15,
-            color: AppColors.lightTextPrimary,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],

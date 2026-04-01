@@ -16,7 +16,7 @@ class BottomSection extends StatelessWidget {
       builder: (context, controller, _) {
         return Container(
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: Theme.of(context).colorScheme.surface,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.06),
@@ -59,10 +59,10 @@ class BottomSection extends StatelessWidget {
                         totalAmount > 0
                             ? '₹${totalAmount.toStringAsFixed(0)}'
                             : '—',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.bold,
-                          color: AppColors.lightTextPrimary,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
                     ],

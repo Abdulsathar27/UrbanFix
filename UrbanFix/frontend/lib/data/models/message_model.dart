@@ -26,11 +26,11 @@ class MessageModel {
     return MessageModel(
       id: json['_id']?.toString() ?? '',
       chatId: json['chatId'] ?? '',
-      senderId: json['sender']?.toString() ?? '',   // backend field: sender
+      senderId: json['sender']?.toString() ?? '',   
       receiverId: null,
-      message: json['text'] ?? json['message'] ?? '', // backend field: text
+      message: json['text'] ?? json['message'] ?? '', 
       type: 'text',
-      isSeen: json['seen'] ?? json['isSeen'] ?? false, // backend field: seen
+      isSeen: json['seen'] ?? json['isSeen'] ?? false, 
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'])
           : null,

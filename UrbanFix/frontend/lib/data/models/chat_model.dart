@@ -1,8 +1,8 @@
 class ChatModel {
-  final String id;              // MongoDB _id
-  final String chatStringId;    // "userId1_userId2" — used for all API/socket calls
+  final String id;              
+  final String chatStringId;   
   final List<String> participantIds;
-  final Map<String, String> participantNames; // id → name
+  final Map<String, String> participantNames; 
   final String? lastMessage;
   final DateTime? lastMessageTime;
   final int unreadCount;
@@ -21,7 +21,7 @@ class ChatModel {
     this.updatedAt,
   });
 
-  /// Creates a minimal ChatModel from just a string chatId (no server data needed).
+  
   factory ChatModel.fromStringId(String chatStringId) {
     return ChatModel(
       id: '',
@@ -32,7 +32,7 @@ class ChatModel {
   }
 
   factory ChatModel.fromJson(Map<String, dynamic> json) {
-    // Extract participantIds and names from populated members array
+   
     final membersList = json['members'] as List? ?? [];
     final participantIds = <String>[];
     final participantNames = <String, String>{};
@@ -51,7 +51,7 @@ class ChatModel {
       }
     }
 
-    // Extract lastMessage text and time from populated lastMessage object
+    
     String? lastMessageText;
     DateTime? lastMessageTime;
     final lm = json['lastMessage'];

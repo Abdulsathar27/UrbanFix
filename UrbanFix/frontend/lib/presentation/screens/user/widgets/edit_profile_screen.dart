@@ -72,22 +72,16 @@ class EditProfileScreen extends StatelessWidget {
         _populateOnce(context);
 
         return Scaffold(
-          backgroundColor: AppColors.lightBackground,
           appBar: AppBar(
-            backgroundColor: AppColors.white,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded,
-                  color: AppColors.lightTextPrimary),
+              icon: const Icon(Icons.arrow_back_ios_new_rounded),
               onPressed: () =>
                   context.canPop() ? context.pop() : context.go('/profile'),
             ),
             title: const Text(
               AppStrings.editProfile,
-              style: TextStyle(
-                color: AppColors.lightTextPrimary,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
           body: SingleChildScrollView(
@@ -118,10 +112,10 @@ class EditProfileScreen extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: AppColors.primary,
                           shape: BoxShape.circle,
-                          border: Border.all(color: AppColors.white, width: 2),
+                          border: Border.all(color: Theme.of(context).colorScheme.surface, width: 2),
                         ),
                         child: const Icon(Icons.camera_alt,
-                            size: 16, color: AppColors.white),
+                            size: 16, color: Colors.white),
                       ),
                     ],
                   ),

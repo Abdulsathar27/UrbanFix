@@ -1,14 +1,14 @@
 class AppointmentModel {
   final String id;
-  final String userId;      // customer id (who requested)
-  final String workerId;    // service provider id (who will do the work)
+  final String userId;      
+  final String workerId;   
   final String jobId;
-  final String workTitle;   // service name
+  final String workTitle;   
   final String? description;
-  final String date;        // "YYYY-MM-DD"
-  final String? time;       // "09:00 AM" or null
+  final String date;        
+  final String? time;       
   final double requestedWage;
-  final String status;      // pending, accepted, rejected, cancelled, completed
+  final String status;     
   final String? cancelReason;
   final String? rejectReason;
   final DateTime? cancelledAt;

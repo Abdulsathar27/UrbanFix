@@ -33,22 +33,16 @@ class SelectJobScreen extends StatelessWidget {
     });
 
     return Scaffold(
-      backgroundColor: AppColors.lightBackground,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.transparent,
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: AppColors.lightTextPrimary),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => context.pop(),
         ),
         title: Text(
           'Select a $category Job',
-          style: const TextStyle(
-            color: AppColors.lightTextPrimary,
-            fontSize: 20,
-            fontWeight: FontWeight.w600,
-          ),
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         ),
       ),
       body: Consumer<JobController>(

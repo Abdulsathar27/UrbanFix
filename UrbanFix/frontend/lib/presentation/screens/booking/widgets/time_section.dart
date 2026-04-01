@@ -23,15 +23,15 @@ class TimeSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          children: const [
-            Icon(Icons.schedule_rounded, size: 18, color: AppColors.primary),
-            SizedBox(width: 6),
+          children: [
+            const Icon(Icons.schedule_rounded, size: 18, color: AppColors.primary),
+            const SizedBox(width: 6),
             Text(
               AppStrings.selectTime,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 15,
-                color: AppColors.lightTextPrimary,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
             ),
           ],
