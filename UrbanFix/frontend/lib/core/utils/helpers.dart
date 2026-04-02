@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 
 class Helpers {
-  // ===============================
-  // Snackbar
-  // ===============================
+  
   static void showSnackBar(
     BuildContext context, {
     required String message,
@@ -20,9 +18,7 @@ class Helpers {
     );
   }
 
-  // ===============================
-  // Error Snackbar
-  // ===============================
+  
   static void showError(
     BuildContext context,
     String message,
@@ -34,9 +30,7 @@ class Helpers {
     );
   }
 
-  // ===============================
-  // Success Snackbar
-  // ===============================
+  
   static void showSuccess(
     BuildContext context,
     String message,
@@ -48,9 +42,7 @@ class Helpers {
     );
   }
 
-  // ===============================
-  // Loading Dialog
-  // ===============================
+  
   static void showLoadingDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -67,9 +59,7 @@ class Helpers {
     Navigator.of(context, rootNavigator: true).pop();
   }
 
-  // ===============================
-  // Confirmation Dialog
-  // ===============================
+  
   static Future<bool?> showConfirmationDialog(
     BuildContext context, {
     required String title,

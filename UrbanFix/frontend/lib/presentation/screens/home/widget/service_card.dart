@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class ServiceCard extends StatelessWidget {
   final String title;
@@ -22,7 +23,7 @@ class ServiceCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: kBorderRadiusLarge,
           boxShadow: [
             BoxShadow(
               color: AppColors.greyMedium.withValues(alpha: 0.1),
@@ -47,11 +48,11 @@ class ServiceCard extends StatelessWidget {
                 size: 28,
               ),
             ),
-            const SizedBox(height: 12),
+            kGapH12,
             Text(
               title,
               style: TextStyle(
-                fontSize: 14,
+                fontSize: kFontMedium,
                 fontWeight: FontWeight.w600,
                 color: Theme.of(context).colorScheme.onSurface,
               ),

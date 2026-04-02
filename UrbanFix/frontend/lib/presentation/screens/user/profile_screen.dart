@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import '../../../data/controller/user_controller.dart';
 import 'widgets/profile_header.dart';
 import 'widgets/profile_menu_card.dart';
@@ -71,7 +72,7 @@ class ProfileScreen extends StatelessWidget {
                   title: "Settings",
                   onTap: () => context.goNamed('settings'),
                 ),
-                const SizedBox(height: 40),
+                kGapH40,
 
                 const LogoutButton(),
               ],

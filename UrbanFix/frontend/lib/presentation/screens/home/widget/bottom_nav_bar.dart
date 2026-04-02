@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/presentation/screens/home/widget/navbaritem.dart';
 
 class BottomNavBar extends StatelessWidget {
@@ -41,7 +42,7 @@ class BottomNavBar extends StatelessWidget {
         height: 68,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(24),
+          borderRadius: kBorderRadiusXLarge,
           boxShadow: [
             BoxShadow(
               color: AppColors.primary.withValues(alpha: 0.10),
@@ -72,4 +73,3 @@ class BottomNavBar extends StatelessWidget {
     );
   }
 }
-

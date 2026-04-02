@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/models/appointment_model.dart';
 import 'package:frontend/presentation/screens/home/widget/booking_card.dart';
 import 'package:frontend/presentation/screens/home/widget/empty_state.dart';
@@ -54,7 +55,7 @@ class RecentBookingCard extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+      padding: const EdgeInsets.fromLTRB(kSpaceMedium, kHeight4, kSpaceMedium, kHeight8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -66,7 +67,7 @@ class RecentBookingCard extends StatelessWidget {
                 Text(
                   AppStrings.recentBooking,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: kFontBase,
                     fontWeight: FontWeight.w700,
                     color: isDark
                         ? AppColors.darkTextPrimary
@@ -102,12 +103,3 @@ class RecentBookingCard extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-

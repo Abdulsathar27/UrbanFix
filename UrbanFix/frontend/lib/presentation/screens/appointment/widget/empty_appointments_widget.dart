@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class EmptyAppointmentsWidget extends StatelessWidget {
   final String message;
@@ -23,24 +24,21 @@ class EmptyAppointmentsWidget extends StatelessWidget {
             size: 80,
             color: AppColors.greyMedium,
           ),
-          const SizedBox(height: 16),
+          kGapH16,
           Text(
             message,
-            style: const TextStyle(fontSize: 16, color: AppColors.greyMedium),
+            style: const TextStyle(fontSize: kFontBase, color: AppColors.greyMedium),
           ),
           if (onRetry != null) ...[
-            const SizedBox(height: 16),
+            kGapH16,
             FilledButton.icon(
               onPressed: onRetry,
-              icon: const Icon(Icons.refresh_rounded, size: 18),
+              icon: const Icon(Icons.refresh_rounded, size: kIconSmall),
               label: const Text(AppStrings.retry),
               style: FilledButton.styleFrom(
                 backgroundColor: AppColors.primary,
                 foregroundColor: AppColors.lightTextPrimary,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 28,
-                  vertical: 14,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(14),
                 ),
@@ -48,7 +46,7 @@ class EmptyAppointmentsWidget extends StatelessWidget {
                 shadowColor: AppColors.transparent,
                 textStyle: const TextStyle(
                   fontWeight: FontWeight.w700,
-                  fontSize: 14,
+                  fontSize: kFontMedium,
                   letterSpacing: 0.4,
                 ),
               ),

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-/// =============================
-/// String Extensions
-/// =============================
 extension StringExtensions on String {
   String get capitalize {
     if (isEmpty) return this;
@@ -21,9 +18,7 @@ extension StringExtensions on String {
   }
 }
 
-/// =============================
-/// BuildContext Extensions
-/// =============================
+
 extension ContextExtensions on BuildContext {
   ThemeData get theme => Theme.of(this);
 
@@ -42,9 +37,7 @@ extension ContextExtensions on BuildContext {
   }
 }
 
-/// =============================
-/// DateTime Extensions
-/// =============================
+
 extension DateExtensions on DateTime {
   String get formattedDate {
     return "${day.toString().padLeft(2, '0')}/"

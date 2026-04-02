@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class ProfileTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -32,23 +33,23 @@ class ProfileTextField extends StatelessWidget {
         filled: true,
         fillColor: AppColors.inputFill,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: kBorderRadiusMedium,
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: kBorderRadiusMedium,
           borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: kBorderRadiusMedium,
           borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: kBorderRadiusMedium,
           borderSide: const BorderSide(color: AppColors.error, width: 1.0),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: kBorderRadiusMedium,
           borderSide: const BorderSide(color: AppColors.error, width: 1.5),
         ),
       ),

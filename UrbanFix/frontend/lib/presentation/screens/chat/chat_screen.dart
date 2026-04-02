@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/controller/chat_controller.dart';
 import 'package:frontend/data/controller/user_controller.dart';
 import 'package:provider/provider.dart';
@@ -40,11 +41,11 @@ class ChatScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const CircularProgressIndicator(color: AppColors.primary),
-                  const SizedBox(height: 16),
+                  kGapH16,
                   Text(
                     'Opening chat…',
                     style: TextStyle(
-                      fontSize: 14,
+                      fontSize: kFontMedium,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
                   ),
@@ -77,7 +78,7 @@ class ChatScreen extends StatelessWidget {
                         size: 36,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    kGapH20,
                     const Text(
                       'Failed to load chat',
                       style: TextStyle(
@@ -85,7 +86,7 @@ class ChatScreen extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    kGapH8,
                     Text(
                       controller.errorMessage!,
                       textAlign: TextAlign.center,
@@ -94,12 +95,12 @@ class ChatScreen extends StatelessWidget {
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    kGapH24,
                     ElevatedButton.icon(
                       onPressed: () => context
                           .read<ChatController>()
                           .openChat(chatId, currentUserId),
-                      icon: const Icon(Icons.refresh_rounded, size: 18),
+                      icon: const Icon(Icons.refresh_rounded, size: kIconSmall),
                       label: const Text(AppStrings.retry),
                     ),
                   ],

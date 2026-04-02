@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class StepLabel extends StatelessWidget {
   final String number;
@@ -28,11 +29,11 @@ class StepLabel extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 8),
+        kGapW8,
         Text(
           label,
           style: TextStyle(
-            fontSize: 14,
+            fontSize: kFontMedium,
             fontWeight: FontWeight.w600,
             color: Theme.of(context).colorScheme.onSurfaceVariant,
             letterSpacing: 0.2,

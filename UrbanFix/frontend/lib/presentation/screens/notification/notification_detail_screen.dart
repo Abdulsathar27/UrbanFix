@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/controller/notification_controller.dart';
 import 'package:frontend/data/models/notification_model.dart';
 import 'package:frontend/core/utils/config.dart';
@@ -16,7 +17,7 @@ class NotificationDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ===== Controllers =====
+
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final notifController = context.watch<NotificationController>();
 
@@ -26,7 +27,7 @@ class NotificationDetailScreen extends StatelessWidget {
       orElse: () => notification,
     );
 
-    // ===== Theme Colors =====
+
     final theme = Theme.of(context);
     final bgColor = theme.scaffoldBackgroundColor;
     final surfaceColor = theme.colorScheme.surface;
@@ -35,7 +36,7 @@ class NotificationDetailScreen extends StatelessWidget {
     final dividerColor = theme.dividerColor;
     final borderColor = theme.dividerColor;
 
-    // ===== Type + Status config =====
+
     final typeConfig = NotificationConfig.getTypeConfig(live);
     final statusConfig = NotificationConfig.getStatusConfig(live);
 
@@ -71,7 +72,7 @@ class NotificationDetailScreen extends StatelessWidget {
                 popAfterDelete: true,
               ),
           ),
-          const SizedBox(width: 4),
+          kGapW4,
         ],
       ),
       body: SingleChildScrollView(
@@ -92,7 +93,7 @@ class NotificationDetailScreen extends StatelessWidget {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: kBorderRadiusXLarge,
                 border: Border.all(
                     color:
                         typeConfig.color.withValues(alpha: isDark ? 0.3 : 0.18)),
@@ -135,7 +136,7 @@ class NotificationDetailScreen extends StatelessWidget {
 
             const SizedBox(height: 22),
 
-            // ===== Title =====
+
             Text(
               live.title,
               style: TextStyle(
@@ -148,7 +149,7 @@ class NotificationDetailScreen extends StatelessWidget {
 
             const SizedBox(height: 6),
 
-            // ===== Timestamp =====
+
             if (live.createdAt != null)
               Row(
                 children: [
@@ -166,7 +167,7 @@ class NotificationDetailScreen extends StatelessWidget {
 
             const SizedBox(height: 22),
 
-            // ===== Status Banner (Accepted / Rejected / Pending / etc.) =====
+
             StatusBanner(config: statusConfig, isDark: isDark),
 
             const SizedBox(height: 22),
@@ -175,7 +176,7 @@ class NotificationDetailScreen extends StatelessWidget {
 
             const SizedBox(height: 22),
 
-            // ===== Message =====
+
             Text(
               'MESSAGE',
               style: TextStyle(
@@ -185,13 +186,13 @@ class NotificationDetailScreen extends StatelessWidget {
                 letterSpacing: 1.3,
               ),
             ),
-            const SizedBox(height: 10),
+            kGapH10,
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
                 color: surfaceColor,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: kBorderRadiusLarge,
                 border: Border.all(color: borderColor),
                 boxShadow: isDark
                     ? []
@@ -215,7 +216,7 @@ class NotificationDetailScreen extends StatelessWidget {
 
             const SizedBox(height: 22),
 
-            // ===== Meta Chips — Type + Read Status =====
+
             Row(
               children: [
                 MetaChip(
@@ -224,7 +225,7 @@ class NotificationDetailScreen extends StatelessWidget {
                   color: typeConfig.color,
                   isDark: isDark,
                 ),
-                const SizedBox(width: 12),
+                kGapW12,
                 MetaChip(
                   label: 'STATUS',
                   value: live.isRead ? 'Read' : 'Unread',
@@ -238,7 +239,7 @@ class NotificationDetailScreen extends StatelessWidget {
 
             const SizedBox(height: 28),
 
-            // ===== Mark as Read button (only when unread) =====
+
             if (!live.isRead)
               SizedBox(
                 width: double.infinity,
@@ -267,15 +268,4 @@ class NotificationDetailScreen extends StatelessWidget {
       ),
     );
   }
-
- 
- 
 }
-
-
-
-
-
-
-
-

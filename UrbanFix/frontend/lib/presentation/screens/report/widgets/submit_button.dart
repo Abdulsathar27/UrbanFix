@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class SubmitButton extends StatelessWidget {
   const SubmitButton({super.key});
@@ -22,7 +23,7 @@ class SubmitButton extends StatelessWidget {
         child: const Text(
           AppStrings.submitReportButton,
           style: TextStyle(
-            fontSize: 16,
+            fontSize: kFontBase,
             fontWeight: FontWeight.bold,
           ),
         ),

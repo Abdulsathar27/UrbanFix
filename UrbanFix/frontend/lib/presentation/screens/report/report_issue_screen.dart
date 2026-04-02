@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'widgets/report_text_field.dart';
 import 'widgets/photo_upload_section.dart';
 import 'widgets/submit_button.dart';
@@ -42,7 +43,7 @@ class ReportIssueScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 8),
+              kGapH8,
 
               const Text(
                 AppStrings.reportSubheading,
@@ -62,7 +63,7 @@ class ReportIssueScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 10),
+              kGapH10,
 
               const ReportTextField(
                 hintText: AppStrings.issueTitleHint,
@@ -70,7 +71,7 @@ class ReportIssueScreen extends StatelessWidget {
 
               const SizedBox(height: 25),
 
-              /// Description
+
               const Text(
                 AppStrings.description,
                 style: TextStyle(
@@ -78,7 +79,7 @@ class ReportIssueScreen extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 10),
+              kGapH10,
 
               const ReportTextField(
                 hintText: AppStrings.issueDescriptionHint,

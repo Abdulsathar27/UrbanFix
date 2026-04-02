@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/models/appointment_model.dart';
 import 'package:frontend/presentation/screens/home/widget/info_chip.dart';
 
@@ -70,7 +71,7 @@ class BookingCard extends StatelessWidget {
           ),
 
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: kPaddingAllMedium,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -92,11 +93,11 @@ class BookingCard extends StatelessWidget {
                             color: AppColors.primary,
                           ),
                         ),
-                        const SizedBox(width: 8),
+                        kGapW8,
                         Text(
                           'Booking #${appointment.id.length > 6 ? appointment.id.substring(appointment.id.length - 6) : appointment.id}',
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: kFontSmall,
                             fontWeight: FontWeight.w500,
                             color: isDark
                                 ? AppColors.darkTextSecondary
@@ -120,7 +121,7 @@ class BookingCard extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(statusIcon, size: 12, color: statusColor),
-                          const SizedBox(width: 4),
+                          kGapW4,
                           Text(
                             statusLabel,
                             style: TextStyle(
@@ -135,7 +136,7 @@ class BookingCard extends StatelessWidget {
                   ],
                 ),
 
-                const SizedBox(height: 12),
+                kGapH12,
 
                 // Service title
                 Text(
@@ -152,7 +153,7 @@ class BookingCard extends StatelessWidget {
                 ),
 
                 if (workerName != null) ...[
-                  const SizedBox(height: 4),
+                  kGapH4,
                   Row(
                     children: [
                       Icon(Icons.person_rounded,
@@ -160,11 +161,11 @@ class BookingCard extends StatelessWidget {
                           color: isDark
                               ? AppColors.darkTextSecondary
                               : AppColors.greyDark),
-                      const SizedBox(width: 4),
+                      kGapW4,
                       Text(
                         workerName,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: kFontSmall,
                           color: isDark
                               ? AppColors.darkTextSecondary
                               : AppColors.greyDark,
@@ -176,7 +177,7 @@ class BookingCard extends StatelessWidget {
 
                 const SizedBox(height: 14),
                 const Divider(height: 1, thickness: 0.5),
-                const SizedBox(height: 12),
+                kGapH12,
 
                 // Date / time / price row
                 Row(
@@ -187,7 +188,7 @@ class BookingCard extends StatelessWidget {
                       isDark: isDark,
                     ),
                     if (appointment.time != null) ...[
-                      const SizedBox(width: 12),
+                      kGapW12,
                       InfoChip(
                         icon: Icons.access_time_rounded,
                         label: appointment.time!,
@@ -198,7 +199,7 @@ class BookingCard extends StatelessWidget {
                     Text(
                       '₹${appointment.requestedWage.toStringAsFixed(0)}',
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: kFontBase,
                         fontWeight: FontWeight.w800,
                         color: AppColors.primary,
                       ),

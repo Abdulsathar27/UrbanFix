@@ -6,7 +6,7 @@ class TokenStore {
 
   static String? get token => _token;
 
-  // Sync setter for immediate in-memory use (Dio interceptor), saves to disk async
+  
   static void setToken(String? value) {
     _token = value;
     if (value != null) {

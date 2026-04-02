@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/controller/notification_controller.dart';
 import 'package:frontend/data/models/notification_model.dart';
 import 'package:frontend/core/utils/config.dart';
@@ -18,7 +19,7 @@ class NotificationCard extends StatelessWidget {
     final typeConfig = NotificationConfig.getTypeConfig(notification);
 
     return InkWell(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: kBorderRadiusMedium,
       onTap: () {
         if (!notification.isRead) controller.markAsRead(notification.id);
         context.pushNamed('notificationDetail', extra: notification);
@@ -76,7 +77,7 @@ class NotificationCard extends StatelessWidget {
                     ],
                   ),
 
-                  const SizedBox(height: 4),
+                  kGapH4,
 
                   Text(
                     notification.body,

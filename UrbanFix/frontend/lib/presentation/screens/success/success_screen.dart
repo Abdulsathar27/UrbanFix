@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/presentation/screens/success/widget/decorative_circles.dart';
 import 'package:frontend/presentation/screens/success/widget/info_chip.dart';
 import 'package:frontend/presentation/screens/success/widget/success_badge.dart';
@@ -14,7 +15,7 @@ class SuccessScreen extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          
+
           Container(
             decoration: const BoxDecoration(
               gradient: LinearGradient(
@@ -25,10 +26,10 @@ class SuccessScreen extends StatelessWidget {
             ),
           ),
 
-          
+
           const DecorativeCircles(),
 
-          
+
           Column(
             children: [
               Expanded(
@@ -49,7 +50,7 @@ class SuccessScreen extends StatelessWidget {
                 ),
               ),
 
-             
+
               Expanded(
                 flex: 6,
                 child: Container(
@@ -66,7 +67,7 @@ class SuccessScreen extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                       
+
                         Text(
                           'Booking Confirmed!',
                           style: TextStyle(
@@ -76,19 +77,19 @@ class SuccessScreen extends StatelessWidget {
                             letterSpacing: -0.5,
                           ),
                         ),
-                        const SizedBox(height: 10),
+                        kGapH10,
                         const Text(
                           'Your appointment has been scheduled.\nWe\'ll notify you before the visit.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 14,
+                            fontSize: kFontMedium,
                             color: AppColors.greyMedium,
                             height: 1.5,
                           ),
                         ),
                         const SizedBox(height: 28),
 
-                      
+
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [
@@ -107,7 +108,7 @@ class SuccessScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 36),
 
-                       
+
                         SizedBox(
                           width: double.infinity,
                           height: 54,
@@ -117,7 +118,7 @@ class SuccessScreen extends StatelessWidget {
                               foregroundColor: AppColors.white,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: kBorderRadiusLarge,
                               ),
                             ),
                             onPressed: () => context.goNamed('home'),
@@ -125,7 +126,7 @@ class SuccessScreen extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(Icons.home_rounded, size: 20),
-                                SizedBox(width: 8),
+                                kGapW8,
                                 Text(
                                   'Back to Home',
                                   style: TextStyle(
@@ -137,9 +138,9 @@ class SuccessScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 12),
+                        kGapH12,
 
-                      
+
                         SizedBox(
                           width: double.infinity,
                           height: 54,
@@ -149,7 +150,7 @@ class SuccessScreen extends StatelessWidget {
                               side: const BorderSide(
                                   color: AppColors.primary, width: 1.5),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
+                                borderRadius: kBorderRadiusLarge,
                               ),
                             ),
                             onPressed: () =>
@@ -157,8 +158,8 @@ class SuccessScreen extends StatelessWidget {
                             child: const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.calendar_today_rounded, size: 18),
-                                SizedBox(width: 8),
+                                Icon(Icons.calendar_today_rounded, size: kIconSmall),
+                                kGapW8,
                                 Text(
                                   AppStrings.myAppointments,
                                   style: TextStyle(
@@ -182,4 +183,3 @@ class SuccessScreen extends StatelessWidget {
     );
   }
 }
-

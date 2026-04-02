@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class ServicesHeader extends StatelessWidget {
   final String title;
@@ -8,14 +9,14 @@ class ServicesHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: kPaddingSymMedium,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
             title,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontSize: 20,
+                  fontSize: kFontXLarge,
                   fontWeight: FontWeight.bold,
                 ),
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class InfoChip extends StatelessWidget {
   final IconData icon;
@@ -23,12 +24,12 @@ class InfoChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: color),
+          Icon(icon, size: kIconXSmall, color: color),
           const SizedBox(width: 6),
           Text(
             label,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: kFontSmall,
               fontWeight: FontWeight.w600,
               color: color,
             ),

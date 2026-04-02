@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/presentation/screens/setting/widget/action_tile.dart';
 import 'package:frontend/presentation/screens/setting/widget/info_tile.dart';
 import 'package:frontend/presentation/screens/setting/widget/section_label.dart';
@@ -36,7 +37,7 @@ class SettingsScreen extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(height: 24),
+          kGapH24,
           SectionLabel('Notifications'),
           ToggleTile(
             icon: Icons.notifications_outlined,
@@ -51,7 +52,7 @@ class SettingsScreen extends StatelessWidget {
             onChanged: (_) {},
           ),
 
-          const SizedBox(height: 24),
+          kGapH24,
           SectionLabel('About'),
           InfoTile(
             icon: Icons.info_outline,
@@ -75,7 +76,7 @@ class SettingsScreen extends StatelessWidget {
             onTap: () {},
           ),
 
-          const SizedBox(height: 24),
+          kGapH24,
           SectionLabel('Support'),
           ActionTile(
             icon: Icons.help_outline,
@@ -92,4 +93,3 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 }
-

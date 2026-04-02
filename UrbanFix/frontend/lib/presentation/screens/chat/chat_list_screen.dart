@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/controller/chat_controller.dart';
 import 'package:frontend/data/controller/user_controller.dart';
 import 'package:frontend/data/models/chat_model.dart';
@@ -95,13 +96,13 @@ class ChatListScreen extends StatelessWidget {
                 child: const Icon(Icons.wifi_off_rounded,
                     color: AppColors.error, size: 32),
               ),
-              const SizedBox(height: 16),
+              kGapH16,
               Text(
                 controller.errorMessage!,
                 textAlign: TextAlign.center,
                 style: const TextStyle(color: AppColors.error),
               ),
-              const SizedBox(height: 16),
+              kGapH16,
               ElevatedButton.icon(
                 onPressed: () => context.read<ChatController>().fetchChats(),
                 icon: const Icon(Icons.refresh_rounded, size: 18),
@@ -132,11 +133,11 @@ class ChatListScreen extends StatelessWidget {
                 size: 40,
               ),
             ),
-            const SizedBox(height: 16),
+            kGapH16,
             const Text(
               AppStrings.noChatsYet,
               style: TextStyle(
-                fontSize: 16,
+                fontSize: kFontBase,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -152,7 +153,7 @@ class ChatListScreen extends StatelessWidget {
 
     // ── List ───────────────────────────────────────────────────
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: kPaddingVSmall,
       itemCount: controller.chats.length,
       separatorBuilder: (_, __) => Divider(
         height: 1,
@@ -189,7 +190,7 @@ class ChatListScreen extends StatelessWidget {
                     style: const TextStyle(
                       color: AppColors.primary,
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: kFontLarge,
                     ),
                   ),
                 ),
@@ -229,7 +230,7 @@ class ChatListScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: 10),
+                kGapW10,
 
                 // ── Time + unread badge ──────────────────────────
                 Column(
@@ -252,9 +253,9 @@ class ChatListScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 7, vertical: 3),
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: AppColors.primary,
-                          borderRadius: BorderRadius.circular(999),
+                          borderRadius: kBorderRadiusFull,
                         ),
                         child: Text(
                           chat.unreadCount.toString(),

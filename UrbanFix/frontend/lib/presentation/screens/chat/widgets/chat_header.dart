@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/controller/chat_controller.dart';
 import 'package:frontend/data/controller/user_controller.dart';
 import 'package:go_router/go_router.dart';
@@ -47,7 +48,7 @@ class ChatHeader extends StatelessWidget {
             ),
             child: Row(
               children: [
-                // ── Back button ──────────────────────────────────
+
                 IconButton(
                   icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
                   onPressed: () {
@@ -56,7 +57,7 @@ class ChatHeader extends StatelessWidget {
                   },
                 ),
 
-                // ── Avatar with online dot ───────────────────────
+
                 Stack(
                   clipBehavior: Clip.none,
                   children: [
@@ -69,7 +70,7 @@ class ChatHeader extends StatelessWidget {
                         style: const TextStyle(
                           color: AppColors.primary,
                           fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                          fontSize: kFontLarge,
                         ),
                       ),
                     ),
@@ -92,9 +93,9 @@ class ChatHeader extends StatelessWidget {
                   ],
                 ),
 
-                const SizedBox(width: 12),
+                kGapW12,
 
-                // ── Name + status ────────────────────────────────
+
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -105,7 +106,7 @@ class ChatHeader extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
+                          fontSize: kFontBase,
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
                       ),
@@ -113,7 +114,7 @@ class ChatHeader extends StatelessWidget {
                       const Text(
                         'Online',
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: kFontSmall,
                           color: AppColors.success,
                           fontWeight: FontWeight.w500,
                         ),
@@ -122,7 +123,7 @@ class ChatHeader extends StatelessWidget {
                   ),
                 ),
 
-                // ── Actions ──────────────────────────────────────
+
                 IconButton(
                   icon: Icon(
                     Icons.call_outlined,

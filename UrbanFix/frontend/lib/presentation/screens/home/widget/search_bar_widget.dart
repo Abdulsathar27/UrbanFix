@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class SearchBarWidget extends StatelessWidget {
   final TextEditingController controller;
@@ -12,7 +13,7 @@ class SearchBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: kPaddingAllMedium,
       child: ValueListenableBuilder<TextEditingValue>(
         valueListenable: controller,
         builder: (context, value, _) {
@@ -22,7 +23,7 @@ class SearchBarWidget extends StatelessWidget {
               hintText: AppStrings.searchServices,
               prefixIcon: const Icon(Icons.search),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(kRadiusMedium),
               ),
               suffixIcon: value.text.isNotEmpty
                   ? IconButton(

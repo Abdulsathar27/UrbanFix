@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/controller/user_controller.dart';
 import 'package:frontend/presentation/screens/user/widgets/primary_button.dart';
 import 'package:frontend/presentation/screens/user/widgets/profile_text_field.dart';
@@ -9,9 +10,6 @@ import 'package:provider/provider.dart';
 
 class EditProfileScreen extends StatelessWidget {
   const EditProfileScreen({super.key});
-
-  // static final so the key lives for the entire app session.
-  // Safe for a single-instance screen like this.
   static final _formKey = GlobalKey<FormState>();
 
   void _populateOnce(BuildContext context) {
@@ -67,8 +65,7 @@ class EditProfileScreen extends StatelessWidget {
           );
         }
 
-        // Pre-populate form controllers once per screen entry.
-        // Guard prevents re-running on every rebuild → typing works correctly.
+
         _populateOnce(context);
 
         return Scaffold(
@@ -120,18 +117,18 @@ class EditProfileScreen extends StatelessWidget {
                     ],
                   ),
 
-                  const SizedBox(height: 8),
+                  kGapH8,
 
-                  /// Email (read-only — cannot be changed via this endpoint)
+
                   Text(
                     user.email,
                     style: const TextStyle(
                       color: AppColors.greyMedium,
-                      fontSize: 14,
+                      fontSize: kFontMedium,
                     ),
                   ),
 
-                  const SizedBox(height: 32),
+                  kGapH32,
 
                   /// Name field
                   ProfileTextField(
@@ -150,7 +147,7 @@ class EditProfileScreen extends StatelessWidget {
                     },
                   ),
 
-                  const SizedBox(height: 20),
+                  kGapH20,
 
                   /// Phone field
                   ProfileTextField(
@@ -172,7 +169,7 @@ class EditProfileScreen extends StatelessWidget {
                     },
                   ),
 
-                  const SizedBox(height: 40),
+                  kGapH40,
 
                   /// Save button
                   PrimaryButton(

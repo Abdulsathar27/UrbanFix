@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class InfoChip extends StatelessWidget {
   final IconData icon;
@@ -22,11 +23,11 @@ class InfoChip extends StatelessWidget {
             size: 13,
             color:
                 isDark ? AppColors.darkTextSecondary : AppColors.greyDark),
-        const SizedBox(width: 4),
+        kGapW4,
         Text(
           label,
           style: TextStyle(
-            fontSize: 12,
+            fontSize: kFontSmall,
             fontWeight: FontWeight.w500,
             color:
                 isDark ? AppColors.darkTextSecondary : AppColors.greyDark,

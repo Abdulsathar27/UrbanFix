@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class ProfileHeader extends StatelessWidget {
   final String name;
@@ -43,7 +44,7 @@ class ProfileHeader extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: 20),
+        kGapH20,
 
         Text(
           name,

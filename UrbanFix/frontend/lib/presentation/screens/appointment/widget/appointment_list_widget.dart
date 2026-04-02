@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/controller/appointment_controller.dart';
 import 'package:frontend/data/models/appointment_model.dart';
 import 'package:frontend/presentation/screens/appointment/widget/appointment_list_tile.dart';
@@ -27,7 +28,7 @@ class AppointmentListWidget extends StatelessWidget {
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.all(8),
+      padding: kPaddingAllSmall,
       itemCount: appointments.length,
       itemBuilder: (context, index) {
         final appointment = appointments[index];

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/presentation/screens/setting/widget/icon_box.dart';
 import 'package:frontend/presentation/screens/setting/widget/settings_card.dart';
 
@@ -24,9 +25,9 @@ class ActionTile extends StatelessWidget {
         leading: IconBox(icon: icon),
         title: Text(title,
             style:
-                const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                const TextStyle(fontSize: kFontMedium, fontWeight: FontWeight.w500)),
         trailing: const Icon(Icons.arrow_forward_ios,
-            size: 14, color: AppColors.greyMedium),
+            size: kIconXSmall, color: AppColors.greyMedium),
         onTap: onTap,
       ),
     );

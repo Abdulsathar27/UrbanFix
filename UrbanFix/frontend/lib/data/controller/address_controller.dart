@@ -8,9 +8,16 @@ class AddressController extends ChangeNotifier {
 
   List<AddressModel> _addresses = [];
   bool _isLoading = false;
+  AddressModel? _selectedAddress;
 
   List<AddressModel> get addresses => List.unmodifiable(_addresses);
   bool get isLoading => _isLoading;
+  AddressModel? get selectedAddress => _selectedAddress;
+
+  void selectAddress(AddressModel address) {
+    _selectedAddress = address;
+    notifyListeners();
+  }
 
   final TextEditingController addressTextController = TextEditingController();
   String selectedLabel = 'Home';

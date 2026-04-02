@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/presentation/screens/booking/widgets/time_chip.dart';
 
 class TimeSection extends StatelessWidget {
@@ -24,7 +25,7 @@ class TimeSection extends StatelessWidget {
       children: [
         Row(
           children: [
-            const Icon(Icons.schedule_rounded, size: 18, color: AppColors.primary),
+            const Icon(Icons.schedule_rounded, size: kIconSmall, color: AppColors.primary),
             const SizedBox(width: 6),
             Text(
               AppStrings.selectTime,
@@ -36,7 +37,7 @@ class TimeSection extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        kGapH12,
         Wrap(
           spacing: 10,
           runSpacing: 10,

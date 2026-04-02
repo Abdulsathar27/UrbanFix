@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class LoadingAppointmentsWidget extends StatelessWidget {
   const LoadingAppointmentsWidget({super.key});
@@ -11,7 +12,7 @@ class LoadingAppointmentsWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(),
-          SizedBox(height: 16),
+          kGapH16,
           Text(AppStrings.loadingAppointments),
         ],
       ),

@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/constants/api_constants.dart';
 import '../../core/utils/token_store.dart';
+import '../../routes/app_routes.dart';
 
 class DioClient {
   late final Dio _dio;
@@ -8,7 +10,7 @@ class DioClient {
   DioClient() {
     _dio = Dio(
       BaseOptions(
-        baseUrl: ApiConstants.devBaseUrl,
+        baseUrl: ApiConstants.baseUrl,
         connectTimeout: const Duration(seconds: 15),
         receiveTimeout: const Duration(seconds: 15),
         headers: {
@@ -37,10 +39,13 @@ class DioClient {
         onResponse: (response, handler) {
           return handler.next(response);
         },
-        onError: (DioException error, handler) {
-         
-
-          if (error.response?.statusCode == 401) {
+        onError: (DioException error, handler) async {
+          if (error.response?.statusCode == 401 &&
+              TokenStore.token != null) {
+            await TokenStore.clear();
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.remove('current_user');
+            AppRouter.router.go('/login');
           }
 
           return handler.next(error);

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
-import 'package:frontend/core/constants/app_constants.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'register_form.dart';
 import 'register_header.dart';
 
@@ -12,10 +12,7 @@ class RegisterBody extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppColors.primary,
-            AppColors.secondary,
-          ],
+          colors: [AppColors.primary, AppColors.secondary],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -28,14 +25,10 @@ class RegisterBody extends StatelessWidget {
             const SizedBox(height: 30),
             Expanded(
               child: Container(
-                padding: const EdgeInsets.all(
-                  AppConstants.defaultPadding,
-                ),
+                padding: kPaddingAllMedium,
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(30),
-                  ),
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
                 ),
                 child: RegisterForm(),
               ),

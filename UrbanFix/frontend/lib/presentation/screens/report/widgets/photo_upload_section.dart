@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class PhotoUploadSection extends StatelessWidget {
   const PhotoUploadSection({super.key});
@@ -14,13 +15,13 @@ class PhotoUploadSection extends StatelessWidget {
         Row(
           children: [
 
-            /// Add Photo Card
+
             Container(
               width: 100,
               height: 100,
               decoration: BoxDecoration(
                 color: AppColors.white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: kBorderRadiusLarge,
                 border: Border.all(
                   color: AppColors.greyLight,
                   style: BorderStyle.solid,
@@ -32,21 +33,21 @@ class PhotoUploadSection extends StatelessWidget {
                   Icon(Icons.add, color: AppColors.primary),
                   SizedBox(height: 6),
                   Text(AppStrings.addPhoto,
-                      style: TextStyle(fontSize: 12))
+                      style: TextStyle(fontSize: kFontSmall))
                 ],
               ),
             ),
 
             const SizedBox(width: 15),
 
-            /// Preview Image
+
             Stack(
               children: [
                 Container(
                   width: 100,
                   height: 100,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: kBorderRadiusLarge,
                     image: const DecorationImage(
                       image: AssetImage("assets/sample_road.jpg"),
                       fit: BoxFit.cover,
@@ -74,13 +75,13 @@ class PhotoUploadSection extends StatelessWidget {
 
             const SizedBox(width: 15),
 
-            /// Empty Placeholder
+
             Container(
               width: 100,
               height: 100,
               decoration: BoxDecoration(
                 color: AppColors.greyLight,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: kBorderRadiusLarge,
               ),
               child: const Icon(Icons.image,
                   color: AppColors.greyMedium),
@@ -88,12 +89,12 @@ class PhotoUploadSection extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: 10),
+        kGapH10,
 
         const Text(
           AppStrings.photoUploadHint,
           style: TextStyle(
-            fontSize: 12,
+            fontSize: kFontSmall,
             color: AppColors.greyMedium,
           ),
         )

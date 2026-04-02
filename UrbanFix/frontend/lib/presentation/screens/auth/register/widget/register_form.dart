@@ -5,6 +5,7 @@ import 'package:frontend/presentation/screens/auth/register/widget/register_name
 import 'package:frontend/presentation/screens/auth/register/widget/register_password_field.dart';
 import 'package:frontend/presentation/screens/auth/register/widget/register_phone_field.dart';
 import 'package:frontend/presentation/screens/auth/register/widget/register_terms_checkbox.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/data/controller/user_controller.dart';
@@ -19,21 +20,13 @@ class RegisterForm extends StatelessWidget {
 
   Future<void> _submit(BuildContext context) async {
     final controller = context.read<UserController>();
-
     final success = await controller.submitRegistration();
-
     if (!context.mounted) return;
-
     if (!success) {
-      Helpers.showError(
-        context,
-        controller.errorMessage ?? "Registration failed",
-      );
+      Helpers.showError(context, controller.errorMessage ?? "Registration failed");
       return;
     }
-
     context.goNamed('home');
-    return;
   }
 
   @override
@@ -45,55 +38,31 @@ class RegisterForm extends StatelessWidget {
             key: _formKey,
             child: Column(
               children: [
-                /// Name
                 RegisterNameField(controller: controller.nameController),
-
-                const SizedBox(height: 16),
-
-                /// Email
+                kGapH16,
                 RegisterEmailField(controller: controller.emailController),
-
-                const SizedBox(height: 16),
-
-                /// Phone
+                kGapH16,
                 RegisterPhoneField(controller: controller.phoneController),
-
-                const SizedBox(height: 16),
-
-                /// Password
+                kGapH16,
                 RegisterPasswordField(
                   controller: controller.passwordController,
                   isVisible: controller.isRegisterPasswordVisible,
                   onToggle: controller.toggleRegisterPassword,
                 ),
-
-                const SizedBox(height: 16),
-
-                /// Confirm Password
+                kGapH16,
                 RegisterConfirmPasswordField(
                   controller: controller.confirmPasswordController,
                   isVisible: controller.isConfirmPasswordVisible,
                   onToggle: controller.toggleConfirmPassword,
                 ),
-
-                const SizedBox(height: 20),
-
-                /// Terms Checkbox
+                kGapH20,
                 RegisterTermsCheckbox(
                   value: controller.agreeTerms,
                   onChanged: controller.toggleAgreeTerms,
                 ),
-
-                const SizedBox(height: 20),
-
-                /// Register Button
-                RegisterButton(
-                  isLoading: controller.isLoading,
-                  onPressed: () => _submit(context),
-                ),
-
-                const SizedBox(height: 20),
-
+                kGapH20,
+                RegisterButton(isLoading: controller.isLoading, onPressed: () => _submit(context)),
+                kGapH20,
                 const RegisterRedirectText(),
               ],
             ),

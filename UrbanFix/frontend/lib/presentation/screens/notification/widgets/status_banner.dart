@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/models/notification_model.dart';
 
 class StatusBanner extends StatelessWidget {
@@ -14,7 +15,7 @@ class StatusBanner extends StatelessWidget {
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: config.color.withValues(alpha: isDark ? 0.16 : 0.08),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: kBorderRadiusLarge,
         border: Border.all(color: config.color.withValues(alpha: 0.28)),
       ),
       child: Row(
@@ -24,7 +25,7 @@ class StatusBanner extends StatelessWidget {
             width: 40,
             decoration: BoxDecoration(
               color: config.color.withValues(alpha: 0.18),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: kBorderRadiusMedium,
             ),
             child: Icon(config.icon, color: config.color, size: 20),
           ),
@@ -36,7 +37,7 @@ class StatusBanner extends StatelessWidget {
                 Text(
                   config.label,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: kFontMedium,
                     fontWeight: FontWeight.w700,
                     color: config.color,
                   ),
@@ -45,7 +46,7 @@ class StatusBanner extends StatelessWidget {
                 Text(
                   config.subtitle,
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: kFontSmall,
                     color: config.color.withValues(alpha: 0.75),
                   ),
                 ),

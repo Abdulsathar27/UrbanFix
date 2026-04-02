@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/controller/user_controller.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +21,7 @@ class LogoutButton extends StatelessWidget {
               foregroundColor: AppColors.white,
               elevation: 2,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: kBorderRadiusMedium,
               ),
             ),
             onPressed: controller.isLoading
@@ -28,8 +29,8 @@ class LogoutButton extends StatelessWidget {
                 : () => controller.handleLogout(context, controller),
             icon: controller.isLoading
                 ? const SizedBox(
-                    height: 20,
-                    width: 20,
+                    height: kHeight20,
+                    width: kWidth20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
                       color: AppColors.white,

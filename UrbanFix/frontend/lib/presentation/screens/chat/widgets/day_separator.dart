@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class DaySeparator extends StatelessWidget {
   final DateTime date;
@@ -30,7 +31,7 @@ class DaySeparator extends StatelessWidget {
             color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.10),
           ),
         ),
-        const SizedBox(width: 10),
+        kGapW10,
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
           decoration: BoxDecoration(
@@ -50,7 +51,7 @@ class DaySeparator extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: 10),
+        kGapW10,
         Expanded(
           child: Divider(
             color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.10),

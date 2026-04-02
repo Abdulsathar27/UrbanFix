@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
+import 'package:frontend/presentation/screens/auth/login/widget/social_button.dart';
 
 class SocialLoginSection extends StatelessWidget {
   const SocialLoginSection({super.key});
@@ -9,7 +11,6 @@ class SocialLoginSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Divider with label
         Row(
           children: [
             const Expanded(child: Divider(thickness: 1)),
@@ -28,77 +29,27 @@ class SocialLoginSection extends StatelessWidget {
             const Expanded(child: Divider(thickness: 1)),
           ],
         ),
-        const SizedBox(height: 20),
-
-        // Social buttons
+        kGapH20,
         Row(
           children: [
             Expanded(
-              child: _SocialButton(
+              child: SocialButton(
                 onPressed: () {},
-                icon: const FaIcon(
-                  FontAwesomeIcons.google,
-                  size: 18,
-                  color: Color(0xFFDB4437),
-                ),
+                icon: const FaIcon(FontAwesomeIcons.google, size: kIconSmall, color: Color(0xFFDB4437)),
                 label: "Google",
               ),
             ),
-            const SizedBox(width: 16),
+            kGapW16,
             Expanded(
-              child: _SocialButton(
+              child: SocialButton(
                 onPressed: () {},
-                icon: const FaIcon(
-                  FontAwesomeIcons.apple,
-                  size: 18,
-                  color: Colors.black87,
-                ),
+                icon: const FaIcon(FontAwesomeIcons.apple, size: kIconSmall, color: Colors.black87),
                 label: "Apple",
               ),
             ),
           ],
         ),
       ],
-    );
-  }
-}
-
-class _SocialButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final Widget icon;
-  final String label;
-
-  const _SocialButton({
-    required this.onPressed,
-    required this.icon,
-    required this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return OutlinedButton(
-      onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        side: const BorderSide(color: AppColors.greyLight, width: 1.5),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        backgroundColor: Colors.white,
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          icon,
-          const SizedBox(width: 10),
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.black87,
-              fontWeight: FontWeight.w600,
-              fontSize: 14,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

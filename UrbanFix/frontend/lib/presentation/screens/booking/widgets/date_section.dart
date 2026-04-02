@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
+import 'package:frontend/presentation/screens/booking/widgets/section_header.dart';
 
 class DateSection extends StatelessWidget {
   const DateSection({
@@ -25,18 +27,18 @@ class DateSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _SectionHeader(
+        SectionHeader(
           icon: Icons.calendar_month_rounded,
           label: AppStrings.selectDate,
         ),
-        const SizedBox(height: 12),
+        kGapH12,
         SizedBox(
           height: 72,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.symmetric(horizontal: 2),
             itemCount: availableDates.length,
-            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            separatorBuilder: (_, __) => kGapW8,
             itemBuilder: (context, index) {
               final date = availableDates[index];
               final isSelected = DateUtils.isSameDay(date, selectedDate);
@@ -73,7 +75,7 @@ class DateSection extends StatelessWidget {
                               : AppColors.greyMedium,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      kGapH4,
                       Text(
                         date.day.toString(),
                         style: TextStyle(
@@ -85,17 +87,14 @@ class DateSection extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 3),
-                      // Today dot
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 180),
-                        width: 4,
-                        height: 4,
+                        width: kWidth4,
+                        height: kHeight4,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: isToday
-                              ? (isSelected
-                                  ? AppColors.white
-                                  : AppColors.primary)
+                              ? (isSelected ? AppColors.white : AppColors.primary)
                               : Colors.transparent,
                         ),
                       ),
@@ -107,38 +106,12 @@ class DateSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 6),
-        // Month label — shows month of selected date
         Text(
           '${_months[selectedDate.month - 1]} ${selectedDate.year}',
           style: const TextStyle(
-            fontSize: 12,
+            fontSize: kFontSmall,
             color: AppColors.greyMedium,
             fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _SectionHeader({required this.icon, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: AppColors.primary),
-        const SizedBox(width: 6),
-        Text(
-          label,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 15,
-            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
       ],

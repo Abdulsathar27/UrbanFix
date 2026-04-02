@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/routes/app_routes.dart';
 import 'package:provider/provider.dart';
+import 'core/utils/token_store.dart';
 import 'data/controller/appointment_controller.dart';
 import 'data/controller/chat_controller.dart';
 import 'data/controller/job_controller.dart';
 import 'data/controller/message_controller.dart';
 import 'data/controller/notification_controller.dart';
+import 'data/controller/address_controller.dart';
 import 'data/controller/location_controller.dart';
 import 'data/controller/report_controller.dart';
 import 'data/controller/theme_controller.dart';
 import 'data/controller/user_controller.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await TokenStore.loadToken();
   runApp(const MyApp());
 }
 
@@ -38,6 +41,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => NotificationController()),
         ChangeNotifierProvider(create: (_) => ReportController()),
         ChangeNotifierProvider(create: (_) => LocationController()),
+        ChangeNotifierProvider(create: (_) => AddressController()),
       ],
       child: Consumer<ThemeController>(
         builder: (context, themeProvider, _) {

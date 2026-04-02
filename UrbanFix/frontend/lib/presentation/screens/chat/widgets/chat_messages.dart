@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/controller/chat_controller.dart';
 import 'package:frontend/data/controller/user_controller.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +53,7 @@ class ChatMessages extends StatelessWidget {
 
         return ListView.builder(
           reverse: true, // newest messages at the bottom
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: kPaddingSymMedium,
           itemCount: messages.length,
           itemBuilder: (context, index) {
             final message = messages[index];

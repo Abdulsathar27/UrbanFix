@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class NavItem {
   final IconData icon;
@@ -55,14 +56,14 @@ class NavBarItem extends StatelessWidget {
               child: Icon(
                 isSelected ? item.activeIcon : item.icon,
                 key: ValueKey('${item.label}_$isSelected'),
-                size: 24,
+                size: kIconMedium,
                 color: isSelected
                     ? AppColors.primary
                     : (isDark ? AppColors.greyMedium : AppColors.greyDark),
               ),
             ),
           ),
-          const SizedBox(height: 4),
+          kGapH4,
           // Label
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 220),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/controller/chat_controller.dart';
 import 'package:frontend/data/controller/user_controller.dart';
 import 'package:provider/provider.dart';
@@ -87,7 +88,7 @@ class ChatInputBar extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(width: 8),
+                kGapW8,
 
                 // ── Send / loading button ──────────────────────────
                 AnimatedContainer(

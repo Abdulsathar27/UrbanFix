@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../../core/constants/app_strings.dart';
 import '../../../core/constants/app_constants.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/appsize_constants.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -23,37 +24,23 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: AppConstants.longAnimation,
+    _controller = AnimationController(vsync: this, duration: AppConstants.longAnimation);
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeIn),
     );
-
-    _fadeAnimation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
-
-    _scaleAnimation = Tween<double>(
-      begin: 0.8,
-      end: 1,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
-
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
     _controller.forward();
-
     _navigateAfterDelay();
   }
 
   Future<void> _navigateAfterDelay() async {
     await Future.delayed(const Duration(seconds: 3));
-
     if (!mounted) return;
-
     final userController = context.read<UserController>();
     await userController.initFromStorage();
-
     if (!mounted) return;
-
     if (userController.isLoggedIn) {
       context.goNamed('home');
     } else {
@@ -85,7 +72,6 @@ class _SplashScreenState extends State<SplashScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(),
-
               FadeTransition(
                 opacity: _fadeAnimation,
                 child: ScaleTransition(
@@ -94,48 +80,29 @@ class _SplashScreenState extends State<SplashScreen>
                     padding: const EdgeInsets.all(28),
                     decoration: BoxDecoration(
                       color: AppColors.white.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(
-                        AppConstants.cardBorderRadius,
-                      ),
+                      borderRadius: BorderRadius.circular(AppConstants.cardBorderRadius),
                     ),
-                    child: const Icon(
-                      Icons.build_circle_outlined,
-                      size: 70,
-                      color: AppColors.white,
-                    ),
+                    child: const Icon(Icons.build_circle_outlined, size: 70, color: AppColors.white),
                   ),
                 ),
               ),
-
-              const SizedBox(height: 24),
-
+              kGapH24,
               FadeTransition(
                 opacity: _fadeAnimation,
-                child: Text(
+                child: const Text(
                   AppStrings.appName,
-                  style: const TextStyle(
-                    fontSize: 38,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.white,
-                  ),
+                  style: TextStyle(fontSize: 38, fontWeight: FontWeight.bold, color: AppColors.white),
                 ),
               ),
-
-              const SizedBox(height: 8),
-
+              kGapH8,
               FadeTransition(
                 opacity: _fadeAnimation,
-                child: Text(
+                child: const Text(
                   AppStrings.splashTagline,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: AppColors.white70,
-                  ),
+                  style: TextStyle(fontSize: kFontBase, color: AppColors.white70),
                 ),
               ),
-
               const Spacer(),
-
               FadeTransition(
                 opacity: _fadeAnimation,
                 child: const Padding(

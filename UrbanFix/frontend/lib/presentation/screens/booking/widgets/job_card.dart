@@ -1,21 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/models/job_model.dart';
 
 class JobCard extends StatelessWidget {
   final JobModel job;
   final VoidCallback onTap;
 
-  const JobCard({
-    required this.job,
-    required this.onTap,
-    super.key
-  });
+  const JobCard({required this.job, required this.onTap, super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Convert wage string to display format
     final wageText = job.wage;
 
     return GestureDetector(
@@ -23,43 +19,34 @@ class JobCard extends StatelessWidget {
       child: Card(
         margin: const EdgeInsets.only(bottom: 12),
         elevation: 2,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: kBorderRadiusMedium),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: kPaddingAllMedium,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(
                     child: Text(
                       job.title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: const TextStyle(fontSize: kFontBase, fontWeight: FontWeight.w600),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  kGapW8,
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     decoration: BoxDecoration(
                       color: AppColors.primary.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: kBorderRadiusSmall,
                     ),
                     child: Text(
                       '₹$wageText',
                       style: const TextStyle(
-                        fontSize: 14,
+                        fontSize: kFontMedium,
                         fontWeight: FontWeight.w600,
                         color: AppColors.primary,
                       ),
@@ -67,44 +54,29 @@ class JobCard extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
-
-              
+              kGapH12,
               Text(
                 job.description,
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: AppColors.greyMedium,
-                ),
+                style: const TextStyle(fontSize: 13, color: AppColors.greyMedium),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 12),
-
+              kGapH12,
               Row(
                 children: [
-                  const Icon(
-                    Icons.location_on,
-                    size: 14,
-                    color: AppColors.greyDark,
-                  ),
-                  const SizedBox(width: 4),
+                  const Icon(Icons.location_on, size: kIconXSmall, color: AppColors.greyDark),
+                  kGapW4,
                   Expanded(
                     child: Text(
                       job.location,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: AppColors.greyDark,
-                      ),
+                      style: const TextStyle(fontSize: kFontSmall, color: AppColors.greyDark),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
-
-             
+              kGapH8,
               if (job.user != null)
                 Row(
                   children: [
@@ -117,44 +89,30 @@ class JobCard extends StatelessWidget {
                           ? const Icon(Icons.person)
                           : null,
                     ),
-                    const SizedBox(width: 8),
+                    kGapW8,
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             job.user!['name'] ?? AppStrings.labelWorker,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
                           ),
                           Text(
                             job.user!['profession'] ?? job.category,
-                            style: const TextStyle(
-                              fontSize: 12,
-                              color: AppColors.greyMedium,
-                            ),
+                            style: const TextStyle(fontSize: kFontSmall, color: AppColors.greyMedium),
                           ),
                         ],
                       ),
                     ),
-                    // Rating
                     if (job.averageRating > 0)
                       Row(
                         children: [
-                          const Icon(
-                            Icons.star_rounded,
-                            size: 14,
-                            color: AppColors.categoryElectrical,
-                          ),
-                          const SizedBox(width: 4),
+                          const Icon(Icons.star_rounded, size: kIconXSmall, color: AppColors.categoryElectrical),
+                          kGapW4,
                           Text(
                             '${job.averageRating.toStringAsFixed(1)} (${job.reviewCount})',
-                            style: const TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
+                            style: const TextStyle(fontSize: kFontSmall, fontWeight: FontWeight.w500),
                           ),
                         ],
                       ),

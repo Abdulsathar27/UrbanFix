@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class ServiceCard extends StatelessWidget {
   final String workTitle;
@@ -35,10 +36,10 @@ class ServiceCard extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(16),
+        padding: kPaddingAllMedium,
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: kBorderRadiusLarge,
           border: _isEmpty
               ? Border.all(
                   color: AppColors.primary.withValues(alpha: 0.35),
@@ -51,7 +52,7 @@ class ServiceCard extends StatelessWidget {
               : [
                   BoxShadow(
                     color: AppColors.primary.withValues(alpha: 0.08),
-                    blurRadius: 16,
+                    blurRadius: kSpaceMedium,
                     offset: const Offset(0, 4),
                   ),
                 ],
@@ -65,11 +66,11 @@ class ServiceCard extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 48,
-          height: 48,
+          width: kWidth48,
+          height: kHeight48,
           decoration: BoxDecoration(
             color: AppColors.primaryLight,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: kBorderRadiusMedium,
           ),
           child: const Icon(Icons.add_rounded, color: AppColors.primary),
         ),
@@ -82,17 +83,14 @@ class ServiceCard extends StatelessWidget {
                 AppStrings.whatServiceDoYouNeed,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  fontSize: 14,
+                  fontSize: kFontMedium,
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
               const SizedBox(height: 2),
               const Text(
                 AppStrings.tapToChooseService,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: AppColors.greyMedium,
-                ),
+                style: TextStyle(fontSize: kFontSmall, color: AppColors.greyMedium),
               ),
             ],
           ),
@@ -106,11 +104,11 @@ class ServiceCard extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 48,
-          height: 48,
+          width: kWidth48,
+          height: kHeight48,
           decoration: BoxDecoration(
             color: AppColors.primaryLight,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: kBorderRadiusMedium,
           ),
           child: Icon(_iconFor(workTitle), color: AppColors.primary),
         ),
@@ -121,27 +119,21 @@ class ServiceCard extends StatelessWidget {
             children: [
               Text(
                 workTitle,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                ),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
               const SizedBox(height: 2),
               Text(
                 description ?? AppStrings.professionalService,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: AppColors.greyMedium,
-                ),
+                style: const TextStyle(fontSize: kFontSmall, color: AppColors.greyMedium),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
             ],
           ),
         ),
-        const SizedBox(width: 8),
+        kGapW8,
         Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [

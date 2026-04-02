@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/controller/notification_controller.dart';
 
 class NotificationBadge extends StatelessWidget {
@@ -28,7 +29,7 @@ class NotificationBadge extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             color: AppColors.error,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: kBorderRadiusMedium,
           ),
           constraints: const BoxConstraints(
             minWidth: 20,

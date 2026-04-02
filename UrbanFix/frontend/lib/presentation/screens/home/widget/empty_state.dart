@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class EmptyState extends StatelessWidget {
   final bool isDark;
@@ -32,7 +33,7 @@ class EmptyState extends StatelessWidget {
             child: const Icon(
               Icons.calendar_month_outlined,
               color: AppColors.primary,
-              size: 24,
+              size: kIconMedium,
             ),
           ),
           const SizedBox(width: 14),
@@ -43,7 +44,7 @@ class EmptyState extends StatelessWidget {
                 Text(
                   'No bookings yet',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: kFontMedium,
                     fontWeight: FontWeight.w600,
                     color: isDark
                         ? AppColors.darkTextPrimary
@@ -54,7 +55,7 @@ class EmptyState extends StatelessWidget {
                 Text(
                   'Your recent booking will appear here',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: kFontSmall,
                     color: isDark
                         ? AppColors.darkTextSecondary
                         : AppColors.greyMedium,

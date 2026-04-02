@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class SuccessBadge extends StatelessWidget {
   const SuccessBadge({super.key});
@@ -32,11 +33,11 @@ class SuccessBadge extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 20),
+        kGapH20,
         Text(
           'You\'re all set!',
           style: TextStyle(
-            fontSize: 16,
+            fontSize: kFontBase,
             fontWeight: FontWeight.w600,
             color: AppColors.white.withValues(alpha: 0.9),
             letterSpacing: 0.3,

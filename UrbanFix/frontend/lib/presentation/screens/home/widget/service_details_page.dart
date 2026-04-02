@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/models/service_model.dart';
 import 'package:go_router/go_router.dart';
 
@@ -38,7 +39,7 @@ class ServiceDetailsPage extends StatelessWidget {
                   ),
                   child: Icon(service.icon, size: 48, color: service.color),
                 ),
-                const SizedBox(width: 16),
+                kGapW16,
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,15 +47,15 @@ class ServiceDetailsPage extends StatelessWidget {
                       Text(
                         service.name,
                         style: const TextStyle(
-                          fontSize: 28,
+                          fontSize: kFontDisplay,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 4),
+                      kGapH4,
                       Text(
                         '${AppStrings.startingAt}${service.price.toStringAsFixed(2)}',
                         style: const TextStyle(
-                          fontSize: 18,
+                          fontSize: kFontLarge,
                           color: AppColors.greyDark,
                         ),
                       ),
@@ -66,12 +67,12 @@ class ServiceDetailsPage extends StatelessWidget {
             const SizedBox(height: 30),
             const Text(
               AppStrings.description,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+              style: TextStyle(fontSize: kFontXLarge, fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: 8),
+            kGapH8,
             Text(
               service.description,
-              style: const TextStyle(fontSize: 16, height: 1.5),
+              style: const TextStyle(fontSize: kFontBase, height: 1.5),
             ),
             const SizedBox(height: 30),
             const Spacer(),
@@ -84,18 +85,18 @@ class ServiceDetailsPage extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: service.color,
                   foregroundColor: AppColors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  padding: kPaddingVMedium,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: kBorderRadiusMedium,
                   ),
                 ),
                 child: const Text(
                   AppStrings.bookThisService,
-                  style: TextStyle(fontSize: 18),
+                  style: TextStyle(fontSize: kFontLarge),
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            kGapH20,
           ],
         ),
       ),

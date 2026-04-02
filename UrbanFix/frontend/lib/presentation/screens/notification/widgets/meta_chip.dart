@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class MetaChip extends StatelessWidget {
   final String label;
@@ -12,8 +13,8 @@ class MetaChip extends StatelessWidget {
     required this.value,
     required this.color,
     required this.isDark,
-    super.key 
-    
+    super.key
+
   });
 
   @override
@@ -24,7 +25,7 @@ class MetaChip extends StatelessWidget {
         Text(
           label,
           style: const TextStyle(
-            fontSize: 10,
+            fontSize: kFontXSmall,
             fontWeight: FontWeight.w700,
             color: AppColors.greyMedium,
             letterSpacing: 1.0,
@@ -41,7 +42,7 @@ class MetaChip extends StatelessWidget {
           child: Text(
             value.toUpperCase(),
             style: TextStyle(
-              fontSize: 12,
+              fontSize: kFontSmall,
               color: color,
               fontWeight: FontWeight.w700,
               letterSpacing: 0.6,

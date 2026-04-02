@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/controller/notification_controller.dart';
 
 class ConfirmDeleteDialog extends StatelessWidget {
@@ -78,14 +79,14 @@ class ConfirmDeleteDialog extends StatelessWidget {
                   foregroundColor: AppColors.greyMedium,
                   side: const BorderSide(color: AppColors.greyLight),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: kBorderRadiusMedium,
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 child: const Text('Cancel'),
               ),
             ),
-            const SizedBox(width: 12),
+            kGapW12,
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
@@ -97,7 +98,7 @@ class ConfirmDeleteDialog extends StatelessWidget {
                   backgroundColor: AppColors.error,
                   foregroundColor: AppColors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: kBorderRadiusMedium,
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   elevation: 0,

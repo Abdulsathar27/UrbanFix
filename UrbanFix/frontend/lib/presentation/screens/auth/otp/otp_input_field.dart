@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class OtpInputField extends StatelessWidget {
   final TextEditingController controller;
@@ -9,7 +10,8 @@ class OtpInputField extends StatelessWidget {
     super.key,
     required this.controller,
     required this.focusNode,
-    this.onChanged, required bool isFocused,
+    this.onChanged,
+    required bool isFocused,
   });
 
   @override
@@ -21,14 +23,11 @@ class OtpInputField extends StatelessWidget {
         animation: focusNode,
         builder: (context, _) {
           final isFocused = focusNode.hasFocus;
-
           return Container(
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: kBorderRadiusMedium,
               border: Border.all(
-                color: isFocused
-                    ? Theme.of(context).primaryColor
-                    : Colors.grey.shade300,
+                color: isFocused ? Theme.of(context).primaryColor : Colors.grey.shade300,
                 width: 2,
               ),
             ),
@@ -38,14 +37,8 @@ class OtpInputField extends StatelessWidget {
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
               maxLength: 1,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-              decoration: const InputDecoration(
-                counterText: "",
-                border: InputBorder.none,
-              ),
+              style: const TextStyle(fontSize: kFontXLarge, fontWeight: FontWeight.bold),
+              decoration: const InputDecoration(counterText: "", border: InputBorder.none),
               onChanged: onChanged,
             ),
           );

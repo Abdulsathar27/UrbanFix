@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 
 class NotificationEmptyState extends StatelessWidget {
   const NotificationEmptyState({
@@ -31,19 +32,19 @@ class NotificationEmptyState extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 24),
+            kGapH24,
 
             /// ================= TITLE
             const Text(
               AppStrings.noNotificationsYet,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 20,
+                fontSize: kFontXLarge,
                 fontWeight: FontWeight.w600,
               ),
             ),
 
-            const SizedBox(height: 12),
+            kGapH12,
 
             /// ================= SUBTITLE
             const Text(

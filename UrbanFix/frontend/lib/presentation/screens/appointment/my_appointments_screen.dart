@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/controller/appointment_controller.dart';
 import 'package:frontend/presentation/screens/appointment/widget/appointment_list_widget.dart';
 import 'package:frontend/presentation/screens/appointment/widget/error_appointments_widget.dart';
@@ -29,16 +30,16 @@ class MyAppointmentsScreen extends StatelessWidget {
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(52),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+              padding: const EdgeInsets.fromLTRB(kSpaceMedium, 0, kSpaceMedium, 10),
               child: Container(
                 decoration: BoxDecoration(
                   color: AppColors.transparent,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: kBorderRadiusMedium,
                 ),
                 child: TabBar(
                   indicator: BoxDecoration(
                     color: AppColors.primary,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: kBorderRadiusSmall,
                   ),
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerColor: AppColors.transparent,
@@ -59,8 +60,8 @@ class MyAppointmentsScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
-                          Icon(Icons.calendar_today_rounded, size: 14),
-                          SizedBox(width: 6),
+                          Icon(Icons.calendar_today_rounded, size: kIconXSmall),
+                          kGapW8,
                           Text(AppStrings.upcoming),
                         ],
                       ),
@@ -70,8 +71,8 @@ class MyAppointmentsScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: const [
-                          Icon(Icons.history_rounded, size: 14),
-                          SizedBox(width: 6),
+                          Icon(Icons.history_rounded, size: kIconXSmall),
+                          kGapW8,
                           Text(AppStrings.past),
                         ],
                       ),

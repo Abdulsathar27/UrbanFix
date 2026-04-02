@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import '../../../../data/models/notification_model.dart';
 
 class NotificationTile extends StatelessWidget {
@@ -21,11 +22,11 @@ class NotificationTile extends StatelessWidget {
 
           /// ================= ICON
           Container(
-            height: 56,
-            width: 56,
+            height: kHeight56,
+            width: kWidth56,
             decoration: BoxDecoration(
               color: AppColors.greyLight,
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: kBorderRadiusLarge,
             ),
             child: const Icon(
               Icons.notifications,
@@ -33,7 +34,7 @@ class NotificationTile extends StatelessWidget {
             ),
           ),
 
-          const SizedBox(width: 16),
+          kGapW16,
 
           /// ================= TEXT CONTENT
           Expanded(
@@ -43,7 +44,7 @@ class NotificationTile extends StatelessWidget {
                 Text(
                   notification.title,
                   style: const TextStyle(
-                    fontSize: 18,
+                    fontSize: kFontLarge,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

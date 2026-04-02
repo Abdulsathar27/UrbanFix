@@ -1,5 +1,5 @@
 class Validators {
-  // ===== Email Validator =====
+  
   static String? validateEmail(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Email is required";
@@ -29,7 +29,7 @@ class Validators {
     return null;
   }
 
-  // ===== Confirm Password =====
+
   static String? validateConfirmPassword(
       String? value, String password) {
     if (value == null || value.isEmpty) {
@@ -43,7 +43,7 @@ class Validators {
     return null;
   }
 
-  // ===== Required Field =====
+
   static String? validateRequired(
       String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
@@ -53,7 +53,7 @@ class Validators {
     return null;
   }
 
-  // ===== Phone Number =====
+ 
   static String? validatePhone(String? value) {
     if (value == null || value.trim().isEmpty) {
       return "Phone number is required";

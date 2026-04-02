@@ -24,6 +24,7 @@ import 'package:frontend/presentation/screens/splash/splash_screen.dart';
 import 'package:frontend/presentation/screens/user/profile_screen.dart';
 import 'package:frontend/presentation/screens/user/widgets/edit_profile_screen.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class AppRouter {
   static final GlobalKey<NavigatorState> navigatorKey =
@@ -71,31 +72,34 @@ class AppRouter {
           GoRoute(
             path: '/home',
             name: 'home',
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: HomeScreen()),
+            pageBuilder:
+                (context, state) => const NoTransitionPage(child: HomeScreen()),
           ),
           GoRoute(
             path: '/bookings',
             name: 'bookings',
-            pageBuilder: (context, state) => NoTransitionPage(
-              child: BookingScreen(
-                category:
-                    (state.extra as Map<String, dynamic>?)?['category']
-                        as String?,
-              ),
-            ),
+            pageBuilder:
+                (context, state) => NoTransitionPage(
+                  child: BookingScreen(
+                    category:
+                        (state.extra as Map<String, dynamic>?)?['category']
+                            as String?,
+                  ),
+                ),
           ),
           GoRoute(
             path: '/notifications',
             name: 'notifications',
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: NotificationScreen()),
+            pageBuilder:
+                (context, state) =>
+                    const NoTransitionPage(child: NotificationScreen()),
           ),
           GoRoute(
             path: '/chats',
             name: 'chats',
-            pageBuilder: (context, state) =>
-                const NoTransitionPage(child: ChatListScreen()),
+            pageBuilder:
+                (context, state) =>
+                    const NoTransitionPage(child: ChatListScreen()),
             routes: [
               // Full-screen chat detail — no bottom nav bar
               GoRoute(
@@ -113,7 +117,6 @@ class AppRouter {
       ),
 
       // ================= Full-screen routes (no bottom nav bar) =================
-
       GoRoute(
         path: '/profile',
         name: 'profile',
@@ -122,8 +125,10 @@ class AppRouter {
           GoRoute(
             path: 'my-appointments',
             name: 'my_appointments',
-            builder: (context, state) =>
-                MyAppointmentsScreen(controller: AppointmentController()),
+            builder:
+                (context, state) => MyAppointmentsScreen(
+                  controller: context.read<AppointmentController>(),
+                ),
           ),
         ],
       ),

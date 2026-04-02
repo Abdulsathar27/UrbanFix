@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:frontend/core/constants/app_colors.dart';
@@ -16,7 +17,7 @@ class HomeHeader extends StatelessWidget {
         final user = userController.currentUser;
 
         return Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: kPaddingAllMedium,
           child: Row(
             children: [
               Expanded(
@@ -50,7 +51,7 @@ class HomeHeader extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
+                    kGapW12,
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,9 +121,9 @@ class HomeHeader extends StatelessWidget {
                                 color: AppColors.info,
                                 size: 16,
                               ),
-                        const SizedBox(width: 4),
+                        kGapW4,
                         ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 100),
+                          constraints: const BoxConstraints(maxWidth: kWidth100),
                           child: Text(
                             locationController.locationLabel,
                             style: const TextStyle(

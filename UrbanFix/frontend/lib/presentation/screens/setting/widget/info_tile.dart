@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/presentation/screens/setting/widget/icon_box.dart';
 import 'package:frontend/presentation/screens/setting/widget/settings_card.dart';
 
@@ -23,7 +24,7 @@ class InfoTile extends StatelessWidget {
         leading: IconBox(icon: icon),
         title: Text(title,
             style:
-                const TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                const TextStyle(fontSize: kFontMedium, fontWeight: FontWeight.w500)),
         trailing: trailing,
       ),
     );

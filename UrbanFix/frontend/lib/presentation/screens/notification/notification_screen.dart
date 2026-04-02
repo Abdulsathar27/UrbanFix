@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/core/constants/app_colors.dart';
 import 'package:frontend/core/constants/app_strings.dart';
+import 'package:frontend/core/constants/appsize_constants.dart';
 import 'package:frontend/data/controller/notification_controller.dart';
 import 'package:frontend/presentation/screens/notification/widgets/notification_card.dart';
 import 'package:frontend/presentation/screens/notification/widgets/notification_empty_state.dart';
@@ -40,17 +41,17 @@ class NotificationScreen extends StatelessWidget {
             }
 
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
+              padding: kPaddingHLarge,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 10),
+                  kGapH10,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
                         AppStrings.notifications,
-                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: kFontDisplay, fontWeight: FontWeight.bold),
                       ),
                       if (controller.unreadCount > 0)
                         TextButton(
@@ -62,7 +63,7 @@ class NotificationScreen extends StatelessWidget {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  kGapH20,
                   Expanded(
                     child: ListView.separated(
                       itemCount: controller.notifications.length,
