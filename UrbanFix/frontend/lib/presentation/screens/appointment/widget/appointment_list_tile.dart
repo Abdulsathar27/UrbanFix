@@ -6,6 +6,11 @@ import 'package:frontend/data/controller/appointment_controller.dart';
 import 'package:frontend/data/controller/chat_controller.dart';
 import 'package:frontend/data/controller/user_controller.dart';
 import 'package:frontend/data/models/appointment_model.dart';
+import 'package:frontend/presentation/screens/appointment/widget/chat_button.dart';
+import 'package:frontend/presentation/screens/appointment/widget/meta_chip.dart';
+import 'package:frontend/presentation/screens/appointment/widget/reason_banner.dart';
+import 'package:frontend/presentation/screens/appointment/widget/service_icon.dart';
+import 'package:frontend/presentation/screens/appointment/widget/status_badge.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -68,7 +73,7 @@ class AppointmentListTile extends StatelessWidget {
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _ServiceIcon(
+                              ServiceIcon(
                                 workTitle: appointment.workTitle,
                                 statusColor: statusColor,
                               ),
@@ -112,7 +117,7 @@ class AppointmentListTile extends StatelessWidget {
                                 ),
                               ),
                               kGapW8,
-                              _StatusBadge(
+                              StatusBadge(
                                 status: appointment.status,
                                 color: statusColor,
                                 label: controller.formatStatus(appointment.status),
@@ -133,12 +138,12 @@ class AppointmentListTile extends StatelessWidget {
                           // ── Meta row ──
                           Row(
                             children: [
-                              _MetaChip(
+                              MetaChip(
                                 icon: Icons.calendar_today_rounded,
                                 label: controller.formatDate(appointment.date),
                               ),
                               kGapW12,
-                              _MetaChip(
+                              MetaChip(
                                 icon: Icons.schedule_rounded,
                                 label: controller.formatTime(appointment.time),
                               ),
@@ -173,7 +178,7 @@ class AppointmentListTile extends StatelessWidget {
                               (appointment.cancelReason != null ||
                                   appointment.rejectReason != null)) ...[
                             kGapH8,
-                            _ReasonBanner(
+                            ReasonBanner(
                               reason: appointment.cancelReason ??
                                   appointment.rejectReason!,
                               isCancelled:
@@ -214,7 +219,7 @@ class AppointmentListTile extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                _ChatButton(
+                                ChatButton(
                                   onTap: () => _openChat(context),
                                 ),
                               ],
@@ -268,204 +273,11 @@ class AppointmentListTile extends StatelessWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────
-// Sub-widgets
-// ─────────────────────────────────────────────────────────
 
-class _ServiceIcon extends StatelessWidget {
-  final String workTitle;
-  final Color statusColor;
 
-  const _ServiceIcon({required this.workTitle, required this.statusColor});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: kIconXLarge,
-      height: kIconXLarge,
-      decoration: BoxDecoration(
-        color: statusColor.withValues(alpha: 0.12),
-        borderRadius: kBorderRadiusMedium,
-      ),
-      child: Icon(
-        _iconForTitle(workTitle),
-        size: kIconSmall,
-        color: statusColor,
-      ),
-    );
-  }
 
-  IconData _iconForTitle(String title) {
-    final t = title.toLowerCase();
-    if (t.contains('plumb')) return Icons.plumbing_rounded;
-    if (t.contains('electr')) return Icons.electrical_services_rounded;
-    if (t.contains('clean')) return Icons.cleaning_services_rounded;
-    if (t.contains('paint')) return Icons.format_paint_rounded;
-    if (t.contains('carpen') || t.contains('wood')) return Icons.handyman_rounded;
-    if (t.contains('mov') || t.contains('shift')) return Icons.local_shipping_rounded;
-    if (t.contains('cook') || t.contains('chef')) return Icons.restaurant_rounded;
-    if (t.contains('health') || t.contains('medic')) return Icons.medical_services_rounded;
-    return Icons.build_circle_outlined;
-  }
-}
 
-class _StatusBadge extends StatelessWidget {
-  final String status;
-  final Color color;
-  final String label;
 
-  const _StatusBadge({
-    required this.status,
-    required this.color,
-    required this.label,
-  });
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: kSpaceSmall,
-        vertical: kSpaceXSmall / 2,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.1),
-        borderRadius: kBorderRadiusFull,
-        border: Border.all(color: color.withValues(alpha: 0.35), width: 1),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            width: 6,
-            height: 6,
-            decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-          ),
-          kGapW4,
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: kFontXSmall,
-              fontWeight: FontWeight.w700,
-              color: color,
-              letterSpacing: 0.2,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
 
-class _MetaChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _MetaChip({required this.icon, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: kIconXSmall + 2, color: AppColors.greyMedium),
-        kGapW4,
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: kFontSmall,
-            color: AppColors.greyDark,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ReasonBanner extends StatelessWidget {
-  final String reason;
-  final bool isCancelled;
-
-  const _ReasonBanner({required this.reason, required this.isCancelled});
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isCancelled ? AppColors.error : AppColors.greyMedium;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(
-        horizontal: kSpaceSmall,
-        vertical: kSpaceXSmall,
-      ),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.08),
-        borderRadius: kBorderRadiusSmall,
-        border: Border.all(color: color.withValues(alpha: 0.25)),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            isCancelled ? Icons.cancel_outlined : Icons.block_rounded,
-            size: kIconXSmall + 2,
-            color: color,
-          ),
-          kGapW4,
-          Expanded(
-            child: Text(
-              reason,
-              style: TextStyle(
-                fontSize: kFontXSmall,
-                color: color,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ChatButton extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _ChatButton({required this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: kSpaceMedium - 4,
-          vertical: kSpaceXSmall,
-        ),
-        decoration: BoxDecoration(
-          color: AppColors.primary,
-          borderRadius: kBorderRadiusFull,
-        ),
-        child: const Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              Icons.chat_bubble_rounded,
-              size: kIconXSmall,
-              color: AppColors.white,
-            ),
-            SizedBox(width: kSpaceXSmall),
-            Text(
-              'Chat',
-              style: TextStyle(
-                fontSize: kFontSmall,
-                fontWeight: FontWeight.w600,
-                color: AppColors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
